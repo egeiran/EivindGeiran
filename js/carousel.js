@@ -6,6 +6,7 @@ function getInlineImages() {
     try {
         return JSON.parse(el.textContent);
     } catch (e) {
+        console.log(e)
         throw new Error('Kunne ikke parse JSON i #images-data');
     }
 }
@@ -24,7 +25,7 @@ async function initCarousel() {
         files = getInlineImages();
     } catch (e) {
         console.error(e);
-        carousel.innerHTML = `<p style="opacity:.7">Kunne ikke laste bilder.</p>`;
+        carousel.innerHTML = `<p style="opacity:.7">Kunne ikke laste bildene.</p>`;
         return;
     }
 
