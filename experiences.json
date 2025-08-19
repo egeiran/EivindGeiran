@@ -1,0 +1,83 @@
+[
+  {
+    "title": "Innholdsansvarlig Gründerjakten 2025",
+    "organization": "Start NTNU",
+    "type": "Frivillig",
+    "start": "2025",
+    "end": "Nå",
+    "description": "Ansvarlig for innhold, samarbeid og gjennomføring av Gründerjakten 2025 for Start NTNU.",
+    "imagePath": "/erfaringer/start.webp"
+  },
+  {
+    "title": "Datateknologi (MSc)",
+    "organization": "NTNU",
+    "type": "Utdanning",
+    "start": "2024",
+    "end": "Nå",
+    "description": "Femårig master i Datateknologi ved NTNU i Trondheim.",
+    "imagePath": "/erfaringer/ntnu.webp"
+  },
+  {
+    "title": "Ishockeydommer",
+    "organization": "Norges Ishockeyforbund",
+    "type": "Betalt",
+    "start": "2016",
+    "end": "2022",
+    "description": "Dømte aldersbestemte kamper. Ansvar for spillflyt, regler og trygg gjennomføring av kamp.",
+    "imagePath": "/erfaringer/nihf.webp"
+  },
+  {
+    "title": "Mentor",
+    "organization": "MentorNorge",
+    "type": "Betalt",
+    "start": "2024",
+    "end": "Nå",
+    "description": "Hjalp elever i ungdomsskole og videregående med fag som matte og fysikk. Fokus på mestring og motivasjon.",
+    "imagePath": "/erfaringer/mentornorge.webp"
+  },
+  {
+    "title": "Mentor",
+    "organization": "ENT3R Trondheim",
+    "type": "Betalt",
+    "start": "2025",
+    "end": "Nå",
+    "description": "Frivillig mentor i realfag for ungdomsskoleelever. Holdt ukentlige samlinger og jobbet med å skape læringsglede.",
+    "imagePath": "/erfaringer/ent3r.webp"
+  },
+  {
+    "title": "Sosialansvarlig - Arrkom",
+    "organization": "Abakus linjeforening",
+    "type": "Frivillig",
+    "start": "2024",
+    "end": "Nå",
+    "description": "Planla og gjennomførte sosiale arrangementer for linjeforeningen Abakus. Jobbet tett i team og med eksterne aktører.",
+    "imagePath": "/erfaringer/abakus.webp"
+  },
+  {
+    "title": "Faddersjef",
+    "organization": "Abakus linjeforening",
+    "type": "Frivillig",
+    "start": "2025",
+    "end": "2025",
+    "description": "Ledet fadderopplegget for nye studenter ved Datateknologi. Ansvar for logistikk, ledelse, samarbeid og kommunikasjon.",
+    "imagePath": "/erfaringer/abakus.webp"
+  },
+  {
+    "title": "Ferskvaremedarbeider",
+    "organization": "Meny Bærums Verk",
+    "type": "Betalt",
+    "start": "2022",
+    "end": "Nå",
+    "description": "Jobbet i ferskvareavdelingen med kundeservice, varehåndtering, hygiene og samarbeid. Tok ansvar i travle perioder.",
+    "imagePath": "/erfaringer/meny.webp"
+  },
+  {
+    "title": "Elev",
+    "organization": "Sandvika VGS",
+    "type": "Utdanning",
+    "start": "2021",
+    "end": "2024",
+    "description": "Gikk på Videregående på Sandvika VGS",
+    "imagePath": "erfaringer/sandvika.webp"
+  }
+]

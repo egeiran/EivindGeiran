@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="no">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Eivind Systad Geiran</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="background-grid" aria-hidden="true"></div>
+
+  <header class="container">
+    <h1>Hei, jeg heter Eivind Geiran 👋</h1>
+    <p class="lede">Datateknologi-student ved NTNU som bygger stilige nettsider.</p>
+    <nav class="nav">
+      <a class="nav-button" href="#bilder">Bilder</a>
+      <a class="nav-button" href="#erfaringer">Erfaring</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="container" id="bilder">
+      <div class="carousel-container">
+        <div id="carousel" class="carousel">
+        </div>
+        <div id="indicators" class="indicator-container"></div>
+      </div>
+      <div id="nav-btns">
+        <button class="nav-btn prev" aria-label="Forrige">&larr;</button>
+        <button class="nav-btn next" aria-label="Neste">&rarr;</button>
+      </div>
+
+      <script id="images-data" type="application/json">
+          [
+            "img/karusell/Sigrid.png",
+            "img/karusell/VentureCup.jpg",
+            "img/karusell/Oscmas.JPG",
+            "img/karusell/Newbies.JPG",
+            "img/karusell/Lookout.JPG",
+            "img/karusell/Kragaluf.JPG",
+            "img/karusell/Cath.jpg"
+          ]
+      </script>
+    </section>
+
+    <section class="container" id="erfaringer">
+      <h2>Mine erfaringer</h2>
+      <div class="filter-buttons">
+        <button id="selected" onclick="filterExperiences('Alle'); setSelected(this)">Alle</button>
+        <button onclick="filterExperiences('Betalt'); setSelected(this)">💼 Betalt</button>
+        <button onclick="filterExperiences('Frivillig'); setSelected(this)">❤️ Frivillig</button>
+        <button onclick="filterExperiences('Utdanning'); setSelected(this)">🎓 Utdanning</button>
+      </div>
+
+      <div id="experience-container">
+
+        <div class="experience-card" data-type="Frivillig">
+          <div class="experience-left">
+            <img src="img/erfaringer/start.webp" class="exp-img" alt="Innholdsansvarlig Gründerjakten 2025">
+            <div class="experience-type">❤️ Frivillig</div>
+          </div>
+          <div class="experience-content">
+            <h3>Innholdsansvarlig Gründerjakten 2025</h3>
+            <h4>Start NTNU</h4>
+            <p class="period">2025–Nå</p>
+            <p>Ansvarlig for innhold, samarbeid og gjennomføring av Gründerjakten 2025 for Start NTNU.</p>
+          </div>
+        </div>
+
+        <div class="experience-card" data-type="Utdanning">
+          <div class="experience-left">
+            <img src="img/erfaringer/ntnu.webp" class="exp-img" alt="Datateknologi (MSc)">
+            <div class="experience-type">🎓 Utdanning</div>
+          </div>
+          <div class="experience-content">
+            <h3>Datateknologi (MSc)</h3>
+            <h4>NTNU</h4>
+            <p class="period">2024–Nå</p>
+            <p>Femårig master i Datateknologi ved NTNU i Trondheim.</p>
+          </div>
+        </div>
+
+        <div class="experience-card" data-type="Betalt">
+          <div class="experience-left">
+            <img src="img/erfaringer/nihf.webp" class="exp-img" alt="Ishockeydommer">
+            <div class="experience-type">💼 Betalt</div>
+          </div>
+          <div class="experience-content">
+            <h3>Ishockeydommer</h3>
+            <h4>Norges Ishockeyforbund</h4>
+            <p class="period">2016-2022</p>
+            <p>Dømte aldersbestemte kamper. Ansvar for spillflyt, regler og trygg gjennomføring av kamp.</p>
+          </div>
+        </div>
+
+        <div class="experience-card" data-type="Betalt">
+          <div class="experience-left">
+            <img src="img/erfaringer/mentornorge.webp" class="exp-img" alt="Mentor">
+            <div class="experience-type">💼 Betalt</div>
+          </div>
+          <div class="experience-content">
+            <h3>Mentor</h3>
+            <h4>MentorNorge</h4>
+            <p class="period">2024-Nå</p>
+            <p>Hjalp elever i ungdomsskole og videregående med fag som matte og fysikk. Fokus på mestring og motivasjon.
+            </p>
+          </div>
+        </div>
+
+        <div class="experience-card" data-type="Betalt">
+          <div class="experience-left">
+            <img src="img/erfaringer/ent3r.webp" class="exp-img" alt="Mentor">
+            <div class="experience-type">💼 Betalt</div>
+          </div>
+          <div class="experience-content">
+            <h3>Mentor</h3>
+            <h4>ENT3R Trondheim</h4>
+            <p class="period">2025–Nå</p>
+            <p>Frivillig mentor i realfag for ungdomsskoleelever. Holdt ukentlige samlinger og jobbet med å skape
+              læringsglede.</p>
+          </div>
+        </div>
+
+        <div class="experience-card" data-type="Frivillig">
+          <div class="experience-left">
+            <img src="img/erfaringer/abakus.webp" class="exp-img" alt="Sosialansvarlig - Arrkom">
+            <div class="experience-type">❤️ Frivillig</div>
+          </div>
+          <div class="experience-content">
+            <h3>Sosialansvarlig - Arrkom</h3>
+            <h4>Abakus linjeforening</h4>
+            <p class="period">2024–Nå</p>
+            <p>Planla og gjennomførte sosiale arrangementer for linjeforeningen Abakus. Jobbet tett i team og med
+              eksterne aktører.</p>
+          </div>
+        </div>
+
+        <div class="experience-card" data-type="Frivillig">
+          <div class="experience-left">
+            <img src="img/erfaringer/abakus.webp" class="exp-img" alt="Faddersjef">
+            <div class="experience-type">❤️ Frivillig</div>
+          </div>
+          <div class="experience-content">
+            <h3>Faddersjef</h3>
+            <h4>Abakus linjeforening</h4>
+            <p class="period">2025</p>
+            <p>Ledet fadderopplegget for nye studenter ved Datateknologi. Ansvar for logistikk, ledelse, samarbeid og
+              kommunikasjon.</p>
+          </div>
+        </div>
+
+        <div class="experience-card" data-type="Betalt">
+          <div class="experience-left">
+            <img src="img/erfaringer/meny.webp" class="exp-img" alt="Ferskvaremedarbeider">
+            <div class="experience-type">💼 Betalt</div>
+          </div>
+          <div class="experience-content">
+            <h3>Ferskvaremedarbeider</h3>
+            <h4>Meny Bærums Verk</h4>
+            <p class="period">2022-Nå</p>
+            <p>Jobbet i ferskvareavdelingen med kundeservice, varehåndtering, hygiene og samarbeid. Tok ansvar i travle
+              perioder.</p>
+          </div>
+        </div>
+
+        <div class="experience-card" data-type="Utdanning">
+          <div class="experience-left">
+            <img src="img/erfaringer/sandvika.webp" class="exp-img" alt="Elev">
+            <div class="experience-type">🎓 Utdanning</div>
+          </div>
+          <div class="experience-content">
+            <h3>Elev</h3>
+            <h4>Sandvika VGS</h4>
+            <p class="period">2021–2024</p>
+            <p>Gikk på Videregående på Sandvika VGS</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="container">
+    <p>Eivind Geiran - bygget som statisk side for GitHub Pages.</p>
+  </footer>
+
+  <script src="js/background.js"></script>
+  <script src="js/carousel.js" defer></script>
+  <script src="js/experience.js"></script>
+</body>
+
+</html>
