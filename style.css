@@ -1,3 +1,17 @@
+html {
+    scroll-behavior: smooth;
+}
+
+:root {
+    --scroll-offset: 20px;
+}
+
+#bilder,
+#erfaringer,
+#emner {
+    scroll-margin-top: var(--scroll-offset);
+}
+
 body {
     font-family: Arial, sans-serif;
     background-color: #eef2f8;
@@ -11,6 +25,45 @@ header,
 footer {
     position: relative;
     z-index: 1;
+}
+
+:root {
+    --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    --font-display: "Space Grotesk", var(--font-sans);
+}
+
+
+/* Hvilken font!!??!?!??! */
+/* :root {
+    --font-sans: "Sora", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
+    --font-display: var(--font-sans);
+} */
+
+
+/* Brødtekst */
+body {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+}
+
+/* Store overskrifter (hero) */
+.hero-title,
+h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+}
+
+/* Mellomtitler */
+h2,
+h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+}
+
+
+main {
+    pointer-events: none;
 }
 
 .background-grid {
@@ -29,22 +82,156 @@ footer {
 
 .background-grid>div {
     opacity: 0;
-    background: rgba(28, 62, 87, 0.05);
+    background-color: rgba(28, 62, 87, 0.05);
     border-radius: 10%;
     transform: skew(-20deg);
     pointer-events: auto;
-    will-change: background, opacity;
+    will-change: background-color, opacity;
+    transition: background-color 500ms ease-out !important;
     z-index: 0;
 }
 
-
 .background-grid>div:hover {
-    background: rgba(28, 62, 87, 0.09) !important;
-    transition: background 0.1s ease;
+    background-color: rgba(28, 62, 87, 0.20) !important;
+    transition: background-color 80ms ease-in !important;
+}
+
+/* Hero: full skjerm, ligger over bakgrunnen */
+.hero {
+    position: relative;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.hero-inner {
+    width: 60%;
+    margin-left: 10%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    pointer-events: auto;
+}
+
+/* Stor, responsiv heading */
+.hero-title {
+    font-size: clamp(2rem, 6vw, 4.25rem);
+    line-height: 1.05;
+    margin: 0 0 .6rem 0;
+    color: #0b2233;
+    letter-spacing: -0.02em;
+}
+
+/* Undertekst */
+.hero-subtitle {
+    font-size: clamp(1rem, 2.2vw, 1.25rem);
+    color: #485866;
+    margin: 0 0 1.2rem 0;
+}
+
+/* Knapper på hero (chips) */
+.hero-actions {
+    display: flex;
+    gap: .6rem;
+    flex-wrap: wrap;
+}
+
+.hero-actions .chip {
+    display: inline-block;
+    padding: .5rem .9rem;
+    border-radius: 999px;
+    border: 1px solid #1c3e57;
+    background: #e7f0f8;
+    color: #0b2233;
+    text-decoration: none;
+    transition: background-color 200ms ease, transform 120ms ease;
+}
+
+.hero-actions .chip:hover {
+    background: #d3e4f4;
+    transform: translateY(-1px);
+}
+
+.hero-peek {
+    margin-top: .9rem;
+    overflow: hidden;
+    /* fade i kantene */
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.peek-track {
+    display: inline-flex;
+    gap: .5rem;
+    white-space: nowrap;
+    will-change: transform;
+    animation: peek-marquee 30s linear infinite;
+    margin-top: 2px;
+}
+
+@keyframes peek-marquee {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-50%);
+    }
+
+    /* funker fordi vi dupliserer innholdet i JS */
+}
+
+.peek-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .45rem .75rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .78);
+    border: 1px solid #b6c9d9;
+    color: #0b2233;
+    backdrop-filter: blur(6px);
+    font-size: .95rem;
+    cursor: pointer;
+    transition: transform 120ms ease, background-color 180ms ease;
+}
+
+.peek-pill:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, .92);
+}
+
+.peek-pill .tag {
+    font-size: .85rem;
+    color: #1c3e57;
+    padding: .1rem .5rem;
+    border-radius: 999px;
+    background: #e7f0f8;
+    border: 1px solid #c9d9e6;
+}
+
+/* Highlight på målkortet når vi scroller dit */
+@keyframes flash {
+    0% {
+        box-shadow: 0 0 0 0 rgba(28, 62, 87, .0);
+    }
+
+    30% {
+        box-shadow: 0 0 0 6px rgba(28, 62, 87, .25);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(28, 62, 87, 0);
+    }
+}
+
+.experience-card.flash {
+    animation: flash 1.2s ease;
 }
 
 .container {
-    max-width: 50%;
+    max-width: 70%;
     margin: auto;
     background: white;
     padding: 2rem;
@@ -52,6 +239,9 @@ footer {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     animation: slideUp 1s ease forwards;
     margin-top: 3%;
+    pointer-events: none;
+    border-top: 2px solid #1c3e57;
+    border-left: 1px solid #1c3e57;
 }
 
 .carousel-container {
@@ -81,7 +271,7 @@ footer {
 
 .nav-button {
     background-color: #d0e3f4;
-    border: 2px solid black;
+    border: 1px solid #1c3e57;
     border-radius: 20px;
     padding: 10px;
     color: black;
@@ -117,6 +307,11 @@ footer {
     animation-play-state: paused;
 }
 
+#indicators {
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
 .indicator-container {
     text-align: center;
     margin-bottom: 2rem;
@@ -132,6 +327,13 @@ footer {
     border-radius: 50%;
     transition: background-color 0.3s, transform 0.3s;
     opacity: 0.5;
+}
+
+.dot:hover {
+    background-color: #1c3e57;
+    opacity: 0.8;
+    transform: scale(1.2);
+    cursor: pointer;
 }
 
 .dot.active {
@@ -157,7 +359,7 @@ footer {
     gap: 10px;
 }
 
-@media(max-width: 1600px) {
+@media(max-width: 1300px) {
     #experience-container {
         grid-template-columns: 1fr;
     }
@@ -258,6 +460,77 @@ footer {
     transition: 200ms;
 }
 
+/* Emne-seksjon */
+.course-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin: 1rem 0 1.25rem;
+}
+
+.chip {
+    background: #d0e3f4;
+    border: 1px solid #1c3e57;
+    border-radius: 999px;
+    padding: .4rem .8rem;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.chip:hover {
+    background: #accde9;
+}
+
+.chip.active {
+    background: #1c3e57;
+    color: #fff;
+}
+
+.course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1rem;
+}
+
+.course-card {
+    background: #f8fbff;
+    border: 1px solid #b6c9d9;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
+    animation: slideUp .6s ease forwards;
+}
+
+.course-card header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: .25rem;
+}
+
+.course-card .code {
+    font-weight: 700;
+    color: #1c3e57;
+}
+
+.course-card .sp {
+    font-variant-numeric: tabular-nums;
+    color: #5a6b7c;
+}
+
+.course-card h3 {
+    margin: .25rem 0 .35rem;
+    font-size: 1rem;
+    color: #1c3e57;
+}
+
+.course-card .type {
+    margin: 0;
+    color: #5a6b7c;
+    font-size: .9rem;
+}
+
+
 h2 {
     font-size: 1.5rem;
     margin-top: 2rem;
@@ -275,11 +548,12 @@ main {
 
 footer {
     border-top: 2px solid #1c3e57;
+    border-left: 1px solid #1c3e57;
 }
 
 @keyframes slideUp {
     0% {
-        transform: translateY(100px);
+        transform: translateY(50px);
         opacity: 0;
     }
 

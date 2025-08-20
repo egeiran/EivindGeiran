@@ -6,19 +6,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Eivind Systad Geiran</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=Space+Grotesk:wght@400..700&display=swap"
+    rel="stylesheet">
+  <!-- <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300..800&display=swap" rel="stylesheet"> -->
+
+
 </head>
 
 <body>
   <div class="background-grid" aria-hidden="true"></div>
 
-  <header class="container">
-    <h1>Hei, jeg heter Eivind Geiran 👋</h1>
-    <p class="lede">Datateknologi-student ved NTNU som bygger stilige nettsider.</p>
-    <nav class="nav">
-      <a class="nav-button" href="#bilder">Bilder</a>
-      <a class="nav-button" href="#erfaringer">Erfaring</a>
-    </nav>
-  </header>
+  <section class="hero" id="home">
+    <div class="hero-inner">
+      <h1 class="hero-title">Eivind Systad Geiran</h1>
+      <p class="hero-subtitle">Datateknologi-student ved NTNU</p>
+
+      <nav class="hero-actions">
+        <a class="chip" href="#bilder">Bilder</a>
+        <a class="chip" href="#erfaringer">Erfaring</a>
+        <a class="chip" href="#emner">Emner</a>
+      </nav>
+
+      <div class="hero-peek" id="hero-peek" hidden>
+        <div class="peek-track" id="peek-track"></div>
+      </div>
+    </div>
+  </section>
+
 
   <main>
     <section class="container" id="bilder">
@@ -180,15 +197,26 @@
 
       </div>
     </section>
+    <section class="container" id="emner">
+      <h2>Emner</h2>
+      <div id="course-filters" class="course-filters"></div>
+      <div id="course-grid" class="course-grid"></div>
+    </section>
+
+
   </main>
 
   <footer class="container">
     <p>Eivind Geiran - bygget som statisk side for GitHub Pages.</p>
   </footer>
 
+  <script src="js/courses.js"></script>
+  <script src="js/render-courses.js" defer></script>
   <script src="js/background.js"></script>
   <script src="js/carousel.js" defer></script>
   <script src="js/experience.js"></script>
+  <script src="js/peek.js" defer></script>
+
 </body>
 
 </html>

@@ -1,3 +1,5 @@
+let resizeTimeout = 100
+
 function buildGrid() {
     const grid = document.querySelector('.background-grid');
     grid.innerHTML = "";
