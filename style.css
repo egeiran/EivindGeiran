@@ -1,23 +1,21 @@
+:root {
+    --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    --font-display: "Space Grotesk", var(--font-sans);
+    --scroll-offset: 20px;
+}
+
 html {
     scroll-behavior: smooth;
 }
 
-:root {
-    --scroll-offset: 20px;
-}
-
-#bilder,
-#erfaringer,
-#emner {
-    scroll-margin-top: var(--scroll-offset);
-}
-
 body {
-    font-family: Arial, sans-serif;
     background-color: #eef2f8;
     /* Lys blå-grå bakgrunn  */
     margin: 0;
     padding: 2rem;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    letter-spacing: 0.01em;
 }
 
 main,
@@ -27,9 +25,10 @@ footer {
     z-index: 1;
 }
 
-:root {
-    --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-    --font-display: "Space Grotesk", var(--font-sans);
+#bilder,
+#erfaringer,
+#emner {
+    scroll-margin-top: var(--scroll-offset);
 }
 
 
@@ -40,12 +39,6 @@ footer {
 } */
 
 
-/* Brødtekst */
-body {
-    font-family: var(--font-sans);
-    font-weight: 400;
-    letter-spacing: 0.01em;
-}
 
 /* Store overskrifter (hero) */
 .hero-title,
@@ -239,7 +232,7 @@ main {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     animation: slideUp 1s ease forwards;
     margin-top: 3%;
-    pointer-events: none;
+    pointer-events: auto;
     border-top: 2px solid #1c3e57;
     border-left: 1px solid #1c3e57;
 }
@@ -276,7 +269,6 @@ main {
     padding: 10px;
     color: black;
     text-decoration: none;
-    text-decoration: none;
 }
 
 .nav-button:hover {
@@ -301,10 +293,6 @@ main {
 #nav-btns {
     display: flex;
     justify-content: space-around;
-}
-
-.carousel-container:hover .carousel {
-    animation-play-state: paused;
 }
 
 #indicators {
@@ -560,5 +548,223 @@ footer {
     100% {
         transform: translateY(0);
         opacity: 1;
+    }
+}
+
+/* --- Tablet og nedover --- */
+@media (max-width: 900px) {
+    :root {
+        --scroll-offset: 16px;
+    }
+
+    body {
+        padding: 1.25rem;
+    }
+
+    /* Hero */
+    .hero-inner {
+        width: 90%;
+        margin-left: 5%;
+    }
+
+    /* Cards/sekjoner */
+    .container {
+        max-width: 92%;
+        padding: 1.5rem;
+        margin-top: 5%;
+    }
+
+    /* Karusell */
+    .carousel-container {
+        max-width: 100%;
+        border-radius: 10px;
+    }
+
+    /* Emner-grid (slipp 400px min på smale skjermer) */
+    .course-grid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    }
+
+    /* Erfaringer – én kolonne tidligere */
+    #experience-container {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .experience-card {
+        grid-template-columns: 110px 1fr;
+        height: auto;
+        padding: .75rem;
+    }
+
+    .experience-left {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+    }
+
+    .experience-left img {
+        max-height: 80px;
+        margin-top: 12px;
+    }
+}
+
+/* --- Mobil --- */
+@media (max-width: 700px) {
+    :root {
+        --scroll-offset: 12px;
+    }
+
+    body {
+        padding: 1rem;
+    }
+
+    /* Bakgrunnsgrid: litt tettere/mindre celler og ingen venstre offset */
+    .background-grid {
+        left: 0;
+        grid-template-columns: repeat(auto-fill, 70px);
+        grid-template-rows: repeat(auto-fill, 120px);
+        gap: 4px;
+    }
+
+    /* Hero-typografi */
+    .hero-title {
+        font-size: clamp(1.8rem, 7vw, 2.4rem);
+        line-height: 1.1;
+    }
+
+    .hero-subtitle {
+        font-size: 0.95rem;
+        line-height: 1.45;
+    }
+
+    /* Hero-knapper (større tappetreff) */
+    .hero-actions .chip {
+        padding: .6rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    /* Sneak peek-piller */
+    .peek-pill {
+        padding: .4rem .65rem;
+        font-size: .9rem;
+        gap: .4rem;
+    }
+
+    .peek-pill .tag {
+        font-size: .8rem;
+        padding: .06rem .45rem;
+    }
+
+    /* Seksjonskort */
+    .container {
+        padding: 1.25rem;
+        border-radius: 10px;
+    }
+
+    /* Karusellbilde – lavere høyde på mobil */
+    .carousel-img {
+        max-height: 220px;
+    }
+
+    /* Karusellknapper */
+    .nav-btn {
+        font-size: 1.25rem;
+        padding: 0.35rem 0.6rem;
+    }
+
+    /* Course cards – tighter */
+    .course-card {
+        padding: .9rem;
+    }
+
+    .course-card h3 {
+        font-size: .95rem;
+    }
+
+    /* Kortoppsett: liten logo + innhold */
+    .experience-card {
+        position: relative;
+        /* for chip øverst til høyre */
+        display: grid;
+        grid-template-columns: 64px 1fr;
+        column-gap: 12px;
+        row-gap: 6px;
+        padding: 14px;
+        min-height: 200px;
+        border-radius: 14px;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, .06);
+    }
+
+    /* Nullstill venstre-boks fullstendig */
+    .experience-left {
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: auto !important;
+        height: auto !important;
+        display: block !important;
+        /* ikke contents */
+    }
+
+    /* Bilde som kompakt avatar */
+    .experience-left .exp-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: #fff;
+        padding: 6px;
+        border: 1px solid #1c3e57;
+        border-radius: 12px;
+    }
+
+    /* Type-chip (❤️/💼/🎓) øverst til høyre på kortet */
+    .experience-left .experience-type {
+        position: absolute;
+        bottom: 4px;
+        left: 4px;
+        background: #fff;
+        border: 1px solid #cbd5e1;
+        border-radius: 999px;
+        padding: .15rem .5rem;
+        font-size: .8rem;
+        line-height: 1;
+        color: #1c3e57;
+        min-width: 0;
+    }
+
+    /* Tekstinnhold strammet */
+    .experience-content {
+        margin: 0;
+        margin-left: 10px;
+    }
+
+    .experience-content h3 {
+        margin: 0 0 .2rem;
+        font-size: 1.05rem;
+    }
+
+    .experience-content h4 {
+        margin: 0 0 .25rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .experience-content .period {
+        font-size: .9rem;
+        color: #6b7280;
+        margin-bottom: .25rem;
+    }
+}
+
+/* --- Preferanse: mindre bevegelse --- */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
     }
 }
