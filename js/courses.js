@@ -1,5 +1,14 @@
 window.COURSES = [
     {
+        term: "Vår", year: 2026,
+        courses: [
+            { code: "TDT4140", title: "Programvareutvikling", credits: 7.5, type: "Programmering" },
+            { code: "TDT4145", title: "Datamodellering og databasesystemer", credits: 7.5, type: "Data" },
+            { code: "TDT4186", title: "Operativsystemer", credits: 7.5, type: "Data" },
+            { code: "TTM4100", title: "Kommunikasjon - Tjenester og nett", credits: 7.5, type: "Data" }
+        ]
+    },
+    {
         term: "Høst", year: 2025,
         courses: [
             { code: "IT1901", title: "Informatikk prosjektarbeid I", credits: 7.5, type: "Programmering, gruppearbeid" },
