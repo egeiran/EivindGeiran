@@ -58,7 +58,7 @@
   {
     "title": "Mentor",
     "organization": "ENT3R Trondheim",
-    "type": "Frivillig",
+    "type": "Betalt",
     "start": "2025",
     "end": "Nå",
     "description": "Frivillig mentor i realfag for ungdomsskoleelever.",
@@ -66,7 +66,7 @@
     "tags": [
       "Realfag",
       "Læring",
-      "Frivillighet"
+      "Formidling"
     ]
   },
   {
@@ -102,7 +102,7 @@
     "organization": "Meny Bærums Verk",
     "type": "Betalt",
     "start": "2022",
-    "end": "2026",
+    "end": "2025",
     "description": "Jobber i ferskvareavdelingen med kundeservice og varehåndtering.",
     "imagePath": "img/erfaringer/meny.webp",
     "tags": [
