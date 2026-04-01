@@ -208,15 +208,15 @@ function renderInsights(experiences) {
   }
 
   cards[0].innerHTML = `
-    <p class="section-label">Arbeidsform</p>
-    <h3>Jeg liker roller der jeg har noe å bidra med.</h3>
-    <p>Akkurat nå har jeg ${escapeHtml(String(currentPaid))} jobber og ${escapeHtml(String(currentVolunteer))} verv ved siden av studiet.</p>
+    <p class="section-label">Jobb Og Verv</p>
+    <h3>${escapeHtml(String(currentPaid))} jobber og ${escapeHtml(String(currentVolunteer))} verv akkurat nå.</h3>
+    <p>Det er mye å holde på med, men det passer meg bra.</p>
   `;
 
   cards[1].innerHTML = `
     <p class="section-label">Retning</p>
-    <h3>Teknologi er hovedsporet mitt.</h3>
-    <p>Jeg vil bli bedre både teknisk og i samarbeid med andre.</p>
+    <h3>Jeg vil bli god på å bygge ting som faktisk brukes.</h3>
+    <p>Både teknisk, og sammen med andre.</p>
   `;
 }
 
