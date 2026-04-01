@@ -4,233 +4,160 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description"
+    content="Eivind Systad Geiran studerer datateknologi ved NTNU og har erfaring fra teknologi, mentorarbeid og studentmiljø." />
+  <meta name="theme-color" content="#0f1720" />
   <title>Eivind Systad Geiran</title>
-  <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=Space+Grotesk:wght@400..700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Syne:wght@500;600;700;800&display=swap"
     rel="stylesheet">
-  <!-- <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300..800&display=swap" rel="stylesheet"> -->
-
-
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-  <div class="background-grid" aria-hidden="true"></div>
+  <div class="site-noise" aria-hidden="true"></div>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
 
-  <section class="hero" id="home">
-    <div class="hero-inner">
-      <h1 class="hero-title">Eivind Systad Geiran</h1>
-      <p class="hero-subtitle">Datateknologi-student ved NTNU</p>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Gå til toppen">
+      <span class="brand-mark" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+      <span class="brand-lockup">
+        <span class="brand-text">Eivind Systad Geiran</span>
+        <span class="brand-subtext">NTNU · Trondheim</span>
+      </span>
+    </a>
 
-      <nav class="hero-actions">
-        <a class="chip" href="#bilder">Bilder</a>
-        <a class="chip" href="#erfaringer">Erfaring</a>
-        <a class="chip" href="#emner">Emner</a>
-      </nav>
+    <nav class="topnav" aria-label="Hovednavigasjon">
+      <a href="#erfaringer">Erfaring</a>
+      <a href="#glimt">Glimt</a>
+      <a href="#prosjekter">Prosjekter</a>
+      <a href="#emner">Emner</a>
+    </nav>
 
-      <div class="hero-peek" id="hero-peek" hidden>
-        <div class="peek-track" id="peek-track"></div>
-      </div>
-    </div>
-  </section>
+    <a class="toplink" href="https://www.linkedin.com/in/eivind-systad-geiran-640231238/" target="_blank"
+      rel="noreferrer">LinkedIn</a>
+  </header>
 
+  <main id="top">
+    <section class="hero section">
+      <div class="hero-grid">
+        <div class="hero-copy" data-reveal>
+          <p class="eyebrow">Datateknologi · NTNU · Trondheim</p>
+          <h1>Student i datateknologi som liker å ha mye å gjøre.</h1>
+          <p class="hero-lede">
+            Jeg studerer datateknologi ved NTNU, og bruker mye tid på jobb, verv og prosjekter ved siden av.
+          </p>
 
-  <main>
-    <section class="container" id="bilder">
-      <div class="carousel-container">
-        <div id="carousel" class="carousel">
-        </div>
-        <div id="indicators" class="indicator-container"></div>
-      </div>
-      <div id="nav-btns">
-        <button class="nav-btn prev" aria-label="Forrige">&larr;</button>
-        <button class="nav-btn next" aria-label="Neste">&rarr;</button>
-      </div>
-
-      <script id="images-data" type="application/json">
-          [
-            "img/karusell/Sigrid.jpg",
-            "img/karusell/VentureCup.jpg",
-            "img/karusell/Oscmas.jpg",
-            "img/karusell/Newbies.jpg",
-            "img/karusell/Lookout.jpg",
-            "img/karusell/Kragaluf.jpg",
-            "img/karusell/Cath.jpg"
-          ]
-      </script>
-    </section>
-
-    <section class="container" id="erfaringer">
-      <h2>Mine erfaringer</h2>
-      <div class="filter-buttons">
-        <button id="selected" onclick="filterExperiences('Alle'); setSelected(this)">Alle</button>
-        <button onclick="filterExperiences('Betalt'); setSelected(this)">💼 Betalt</button>
-        <button onclick="filterExperiences('Frivillig'); setSelected(this)">❤️ Frivillig</button>
-        <button onclick="filterExperiences('Utdanning'); setSelected(this)">🎓 Utdanning</button>
-      </div>
-
-      <div id="experience-container">
-
-        <div class="experience-card" data-type="Frivillig">
-          <div class="experience-left">
-            <img src="img/erfaringer/start.webp" class="exp-img" alt="Innholdsansvarlig Gründerjakten 2025">
-            <div class="experience-type">❤️ Frivillig</div>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#erfaringer">Se erfaring</a>
+            <a class="button button-secondary" href="#glimt">Se glimt</a>
           </div>
-          <div class="experience-content">
-            <h3>Innholdsansvarlig Gründerjakten 2025</h3>
-            <h4>Start NTNU</h4>
-            <p class="period">2025–Nå</p>
-            <p>Ansvarlig for innhold, samarbeid og gjennomføring av Gründerjakten 2025 for Start NTNU.</p>
-          </div>
+
+          <div class="metric-row" id="hero-metrics" aria-label="Nøkkeltall"></div>
         </div>
 
-        <div class="experience-card" data-type="Utdanning">
-          <div class="experience-left">
-            <img src="img/erfaringer/ntnu.webp" class="exp-img" alt="Datateknologi (MSc)">
-            <div class="experience-type">🎓 Utdanning</div>
+        <aside class="hero-panel" data-reveal>
+          <div class="panel-header">
+            <p class="panel-kicker">Nå</p>
+            <h2>Det jeg holder på med nå</h2>
           </div>
-          <div class="experience-content">
-            <h3>Datateknologi (MSc)</h3>
-            <h4>NTNU</h4>
-            <p class="period">2024–Nå</p>
-            <p>Femårig master i Datateknologi ved NTNU i Trondheim.</p>
-          </div>
-        </div>
-
-        <div class="experience-card" data-type="Betalt">
-          <div class="experience-left">
-            <img src="img/erfaringer/jrc.jpeg" class="exp-img" alt="Konsulent">
-            <div class="experience-type">💼 Betalt</div>
-          </div>
-          <div class="experience-content">
-            <h3>Tech konsulent</h3>
-            <h4>Junior Consulting</h4>
-            <p class="period">2025-Nå</p>
-            <p>Jobber med ulike prosjekter innen IT og teknologi.</p>
-          </div>
-        </div>
-
-        <div class="experience-card" data-type="Betalt">
-          <div class="experience-left">
-            <img src="img/erfaringer/mentornorge.webp" class="exp-img" alt="Mentor">
-            <div class="experience-type">💼 Betalt</div>
-          </div>
-          <div class="experience-content">
-            <h3>Mentor</h3>
-            <h4>MentorNorge</h4>
-            <p class="period">2024-Nå</p>
-            <p>Hjalp elever i ungdomsskole og videregående med fag som matte og fysikk. Fokus på mestring og motivasjon.
-            </p>
-          </div>
-        </div>
-
-        <div class="experience-card" data-type="Betalt">
-          <div class="experience-left">
-            <img src="img/erfaringer/ent3r.webp" class="exp-img" alt="Mentor">
-            <div class="experience-type">💼 Betalt</div>
-          </div>
-          <div class="experience-content">
-            <h3>Mentor</h3>
-            <h4>ENT3R Trondheim</h4>
-            <p class="period">2025–Nå</p>
-            <p>Frivillig mentor i realfag for ungdomsskoleelever. Holdt ukentlige samlinger og jobbet med å skape
-              læringsglede.</p>
-          </div>
-        </div>
-
-        <div class="experience-card" data-type="Frivillig">
-          <div class="experience-left">
-            <img src="img/erfaringer/abakus.webp" class="exp-img" alt="Sosialansvarlig - Arrkom">
-            <div class="experience-type">❤️ Frivillig</div>
-          </div>
-          <div class="experience-content">
-            <h3>Sosialansvarlig - Arrkom</h3>
-            <h4>Abakus linjeforening</h4>
-            <p class="period">2024–Nå</p>
-            <p>Planla og gjennomførte sosiale arrangementer for linjeforeningen Abakus. Jobbet tett i team og med
-              eksterne aktører.</p>
-          </div>
-        </div>
-
-        <div class="experience-card" data-type="Frivillig">
-          <div class="experience-left">
-            <img src="img/erfaringer/abakus.webp" class="exp-img" alt="Faddersjef">
-            <div class="experience-type">❤️ Frivillig</div>
-          </div>
-          <div class="experience-content">
-            <h3>Faddersjef</h3>
-            <h4>Abakus linjeforening</h4>
-            <p class="period">2025</p>
-            <p>Ledet fadderopplegget for nye studenter ved Datateknologi. Ansvar for logistikk, ledelse, samarbeid og
-              kommunikasjon.</p>
-          </div>
-        </div>
-
-        <div class="experience-card" data-type="Betalt">
-          <div class="experience-left">
-            <img src="img/erfaringer/meny.webp" class="exp-img" alt="Ferskvaremedarbeider">
-            <div class="experience-type">💼 Betalt</div>
-          </div>
-          <div class="experience-content">
-            <h3>Ferskvaremedarbeider</h3>
-            <h4>Meny Bærums Verk</h4>
-            <p class="period">2022-Nå</p>
-            <p>Jobbet i ferskvareavdelingen med kundeservice, varehåndtering, hygiene og samarbeid. Tok ansvar i travle
-              perioder.</p>
-          </div>
-        </div>
-
-        <div class="experience-card" data-type="Utdanning">
-          <div class="experience-left">
-            <img src="img/erfaringer/sandvika.webp" class="exp-img" alt="Elev">
-            <div class="experience-type">🎓 Utdanning</div>
-          </div>
-          <div class="experience-content">
-            <h3>Elev</h3>
-            <h4>Sandvika VGS</h4>
-            <p class="period">2021–2024</p>
-            <p>Gikk på Videregående på Sandvika VGS</p>
-          </div>
-        </div>
-
-        <div class="experience-card" data-type="Betalt">
-          <div class="experience-left">
-            <img src="img/erfaringer/nihf.webp" class="exp-img" alt="Ishockeydommer">
-            <div class="experience-type">💼 Betalt</div>
-          </div>
-          <div class="experience-content">
-            <h3>Ishockeydommer</h3>
-            <h4>Norges Ishockeyforbund</h4>
-            <p class="period">2016-2022</p>
-            <p>Dømte aldersbestemte kamper. Ansvar for spillflyt, regler og trygg gjennomføring av kamp.</p>
-          </div>
-        </div>
+          <div class="focus-stack" id="current-focus"></div>
+        </aside>
       </div>
 
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker-track" id="ticker-track"></div>
       </div>
     </section>
-    <section class="container" id="emner">
-      <h2>Emner</h2>
-      <div id="course-filters" class="course-filters"></div>
-      <div id="course-grid" class="course-grid"></div>
+
+    <section class="section">
+      <div class="insight-grid">
+        <article class="insight-card insight-card-large" data-reveal>
+          <p class="section-label">Profil</p>
+          <h2>Jeg liker å bidra der det faktisk trengs.</h2>
+          <p>
+            Som regel betyr det å ta ansvar, få oversikt eller bare få ting gjort.
+          </p>
+        </article>
+
+        <article class="insight-card" data-reveal>
+          <p class="section-label">Arbeidsform</p>
+          <h3>Jeg trives best når ting er tydelige.</h3>
+          <p>Da er det lettere å ta ansvar og jobbe godt med andre.</p>
+        </article>
+
+        <article class="insight-card accent-card" data-reveal>
+          <p class="section-label">Retning</p>
+          <h3>Studiet er basen, resten bygger rundt det.</h3>
+          <p>Jeg vil bli bedre både teknisk og i samarbeid med andre.</p>
+        </article>
+      </div>
     </section>
 
+    <section class="section" id="erfaringer">
+      <div class="section-heading" data-reveal>
+        <p class="section-label">Erfaring</p>
+        <h2>Noe av det jeg har gjort.</h2>
+        <p class="section-copy">
+          Jobber, verv og studier så langt.
+        </p>
+      </div>
 
+      <div class="filter-row" id="experience-filters" data-reveal></div>
+      <div class="experience-grid" id="experience-grid"></div>
+    </section>
+
+    <section class="section" id="glimt">
+      <div class="section-heading" data-reveal>
+        <p class="section-label">Glimt</p>
+        <h2>Noen bilder.</h2>
+        <p class="section-copy">
+          Fra ting jeg har vært med på.
+        </p>
+      </div>
+
+      <div class="gallery-grid" id="gallery-grid"></div>
+    </section>
+
+    <section class="section" id="prosjekter">
+      <div class="section-heading" data-reveal>
+        <p class="section-label">GitHub</p>
+        <h2>Noen repoer.</h2>
+        <p class="section-copy">
+          Et lite utvalg fra GitHub.
+        </p>
+      </div>
+      <div class="project-grid" id="project-grid"></div>
+    </section>
+
+    <section class="section" id="emner">
+      <div class="section-heading" data-reveal>
+        <p class="section-label">Studium</p>
+        <h2>Emner jeg har hatt på NTNU.</h2>
+        <p class="section-copy">
+          En oversikt over fagene så langt.
+        </p>
+      </div>
+
+      <div class="course-summary" id="course-summary" data-reveal></div>
+      <div class="filter-row" id="course-filters" data-reveal></div>
+      <div class="course-grid" id="course-grid"></div>
+    </section>
   </main>
 
-  <footer class="container">
-    <p>Eivind Geiran - bygget som statisk side for GitHub Pages.</p>
+  <footer class="footer">
+    <p>Enkel statisk side, hostet på GitHub Pages.</p>
   </footer>
 
   <script src="js/courses.js"></script>
-  <script src="js/render-courses.js" defer></script>
-  <script src="js/background.js"></script>
-  <script src="js/carousel.js" defer></script>
-  <script src="js/experience.js"></script>
-  <script src="js/peek.js" defer></script>
-
+  <script src="js/app.js" defer></script>
 </body>
 
 </html>
