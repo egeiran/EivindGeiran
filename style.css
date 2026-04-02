@@ -793,6 +793,18 @@ main {
   color: rgba(247, 243, 237, 0.78);
 }
 
+.footer a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  opacity: 0.9;
+  transition: opacity 0.15s;
+}
+
+.footer a:hover {
+  opacity: 1;
+}
+
 [data-reveal] {
   opacity: 0;
   transform: translateY(38px);
