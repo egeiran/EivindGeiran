@@ -18,7 +18,7 @@
     "organization": "Start NTNU",
     "type": "Frivillig",
     "start": "2025",
-    "end": "2026",
+    "end": "2025",
     "description": "Jobber med innhold og kommunikasjon for Gründerjakten 2025 i Start NTNU.",
     "imagePath": "img/erfaringer/start.webp",
     "tags": [
@@ -61,7 +61,7 @@
     "type": "Betalt",
     "start": "2025",
     "end": "Nå",
-    "description": "Frivillig mentor i realfag for ungdomsskoleelever.",
+    "description": "Mentor i realfag for ungdomsskoleelever.",
     "imagePath": "img/erfaringer/ent3r.webp",
     "tags": [
       "Realfag",
