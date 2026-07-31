@@ -1,0 +1,111 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px var(--gutter);
+  background: rgba(12, 14, 17, 0.82);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(244, 241, 232, 0.1);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logoMark {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  background: var(--lime);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display), sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: -0.03em;
+}
+
+.eyebrow {
+  font-family: var(--font-mono), monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(244, 241, 232, 0.55);
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.nav {
+  display: flex;
+  gap: 24px;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.nav a {
+  color: rgba(244, 241, 232, 0.62);
+}
+
+.nav a:hover {
+  color: var(--lime);
+}
+
+.langToggle {
+  display: flex;
+  border: 1px solid rgba(244, 241, 232, 0.22);
+  border-radius: 999px;
+  overflow: hidden;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+}
+
+.langBtn {
+  border: 0;
+  padding: 6px 11px;
+  cursor: pointer;
+  background: transparent;
+  color: rgba(244, 241, 232, 0.55);
+}
+
+.langBtnActive {
+  background: var(--lime);
+  color: var(--ink);
+}
+
+.contactPill {
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: var(--lime);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.contactPill:hover {
+  background: var(--lime-hover);
+  color: var(--ink);
+}
+
+@media (max-width: 900px) {
+  .nav {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .eyebrow {
+    display: none;
+  }
+}

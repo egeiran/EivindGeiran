@@ -1,0 +1,110 @@
+.lede {
+  margin: 0 0 24px;
+  max-width: 56ch;
+  font-size: 15px;
+  line-height: 1.55;
+  color: rgba(244, 241, 232, 0.55);
+}
+
+.scroller {
+  overflow-x: auto;
+}
+
+.inner {
+  min-width: 560px;
+}
+
+.headerRow {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 10px;
+  margin-bottom: 7px;
+}
+
+.months {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.monthLabel {
+  text-align: center;
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: rgba(244, 241, 232, 0.26);
+}
+
+.yearRow {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.yearLabel {
+  font-family: var(--font-mono), monospace;
+  font-size: 11.5px;
+  color: rgba(244, 241, 232, 0.38);
+}
+
+.cells {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.cell {
+  height: 26px;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  transition: border-color 140ms ease;
+}
+
+.readout {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(244, 241, 232, 0.1);
+  min-height: 52px;
+}
+
+.readoutLabel {
+  font-family: var(--font-mono), monospace;
+  font-size: 12.5px;
+  color: var(--lime);
+  white-space: nowrap;
+}
+
+.pills {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(244, 241, 232, 0.05);
+}
+
+.pillDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.pillOrg {
+  color: rgba(244, 241, 232, 0.38);
+}

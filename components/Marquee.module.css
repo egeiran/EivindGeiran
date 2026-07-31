@@ -1,0 +1,27 @@
+.band {
+  overflow: hidden;
+  background: var(--lime);
+}
+
+/* Konstant fart — aldri koblet til scrollhastighet (eksplisitt avvist i design). */
+.track {
+  display: inline-flex;
+  min-width: max-content;
+  animation: rl-marquee 48s linear infinite;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 20px;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.star {
+  opacity: 0.4;
+}

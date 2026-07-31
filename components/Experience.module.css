@@ -1,0 +1,53 @@
+.section {
+  padding: 0 var(--gutter) 96px;
+  scroll-margin-top: 70px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.chip {
+  padding: 9px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid rgba(244, 241, 232, 0.2);
+  background: transparent;
+  color: rgba(244, 241, 232, 0.6);
+  transition: all 180ms ease;
+}
+
+.chipActive {
+  border-color: var(--lime);
+  background: var(--lime);
+  color: var(--ink);
+}
+
+.switcher {
+  display: flex;
+  margin-left: 8px;
+  border: 1px solid rgba(244, 241, 232, 0.2);
+  border-radius: 999px;
+  overflow: hidden;
+  font-family: var(--font-mono), monospace;
+  font-size: 11.5px;
+}
+
+.switchBtn {
+  border: 0;
+  padding: 9px 15px;
+  cursor: pointer;
+  background: transparent;
+  color: rgba(244, 241, 232, 0.55);
+  transition: all 180ms ease;
+}
+
+.switchBtnActive {
+  background: var(--lime);
+  color: var(--ink);
+}
