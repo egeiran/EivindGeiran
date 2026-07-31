@@ -22,8 +22,10 @@ npm run dev        # http://localhost:3000
 
 ## Redigere erfaringsdata
 
+`/admin` (og `/api/experiences`) er gatet bak miljøvariabelen **`DEV=1`** — satt i
+`.env.local` lokalt og på Vercel *preview*-deployments; uten flagget svarer siden 404.
 Gå til `/admin` mens `npm run dev` kjører — endringer skrives rett til
-`data/experiences.json`. Commit og deploy. I produksjon er admin-siden skrivebeskyttet,
+`data/experiences.json`. Commit og deploy. På Vercel er admin-siden skrivebeskyttet,
 men kan eksportere JSON du legger inn manuelt.
 
 > ⚠️ Datoene er foreløpig seedet fra den gamle siden (grov års-granularitet). Verifiser

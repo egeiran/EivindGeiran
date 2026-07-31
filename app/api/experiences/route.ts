@@ -53,14 +53,23 @@ function isValidExperience(e: unknown): e is Experience {
   return true;
 }
 
+// Hele API-et følger samme DEV-flagg som /admin: uten DEV=1 finnes det ikke.
+const adminEnabled = () => process.env.DEV === "1";
+
 export async function GET() {
+  if (!adminEnabled()) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
   const raw = await fs.readFile(DATA_PATH, "utf8");
   return NextResponse.json(JSON.parse(raw));
 }
 
 export async function POST(req: Request) {
-  // Skriving til fil er kun mulig lokalt under utvikling. I produksjon (Vercel)
-  // er filsystemet flyktig — admin-siden tilbyr JSON-eksport i stedet.
+  if (!adminEnabled()) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+  // Skriving til fil er i tillegg kun mulig lokalt under utvikling. På Vercel
+  // (også preview) er filsystemet flyktig — admin-siden tilbyr JSON-eksport.
   if (process.env.NODE_ENV !== "development") {
     return NextResponse.json({ error: "Read-only in production" }, { status: 403 });
   }
