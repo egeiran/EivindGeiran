@@ -10,6 +10,12 @@
   animation: rl-marquee 48s linear infinite;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
+}
+
 .item {
   display: inline-flex;
   align-items: center;

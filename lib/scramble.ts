@@ -5,7 +5,7 @@ import { prefersReducedMotion } from "./fx";
 const CH = "ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&/<>_-01";
 const CYCLE_MS = 3200;
 const TICK_MS = 46;
-const WATCHDOG_MS = 1500;
+const WATCHDOG_SLACK_MS = 500;
 
 export interface ScrambleCtrl {
   stop(): void;
@@ -33,6 +33,7 @@ export function startScramble(el: HTMLElement, getRoles: () => string[]): Scramb
   let last = 0;
   let stopped = false;
   let force = false;
+  let deadline = 0;
 
   const settle = () => {
     busy = false;
@@ -55,6 +56,11 @@ export function startScramble(el: HTMLElement, getRoles: () => string[]): Scramb
         } else {
           busy = true;
           t0 = now;
+          // Vaktbikkje-frist beregnet fra faktisk overgangslengde, så lange
+          // strenger ikke blir kuttet av en flat timeout.
+          const eraseTicks = Math.ceil(prev.length / 4);
+          const writeTicks = Math.ceil(target.length / 1.6) + 3;
+          deadline = (eraseTicks + writeTicks) * TICK_MS + WATCHDOG_SLACK_MS;
         }
       }
       last = now;
@@ -63,7 +69,7 @@ export function startScramble(el: HTMLElement, getRoles: () => string[]): Scramb
       if (el.textContent !== target) el.textContent = target;
       return;
     }
-    if (now - t0 > WATCHDOG_MS) {
+    if (now - t0 > deadline) {
       settle();
       return;
     }

@@ -83,14 +83,19 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
         ? 1
         : Math.max(0, Math.min(1, (110 - r.top) / dist));
     const year = minY + p * (maxY - minY);
+    // Aksen har luft etter «nå» (maxY = now + margin); informasjonsverdiene
+    // (måned, aktive roller, samtidighet) klampes til nå så slutt-tilstanden
+    // aldri viser en fremtid der alt er «ferdig» — spesielt viktig under
+    // prefers-reduced-motion, der p alltid er 1.
+    const yEff = Math.min(year, now);
 
     if (headRef.current) headRef.current.style.left = `${p * 100}%`;
     if (yearRef.current) {
-      const yv = String(Math.min(yearOf(now), Math.floor(year)));
+      const yv = String(Math.floor(yEff));
       if (yearRef.current.textContent !== yv) yearRef.current.textContent = yv;
     }
     if (monRef.current) {
-      const mv = MONTHS[lang][Math.max(0, Math.min(11, Math.floor((year % 1) * 12)))];
+      const mv = MONTHS[lang][Math.max(0, Math.min(11, Math.floor((yEff % 1) * 12)))];
       if (monRef.current.textContent !== mv) monRef.current.textContent = mv;
     }
 
@@ -103,7 +108,7 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
       const fill = el.firstElementChild as HTMLElement | null;
       if (fill) fill.style.width = `${k * 100}%`;
       el.style.opacity = k > 0 ? "1" : "0.72";
-      if (year >= s.a && year <= s.b) live[s.role] = true;
+      if (yEff >= s.a && yEff <= s.b) live[s.role] = true;
     }
 
     let conc = 0;
@@ -113,7 +118,7 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
       if (!el || !vm) continue;
       const act = !!live[i];
       if (act) conc += 1;
-      el.style.opacity = act ? "1" : year > vm.eNum ? "0.55" : "0.45";
+      el.style.opacity = act ? "1" : yEff > vm.eNum ? "0.55" : "0.45";
     }
     if (concRef.current) {
       const c = String(conc);
@@ -199,6 +204,15 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
                         rowRefs.current[idx] = el;
                       }}
                       onClick={() => setSel(idx)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setSel(idx);
+                        }
+                      }}
+                      role="button"
+                      tabIndex={0}
+                      aria-pressed={sel === idx}
                       className={`${styles.row} ${sel === idx ? styles.rowSelected : ""}`}
                     >
                       <div className={styles.rowName} style={{ borderLeftColor: hex }}>

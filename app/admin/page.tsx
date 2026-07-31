@@ -84,6 +84,7 @@ function LocalizedField({
 
 export default function AdminPage() {
   const [items, setItems] = useState<Experience[] | null>(null);
+  const [comment, setComment] = useState<string | undefined>(undefined);
   const [status, setStatus] = useState<{ kind: "idle" | "ok" | "error"; msg: string }>({
     kind: "idle",
     msg: "",
@@ -92,7 +93,10 @@ export default function AdminPage() {
   useEffect(() => {
     fetch("/api/experiences")
       .then((r) => r.json())
-      .then((d) => setItems(d.experiences as Experience[]))
+      .then((d) => {
+        setItems(d.experiences as Experience[]);
+        setComment(d._comment);
+      })
       .catch(() => setStatus({ kind: "error", msg: "Klarte ikke å laste data." }));
   }, []);
 
@@ -115,7 +119,7 @@ export default function AdminPage() {
     setItems((prev) => [
       ...(prev || []),
       {
-        id: `ny-${(prev?.length || 0) + 1}`,
+        id: `ny-${Date.now().toString(36)}`,
         title: { no: "Ny rolle", en: "New role" },
         organization: "",
         type: "Betalt",
@@ -130,7 +134,8 @@ export default function AdminPage() {
 
   const download = () => {
     if (!items) return;
-    const blob = new Blob([JSON.stringify({ experiences: items }, null, 2)], {
+    const doc = comment ? { _comment: comment, experiences: items } : { experiences: items };
+    const blob = new Blob([JSON.stringify(doc, null, 2)], {
       type: "application/json",
     });
     const url = URL.createObjectURL(blob);
@@ -144,21 +149,25 @@ export default function AdminPage() {
   const save = async () => {
     if (!items) return;
     setStatus({ kind: "idle", msg: "Lagrer…" });
-    const res = await fetch("/api/experiences", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ experiences: items }),
-    });
-    if (res.ok) {
-      setStatus({ kind: "ok", msg: "Lagret til data/experiences.json — commit og deploy." });
-    } else if (res.status === 403) {
-      setStatus({
-        kind: "error",
-        msg: "Skrivebeskyttet i produksjon — bruk «Last ned JSON» og legg filen i data/.",
+    try {
+      const res = await fetch("/api/experiences", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ experiences: items }),
       });
-    } else {
-      const d = await res.json().catch(() => ({ error: "ukjent feil" }));
-      setStatus({ kind: "error", msg: `Feil: ${d.error || res.status}` });
+      if (res.ok) {
+        setStatus({ kind: "ok", msg: "Lagret til data/experiences.json — commit og deploy." });
+      } else if (res.status === 403) {
+        setStatus({
+          kind: "error",
+          msg: "Skrivebeskyttet i produksjon — bruk «Last ned JSON» og legg filen i data/.",
+        });
+      } else {
+        const d = await res.json().catch(() => ({ error: "ukjent feil" }));
+        setStatus({ kind: "error", msg: `Feil: ${d.error || res.status}` });
+      }
+    } catch {
+      setStatus({ kind: "error", msg: "Nettverksfeil — kjører dev-serveren?" });
     }
   };
 
@@ -261,7 +270,11 @@ export default function AdminPage() {
                     type="checkbox"
                     checked={e.to === null}
                     onChange={(ev) =>
-                      update(i, { to: ev.target.checked ? null : toDecimalYear(2026, 6) })
+                      update(i, {
+                        to: ev.target.checked
+                          ? null
+                          : toDecimalYear(new Date().getFullYear(), 6),
+                      })
                     }
                   />
                   Pågår
