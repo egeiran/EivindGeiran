@@ -1,0 +1,33 @@
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+  padding-top: 40px;
+  border-top: 1px solid rgba(244, 241, 232, 0.1);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display), sans-serif;
+  font-weight: 800;
+  font-size: clamp(40px, 6vw, 76px);
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+}
+
+.aside {
+  margin: 0;
+  max-width: 38ch;
+  font-size: 15px;
+  color: rgba(244, 241, 232, 0.55);
+}
+
+.asideMono {
+  margin: 0;
+  font-family: var(--font-mono), monospace;
+  font-size: 12.5px;
+  color: rgba(244, 241, 232, 0.45);
+}

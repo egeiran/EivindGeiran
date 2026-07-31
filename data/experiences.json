@@ -1,0 +1,192 @@
+{
+  "_comment": "TODO: Datoene under er seedet fra gamle experiences.json (års-granularitet) pluss måneder som var oppgitt i site-copy (NTNU aug 2024, JrC aug 2025, Computas feb 2026, Sandvika skoleår). Verifiser og finjuster alle from/to og legg inn segments via /admin før lansering. to: null = pågående.",
+  "experiences": [
+    {
+      "id": "computas",
+      "title": { "no": "Utvikler (deltid)", "en": "Developer (part-time)" },
+      "organization": "Computas",
+      "type": "Betalt",
+      "from": 2026.125,
+      "to": null,
+      "description": {
+        "no": "Utvikler på deltid ved siden av studiene.",
+        "en": "Part-time developer alongside my studies."
+      },
+      "imagePath": "/img/erfaringer/computas.svg",
+      "tags": {
+        "no": ["Utvikling", "Deltid", "Produkt"],
+        "en": ["Engineering", "Part-time", "Product"]
+      }
+    },
+    {
+      "id": "jrc",
+      "title": { "no": "Tech-konsulent", "en": "Tech consultant" },
+      "organization": "Junior Consulting",
+      "type": "Betalt",
+      "from": 2025.625,
+      "to": null,
+      "description": {
+        "no": "Jobber med IT- og teknologiprosjekter gjennom Junior Consulting.",
+        "en": "Delivering IT and technology projects through Junior Consulting."
+      },
+      "imagePath": "/img/erfaringer/jrc.jpeg",
+      "tags": {
+        "no": ["Teknologi", "Konsulent", "Leveranse"],
+        "en": ["Technology", "Consulting", "Delivery"]
+      }
+    },
+    {
+      "id": "ent3r",
+      "title": { "no": "Mentor", "en": "Mentor" },
+      "organization": "ENT3R Trondheim",
+      "type": "Betalt",
+      "from": 2025.042,
+      "to": null,
+      "description": {
+        "no": "Mentor i realfag for ungdomsskoleelever.",
+        "en": "STEM mentor for lower secondary school students."
+      },
+      "imagePath": "/img/erfaringer/ent3r.webp",
+      "tags": {
+        "no": ["Realfag", "Læring", "Formidling"],
+        "en": ["STEM", "Teaching", "Communication"]
+      }
+    },
+    {
+      "id": "ntnu",
+      "title": { "no": "Datateknologi (MSc)", "en": "Computer Science (MSc)" },
+      "organization": "NTNU",
+      "type": "Utdanning",
+      "from": 2024.625,
+      "to": null,
+      "description": {
+        "no": "Studerer datateknologi ved NTNU.",
+        "en": "Studying computer science at NTNU."
+      },
+      "imagePath": "/img/erfaringer/ntnu.webp",
+      "tags": {
+        "no": ["Programvare", "Systemer", "Analyse"],
+        "en": ["Software", "Systems", "Analysis"]
+      }
+    },
+    {
+      "id": "arrkom",
+      "title": { "no": "Sosialansvarlig — Arrkom", "en": "Events lead — Arrkom" },
+      "organization": "Abakus linjeforening",
+      "type": "Frivillig",
+      "from": 2024.042,
+      "to": null,
+      "description": {
+        "no": "Planlegger og gjennomfører arrangementer i Abakus.",
+        "en": "Planning and running events for Abakus."
+      },
+      "imagePath": "/img/erfaringer/abakus.webp",
+      "tags": {
+        "no": ["Arrangement", "Samarbeid", "Gjennomføring"],
+        "en": ["Events", "Teamwork", "Execution"]
+      }
+    },
+    {
+      "id": "grunderjakten",
+      "title": { "no": "Innholdsansvarlig, Gründerjakten", "en": "Content lead, Gründerjakten" },
+      "organization": "Start NTNU",
+      "type": "Frivillig",
+      "from": 2025.042,
+      "to": 2025.958,
+      "description": {
+        "no": "Ansvar for innhold og kommunikasjon for Gründerjakten 2025.",
+        "en": "Owned content and communications for Gründerjakten 2025."
+      },
+      "imagePath": "/img/erfaringer/start.webp",
+      "tags": {
+        "no": ["Entreprenørskap", "Innhold", "Koordinering"],
+        "en": ["Entrepreneurship", "Content", "Coordination"]
+      }
+    },
+    {
+      "id": "faddersjef",
+      "title": { "no": "Faddersjef", "en": "Orientation week lead" },
+      "organization": "Abakus linjeforening",
+      "type": "Frivillig",
+      "from": 2025.042,
+      "to": 2025.958,
+      "description": {
+        "no": "Ledet fadderopplegget for nye datastudenter.",
+        "en": "Led the orientation programme for new CS students."
+      },
+      "imagePath": "/img/erfaringer/abakus.webp",
+      "tags": {
+        "no": ["Ledelse", "Logistikk", "Studentmiljø"],
+        "en": ["Leadership", "Logistics", "Student life"]
+      }
+    },
+    {
+      "id": "mentornorge",
+      "title": { "no": "Mentor", "en": "Mentor" },
+      "organization": "MentorNorge",
+      "type": "Betalt",
+      "from": 2024.042,
+      "to": 2025.958,
+      "description": {
+        "no": "Hjalp elever i ungdomsskole og videregående, særlig i matte og fysikk.",
+        "en": "Helped secondary school students, mainly in maths and physics."
+      },
+      "imagePath": "/img/erfaringer/mentornorge.webp",
+      "tags": {
+        "no": ["Formidling", "Matematikk", "Oppfølging"],
+        "en": ["Teaching", "Maths", "Follow-up"]
+      }
+    },
+    {
+      "id": "meny",
+      "title": { "no": "Ferskvaremedarbeider", "en": "Fresh food associate" },
+      "organization": "Meny Bærums Verk",
+      "type": "Betalt",
+      "from": 2022.042,
+      "to": 2025.958,
+      "description": {
+        "no": "Kundeservice og varehåndtering i ferskvareavdelingen.",
+        "en": "Customer service and stock handling in the fresh food department."
+      },
+      "imagePath": "/img/erfaringer/meny.webp",
+      "tags": {
+        "no": ["Kundeservice", "Ansvar", "Tempo"],
+        "en": ["Service", "Ownership", "Pace"]
+      }
+    },
+    {
+      "id": "sandvika",
+      "title": { "no": "Elev", "en": "Student" },
+      "organization": "Sandvika VGS",
+      "type": "Utdanning",
+      "from": 2021.625,
+      "to": 2024.458,
+      "description": {
+        "no": "Realfaglig løp ved Sandvika videregående skole.",
+        "en": "STEM track at Sandvika upper secondary school."
+      },
+      "imagePath": "/img/erfaringer/sandvika.webp",
+      "tags": {
+        "no": ["Realfag", "Videregående", "Fundament"],
+        "en": ["STEM", "Upper secondary", "Foundation"]
+      }
+    },
+    {
+      "id": "nihf",
+      "title": { "no": "Ishockeydommer", "en": "Ice hockey referee" },
+      "organization": "Norges Ishockeyforbund",
+      "type": "Betalt",
+      "from": 2016.042,
+      "to": 2022.958,
+      "description": {
+        "no": "Dømte aldersbestemte ishockeykamper.",
+        "en": "Refereed age-group ice hockey matches."
+      },
+      "imagePath": "/img/erfaringer/nihf.webp",
+      "tags": {
+        "no": ["Beslutninger", "Trygghet", "Ansvar"],
+        "en": ["Decisions", "Composure", "Ownership"]
+      }
+    }
+  ]
+}
