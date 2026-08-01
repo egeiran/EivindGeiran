@@ -1,5 +1,5 @@
 {
-  "_comment": "Datoer er desimal-år: år + (måned - 0.5) / 12 (jan = .042, jun = .458, aug = .625, des = .958). to: null = pågående. Askeladden, Computas og Gründerjakten er verifisert; øvrige from/to er fortsatt seedet fra den gamle siden og bør kvalitetssikres, sammen med sesong-segments (Meny, ENT3R) via /admin.",
+  "_comment": "Datoer er desimal-år: år + (måned - 0.5) / 12 (jan = .042, mai = .375, jun = .458, aug = .625, des = .958). to: null = pågående. Alle from/to er verifisert; bruk /admin for videre endringer.",
   "experiences": [
     {
       "id": "computas",
@@ -57,8 +57,8 @@
       "title": { "no": "Mentor", "en": "Mentor" },
       "organization": "ENT3R Trondheim",
       "type": "Betalt",
-      "from": 2025.042,
-      "to": null,
+      "from": 2025.625,
+      "to": 2026.375,
       "description": {
         "no": "Mentor i realfag for ungdomsskoleelever.",
         "en": "STEM mentor for lower secondary school students."
@@ -91,7 +91,7 @@
       "title": { "no": "Sosialansvarlig — Arrkom", "en": "Events lead — Arrkom" },
       "organization": "Abakus linjeforening",
       "type": "Frivillig",
-      "from": 2024.042,
+      "from": 2024.625,
       "to": null,
       "description": {
         "no": "Planlegger og gjennomfører arrangementer i Abakus.",
@@ -125,8 +125,8 @@
       "title": { "no": "Faddersjef", "en": "Orientation week lead" },
       "organization": "Abakus linjeforening",
       "type": "Frivillig",
-      "from": 2025.042,
-      "to": 2025.958,
+      "from": 2025.375,
+      "to": 2025.625,
       "description": {
         "no": "Ledet fadderopplegget for nye datastudenter.",
         "en": "Led the orientation programme for new CS students."
@@ -160,7 +160,7 @@
       "organization": "Meny Bærums Verk",
       "type": "Betalt",
       "from": 2022.042,
-      "to": 2025.958,
+      "to": 2024.625,
       "description": {
         "no": "Kundeservice og varehåndtering i ferskvareavdelingen.",
         "en": "Customer service and stock handling in the fresh food department."
