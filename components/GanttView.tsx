@@ -78,8 +78,11 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
     const vh = window.innerHeight;
     const r = wrap.getBoundingClientRect();
     const dist = Math.max(1, r.height - vh * 0.8);
+    // På smale skjermer er layouten statisk (se CSS), så diagrammet vises
+    // ferdig utfylt i stedet for å scrubbe.
+    const narrow = window.innerWidth <= 820;
     const p =
-      prefersReducedMotion() || !GANTT_SCRUB
+      prefersReducedMotion() || !GANTT_SCRUB || narrow
         ? 1
         : Math.max(0, Math.min(1, (110 - r.top) / dist));
     const year = minY + p * (maxY - minY);

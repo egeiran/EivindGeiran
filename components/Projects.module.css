@@ -339,6 +339,10 @@
 }
 
 @media (max-width: 640px) {
+  .section {
+    padding-bottom: 64px;
+  }
+
   .grid {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -350,7 +354,6 @@
   .featuredTitle {
     font-size: 38px;
   }
-
 }
 
 @media (prefers-reduced-motion: reduce) {

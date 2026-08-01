@@ -2,14 +2,17 @@
   position: sticky;
   top: 0;
   z-index: 40;
+  background: rgba(12, 14, 17, 0.82);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(244, 241, 232, 0.1);
+}
+
+.bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
   padding: 18px var(--gutter);
-  background: rgba(12, 14, 17, 0.82);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(244, 241, 232, 0.1);
 }
 
 .logo {
@@ -98,14 +101,130 @@
   color: var(--ink);
 }
 
+.menuBtn {
+  display: none;
+  border: 1px solid rgba(244, 241, 232, 0.22);
+  border-radius: 999px;
+  background: transparent;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  cursor: pointer;
+  place-items: center;
+}
+
+.menuIcon {
+  position: relative;
+  display: block;
+  width: 16px;
+  height: 10px;
+}
+
+.menuIcon span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--paper);
+  transition: transform 240ms var(--ease-pop), top 240ms var(--ease-pop);
+}
+
+.menuIcon span:first-child {
+  top: 0;
+}
+
+.menuIcon span:last-child {
+  top: 8px;
+}
+
+.menuIconOpen span:first-child {
+  top: 4px;
+  transform: rotate(45deg);
+}
+
+.menuIconOpen span:last-child {
+  top: 4px;
+  transform: rotate(-45deg);
+}
+
+.mobileNav {
+  display: none;
+  flex-direction: column;
+  padding: 0 var(--gutter);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 320ms var(--ease-pop);
+}
+
+.mobileNav a {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 14px 2px;
+  border-top: 1px solid rgba(244, 241, 232, 0.08);
+  font-family: var(--font-display), sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -0.03em;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 260ms ease, transform 260ms var(--ease-pop);
+}
+
+.mobileNavOpen {
+  max-height: 420px;
+}
+
+.mobileNavOpen a {
+  opacity: 1;
+  transform: none;
+}
+
+.mobileIndex {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(244, 241, 232, 0.35);
+}
+
+.mobileContact {
+  color: var(--lime);
+  margin-bottom: 10px;
+}
+
 @media (max-width: 900px) {
   .nav {
     display: none;
+  }
+
+  .menuBtn {
+    display: grid;
+  }
+
+  .mobileNav {
+    display: flex;
+  }
+
+  .right {
+    gap: 12px;
   }
 }
 
 @media (max-width: 560px) {
   .eyebrow {
     display: none;
+  }
+
+  .contactPill {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menuIcon span,
+  .mobileNav,
+  .mobileNav a {
+    transition: none;
   }
 }

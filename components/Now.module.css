@@ -108,9 +108,27 @@
 }
 
 @media (max-width: 820px) {
+  .section {
+    padding-top: 64px;
+    padding-bottom: 64px;
+  }
+
+  .head {
+    margin-bottom: 28px;
+  }
+
+  .rowTitle {
+    font-size: 23px;
+  }
+
+  .index {
+    font-size: 20px;
+  }
+
   .row {
     grid-template-columns: 40px minmax(0, 1fr);
     gap: 12px 16px;
+    padding: 20px 6px 20px 0;
   }
 
   .tag {

@@ -3,7 +3,10 @@
   "experiences": [
     {
       "id": "computas",
-      "title": { "no": "Utvikler (deltid)", "en": "Developer (part-time)" },
+      "title": {
+        "no": "Utvikler (deltid)",
+        "en": "Developer (part-time)"
+      },
       "organization": "Computas",
       "type": "Betalt",
       "from": 2026.625,
@@ -12,15 +15,26 @@
         "no": "Utvikler på deltid ved siden av studiene.",
         "en": "Part-time developer alongside my studies."
       },
-      "imagePath": "/img/erfaringer/computas.svg",
+      "imagePath": "/img/erfaringer/computas.png",
       "tags": {
-        "no": ["Utvikling", "Deltid", "Produkt"],
-        "en": ["Engineering", "Part-time", "Product"]
+        "no": [
+          "Utvikling",
+          "Deltid",
+          "Produkt"
+        ],
+        "en": [
+          "Engineering",
+          "Part-time",
+          "Product"
+        ]
       }
     },
     {
       "id": "askeladden",
-      "title": { "no": "Tech intern", "en": "Tech intern" },
+      "title": {
+        "no": "Tech intern",
+        "en": "Tech intern"
+      },
       "organization": "Askeladden & Co",
       "type": "Betalt",
       "from": 2026.458,
@@ -29,15 +43,26 @@
         "no": "Sommerinternship som utvikler i Askeladden & Co.",
         "en": "Summer internship as a developer at Askeladden & Co."
       },
-      "imagePath": "/img/erfaringer/askeladden.svg",
+      "imagePath": "/img/erfaringer/aco.png",
       "tags": {
-        "no": ["Utvikling", "Produkt", "Internship"],
-        "en": ["Engineering", "Product", "Internship"]
+        "no": [
+          "Utvikling",
+          "Produkt",
+          "Internship"
+        ],
+        "en": [
+          "Engineering",
+          "Product",
+          "Internship"
+        ]
       }
     },
     {
       "id": "jrc",
-      "title": { "no": "Tech-konsulent", "en": "Tech consultant" },
+      "title": {
+        "no": "Tech-konsulent",
+        "en": "Tech consultant"
+      },
       "organization": "Junior Consulting",
       "type": "Betalt",
       "from": 2025.625,
@@ -48,13 +73,24 @@
       },
       "imagePath": "/img/erfaringer/jrc.jpeg",
       "tags": {
-        "no": ["Teknologi", "Konsulent", "Leveranse"],
-        "en": ["Technology", "Consulting", "Delivery"]
+        "no": [
+          "Teknologi",
+          "Konsulent",
+          "Leveranse"
+        ],
+        "en": [
+          "Technology",
+          "Consulting",
+          "Delivery"
+        ]
       }
     },
     {
       "id": "ent3r",
-      "title": { "no": "Mentor", "en": "Mentor" },
+      "title": {
+        "no": "Mentor",
+        "en": "Mentor"
+      },
       "organization": "ENT3R Trondheim",
       "type": "Betalt",
       "from": 2025.625,
@@ -65,13 +101,24 @@
       },
       "imagePath": "/img/erfaringer/ent3r.webp",
       "tags": {
-        "no": ["Realfag", "Læring", "Formidling"],
-        "en": ["STEM", "Teaching", "Communication"]
+        "no": [
+          "Realfag",
+          "Læring",
+          "Formidling"
+        ],
+        "en": [
+          "STEM",
+          "Teaching",
+          "Communication"
+        ]
       }
     },
     {
       "id": "ntnu",
-      "title": { "no": "Datateknologi (MSc)", "en": "Computer Science (MSc)" },
+      "title": {
+        "no": "Datateknologi (MSc)",
+        "en": "Computer Science (MSc)"
+      },
       "organization": "NTNU",
       "type": "Utdanning",
       "from": 2024.625,
@@ -82,13 +129,24 @@
       },
       "imagePath": "/img/erfaringer/ntnu.webp",
       "tags": {
-        "no": ["Programvare", "Systemer", "Analyse"],
-        "en": ["Software", "Systems", "Analysis"]
+        "no": [
+          "Programvare",
+          "Systemer",
+          "Analyse"
+        ],
+        "en": [
+          "Software",
+          "Systems",
+          "Analysis"
+        ]
       }
     },
     {
       "id": "arrkom",
-      "title": { "no": "Sosialansvarlig — Arrkom", "en": "Events lead — Arrkom" },
+      "title": {
+        "no": "Sosialansvarlig — Arrkom",
+        "en": "Events lead — Arrkom"
+      },
       "organization": "Abakus linjeforening",
       "type": "Frivillig",
       "from": 2024.625,
@@ -99,13 +157,24 @@
       },
       "imagePath": "/img/erfaringer/abakus.webp",
       "tags": {
-        "no": ["Arrangement", "Samarbeid", "Gjennomføring"],
-        "en": ["Events", "Teamwork", "Execution"]
+        "no": [
+          "Arrangement",
+          "Samarbeid",
+          "Gjennomføring"
+        ],
+        "en": [
+          "Events",
+          "Teamwork",
+          "Execution"
+        ]
       }
     },
     {
       "id": "grunderjakten",
-      "title": { "no": "Innholdsansvarlig, Gründerjakten", "en": "Content lead, Gründerjakten" },
+      "title": {
+        "no": "Innholdsansvarlig, Gründerjakten",
+        "en": "Content lead, Gründerjakten"
+      },
       "organization": "Start NTNU",
       "type": "Frivillig",
       "from": 2025.042,
@@ -116,13 +185,24 @@
       },
       "imagePath": "/img/erfaringer/start.webp",
       "tags": {
-        "no": ["Entreprenørskap", "Innhold", "Koordinering"],
-        "en": ["Entrepreneurship", "Content", "Coordination"]
+        "no": [
+          "Entreprenørskap",
+          "Innhold",
+          "Koordinering"
+        ],
+        "en": [
+          "Entrepreneurship",
+          "Content",
+          "Coordination"
+        ]
       }
     },
     {
       "id": "faddersjef",
-      "title": { "no": "Faddersjef", "en": "Orientation week lead" },
+      "title": {
+        "no": "Faddersjef",
+        "en": "Orientation week lead"
+      },
       "organization": "Abakus linjeforening",
       "type": "Frivillig",
       "from": 2025.375,
@@ -133,13 +213,24 @@
       },
       "imagePath": "/img/erfaringer/abakus.webp",
       "tags": {
-        "no": ["Ledelse", "Logistikk", "Studentmiljø"],
-        "en": ["Leadership", "Logistics", "Student life"]
+        "no": [
+          "Ledelse",
+          "Logistikk",
+          "Studentmiljø"
+        ],
+        "en": [
+          "Leadership",
+          "Logistics",
+          "Student life"
+        ]
       }
     },
     {
       "id": "mentornorge",
-      "title": { "no": "Mentor", "en": "Mentor" },
+      "title": {
+        "no": "Mentor",
+        "en": "Mentor"
+      },
       "organization": "MentorNorge",
       "type": "Betalt",
       "from": 2024.042,
@@ -150,13 +241,24 @@
       },
       "imagePath": "/img/erfaringer/mentornorge.webp",
       "tags": {
-        "no": ["Formidling", "Matematikk", "Oppfølging"],
-        "en": ["Teaching", "Maths", "Follow-up"]
+        "no": [
+          "Formidling",
+          "Matematikk",
+          "Oppfølging"
+        ],
+        "en": [
+          "Teaching",
+          "Maths",
+          "Follow-up"
+        ]
       }
     },
     {
       "id": "meny",
-      "title": { "no": "Ferskvaremedarbeider", "en": "Fresh food associate" },
+      "title": {
+        "no": "Ferskvaremedarbeider",
+        "en": "Fresh food associate"
+      },
       "organization": "Meny Bærums Verk",
       "type": "Betalt",
       "from": 2022.042,
@@ -167,13 +269,24 @@
       },
       "imagePath": "/img/erfaringer/meny.webp",
       "tags": {
-        "no": ["Kundeservice", "Ansvar", "Tempo"],
-        "en": ["Service", "Ownership", "Pace"]
+        "no": [
+          "Kundeservice",
+          "Ansvar",
+          "Tempo"
+        ],
+        "en": [
+          "Service",
+          "Ownership",
+          "Pace"
+        ]
       }
     },
     {
       "id": "sandvika",
-      "title": { "no": "Elev", "en": "Student" },
+      "title": {
+        "no": "Elev",
+        "en": "Student"
+      },
       "organization": "Sandvika VGS",
       "type": "Utdanning",
       "from": 2021.625,
@@ -184,8 +297,16 @@
       },
       "imagePath": "/img/erfaringer/sandvika.webp",
       "tags": {
-        "no": ["Realfag", "Videregående", "Fundament"],
-        "en": ["STEM", "Upper secondary", "Foundation"]
+        "no": [
+          "Realfag",
+          "Videregående",
+          "Fundament"
+        ],
+        "en": [
+          "STEM",
+          "Upper secondary",
+          "Foundation"
+        ]
       }
     }
   ]

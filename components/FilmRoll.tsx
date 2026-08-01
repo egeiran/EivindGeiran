@@ -25,7 +25,7 @@ export default function FilmRoll({ t }: { t: Copy }) {
           {rollA.map((g, i) => (
             <figure key={i} className={styles.frame}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={g.src} alt={g.title} loading="lazy" />
+              <img src={g.src} alt={g.title} loading="lazy" style={{ objectPosition: g.objectPosition }} />
               <figcaption className={styles.caption}>
                 {g.frame} · {g.title}
               </figcaption>
@@ -35,15 +35,17 @@ export default function FilmRoll({ t }: { t: Copy }) {
         <div className={`${styles.sprockets} ${styles.sprocketsBottom}`} />
       </div>
       <div className={styles.roll}>
+        <div className={`${styles.sprockets} ${styles.sprocketsTop} ${styles.sprocketsReverse}`} />
         <div className={`${styles.track} ${styles.trackRev}`}>
           {rollB.map((g, i) => (
             <figure key={i} className={`${styles.frame} ${styles.frameSmall}`}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={g.src} alt={g.title} loading="lazy" />
+              <img src={g.src} alt={g.title} loading="lazy" style={{ objectPosition: g.objectPosition }} />
               <figcaption className={`${styles.caption} ${styles.captionFile}`}>{g.file}</figcaption>
             </figure>
           ))}
         </div>
+        <div className={`${styles.sprockets} ${styles.sprocketsBottom} ${styles.sprocketsReverse}`} />
       </div>
     </section>
   );
