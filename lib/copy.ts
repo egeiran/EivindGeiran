@@ -33,6 +33,7 @@ export interface Copy {
   navContact: string;
   menuOpenLabel: string;
   menuCloseLabel: string;
+  heroHeading: string;
   heroSub: string;
   heroCta: string;
   nowTitle: string;
@@ -66,6 +67,7 @@ export interface Copy {
   lifeLede: string;
   cta: CtaCopy;
   footerNote: string;
+  footerSitesLabel: string;
   factRoles: string;
   factTotal: string;
   factCredits: string;
@@ -89,6 +91,7 @@ export const COPY: Record<Lang, Copy> = {
     navContact: "Ta kontakt",
     menuOpenLabel: "Åpne meny",
     menuCloseLabel: "Lukk meny",
+    heroHeading: "Eivind Geiran — datateknologistudent ved NTNU i Trondheim",
     heroSub: "Datateknologi ved NTNU. Fem pågående roller, tre ting i produksjon, én ledig sommer.",
     heroCta: "Se hva jeg har bygd",
     nowTitle: "Nå.",
@@ -128,6 +131,7 @@ export const COPY: Record<Lang, Copy> = {
       note: "Trondheim & Oslo",
     },
     footerNote: "Bygget i Trondheim",
+    footerSitesLabel: "Mine sider og profiler",
     factRoles: "pågående roller",
     factTotal: "erfaringer så langt",
     factCredits: "studiepoeng",
@@ -212,6 +216,7 @@ export const COPY: Record<Lang, Copy> = {
     navContact: "Get in touch",
     menuOpenLabel: "Open menu",
     menuCloseLabel: "Close menu",
+    heroHeading: "Eivind Geiran — computer science student at NTNU in Trondheim",
     heroSub: "Computer science at NTNU. Five active roles, three things in production, one free summer.",
     heroCta: "See what I've built",
     nowTitle: "Now.",
@@ -251,6 +256,7 @@ export const COPY: Record<Lang, Copy> = {
       note: "Trondheim & Oslo",
     },
     footerNote: "Built in Trondheim",
+    footerSitesLabel: "My sites and profiles",
     factRoles: "active roles",
     factTotal: "roles to date",
     factCredits: "ECTS credits",
