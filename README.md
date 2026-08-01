@@ -28,8 +28,9 @@ Gå til `/admin` mens `npm run dev` kjører — endringer skrives rett til
 `data/experiences.json`. Commit og deploy. På Vercel er admin-siden skrivebeskyttet,
 men kan eksportere JSON du legger inn manuelt.
 
-> ⚠️ Datoene er foreløpig seedet fra den gamle siden (grov års-granularitet). Verifiser
-> fra/til-datoer og legg inn sesong-segmenter (Meny, ENT3R, ishockey) via `/admin`.
+> ⚠️ Datoene er delvis seedet fra den gamle siden (grov års-granularitet). Askeladden,
+> Computas og Gründerjakten er verifisert; verifiser resten av fra/til-datoene og legg
+> inn sesong-segmenter (Meny, ENT3R) via `/admin`.
 
 ## Deploy
 

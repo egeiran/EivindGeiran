@@ -1,12 +1,12 @@
 {
-  "_comment": "TODO: Datoene under er seedet fra gamle experiences.json (års-granularitet) pluss måneder som var oppgitt i site-copy (NTNU aug 2024, JrC aug 2025, Computas feb 2026, Sandvika skoleår). Verifiser og finjuster alle from/to og legg inn segments via /admin før lansering. to: null = pågående.",
+  "_comment": "Datoer er desimal-år: år + (måned - 0.5) / 12 (jan = .042, jun = .458, aug = .625, des = .958). to: null = pågående. Askeladden, Computas og Gründerjakten er verifisert; øvrige from/to er fortsatt seedet fra den gamle siden og bør kvalitetssikres, sammen med sesong-segments (Meny, ENT3R) via /admin.",
   "experiences": [
     {
       "id": "computas",
       "title": { "no": "Utvikler (deltid)", "en": "Developer (part-time)" },
       "organization": "Computas",
       "type": "Betalt",
-      "from": 2026.125,
+      "from": 2026.625,
       "to": null,
       "description": {
         "no": "Utvikler på deltid ved siden av studiene.",
@@ -16,6 +16,23 @@
       "tags": {
         "no": ["Utvikling", "Deltid", "Produkt"],
         "en": ["Engineering", "Part-time", "Product"]
+      }
+    },
+    {
+      "id": "askeladden",
+      "title": { "no": "Tech intern", "en": "Tech intern" },
+      "organization": "Askeladden & Co",
+      "type": "Betalt",
+      "from": 2026.458,
+      "to": 2026.625,
+      "description": {
+        "no": "Sommerinternship som utvikler i Askeladden & Co.",
+        "en": "Summer internship as a developer at Askeladden & Co."
+      },
+      "imagePath": "/img/erfaringer/askeladden.svg",
+      "tags": {
+        "no": ["Utvikling", "Produkt", "Internship"],
+        "en": ["Engineering", "Product", "Internship"]
       }
     },
     {
@@ -169,23 +186,6 @@
       "tags": {
         "no": ["Realfag", "Videregående", "Fundament"],
         "en": ["STEM", "Upper secondary", "Foundation"]
-      }
-    },
-    {
-      "id": "nihf",
-      "title": { "no": "Ishockeydommer", "en": "Ice hockey referee" },
-      "organization": "Norges Ishockeyforbund",
-      "type": "Betalt",
-      "from": 2016.042,
-      "to": 2022.958,
-      "description": {
-        "no": "Dømte aldersbestemte ishockeykamper.",
-        "en": "Refereed age-group ice hockey matches."
-      },
-      "imagePath": "/img/erfaringer/nihf.webp",
-      "tags": {
-        "no": ["Beslutninger", "Trygghet", "Ansvar"],
-        "en": ["Decisions", "Composure", "Ownership"]
       }
     }
   ]
