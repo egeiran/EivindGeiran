@@ -81,25 +81,33 @@
   margin-top: 12px;
 }
 
+@keyframes film-scroll-forward {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes film-scroll-reverse {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
 .track {
   display: flex;
   gap: 10px;
   width: max-content;
-  animation: rl-marquee 64s linear infinite;
+  animation: film-scroll-forward 64s linear infinite;
 }
 
 .trackRev {
-  animation: rl-marquee-rev 78s linear infinite;
-}
-
-.roll:hover .track {
-  animation-play-state: paused;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .track {
-    animation: none;
-  }
+  animation: film-scroll-reverse 78s linear infinite;
 }
 
 .frame {

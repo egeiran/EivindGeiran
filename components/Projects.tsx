@@ -2,15 +2,121 @@
 
 import type { Copy, ProjectCopy } from "@/lib/copy";
 import { LINKS } from "@/lib/copy";
+import { useEffect, useState, type MouseEvent } from "react";
 import { useReveal } from "@/lib/fx";
 import headStyles from "./SectionHead.module.css";
 import styles from "./Projects.module.css";
+
+type Expansion = {
+  phase: "positioned" | "expanding";
+  rect: DOMRect;
+};
+
+function LivePreview({
+  url,
+  title,
+  label,
+  className,
+}: {
+  url: string;
+  title: string;
+  label: string;
+  className: string;
+}) {
+  const [expansion, setExpansion] = useState<Expansion | null>(null);
+
+  useEffect(() => {
+    const resetPreview = () => setExpansion(null);
+
+    // Back/forward kan gjenopprette siden fra BFCache med den gamle
+    // overgangstilstanden. Previewet skal alltid komme tilbake som et kort.
+    window.addEventListener("pageshow", resetPreview);
+    window.addEventListener("popstate", resetPreview);
+    return () => {
+      window.removeEventListener("pageshow", resetPreview);
+      window.removeEventListener("popstate", resetPreview);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!expansion) return;
+
+    if (expansion.phase === "positioned") {
+      const frame = window.requestAnimationFrame(() => {
+        setExpansion((current) => (current ? { ...current, phase: "expanding" } : null));
+      });
+      return () => window.cancelAnimationFrame(frame);
+    }
+
+    const timer = window.setTimeout(() => window.location.assign(url), 560);
+    return () => window.clearTimeout(timer);
+  }, [expansion, url]);
+
+  function openProject(event: MouseEvent<HTMLAnchorElement>) {
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      window.location.assign(url);
+      return;
+    }
+
+    setExpansion({ phase: "positioned", rect: event.currentTarget.getBoundingClientRect() });
+  }
+
+  const previewStyle = expansion
+    ? {
+        top: expansion.rect.top,
+        left: expansion.rect.left,
+        width: expansion.rect.width,
+        height: expansion.rect.height,
+      }
+    : undefined;
+
+  return (
+    <div
+      className={`${className} ${expansion ? styles.previewExpanding : ""} ${
+        expansion?.phase === "expanding" ? styles.previewExpanded : ""
+      }`}
+      style={previewStyle}
+      aria-busy={expansion ? "true" : undefined}
+    >
+      <iframe
+        src={url}
+        title={`Forhåndsvisning av ${title}`}
+        loading="lazy"
+        tabIndex={-1}
+        aria-hidden="true"
+      />
+      <a
+        href={url}
+        onClick={openProject}
+        className={styles.previewOverlay}
+        aria-label={`${label}: ${title}`}
+      >
+        <span className={styles.previewAction}>
+          <span>{label}</span>
+          <span>↗</span>
+        </span>
+      </a>
+    </div>
+  );
+}
 
 function Card({ p, delay }: { p: ProjectCopy; delay: number }) {
   const ref = useReveal<HTMLElement>(delay);
   return (
     <article ref={ref} className={styles.card}>
-      <div className={styles.cardShot}>{p.shot}</div>
+      <LivePreview url={p.webUrl} title={p.name} label={p.openLabel} className={styles.cardShot} />
       <div className={styles.cardBody}>
         <div className={styles.cardMeta}>
           <span className={`${styles.cardTag} ${p.tag === "LIVE" ? styles.cardTagLive : ""}`}>
@@ -63,13 +169,12 @@ export default function Projects({ t }: { t: Copy }) {
             </a>
           </div>
         </div>
-        <div className={styles.shotWell}>
-          <div>
-            <iframe src="https://www.kort-forklart.no" width="100%"></iframe>
-            {/* <div className={styles.shotLabel}>{t.placeholder}</div>
-            <div className={styles.shotSub}>quiz view + AI explanation</div> */}
-          </div>
-        </div>
+        <LivePreview
+          url={LINKS.kortForklart}
+          title="Kort Forklart"
+          label={t.openLive}
+          className={styles.featuredPreview}
+        />
       </article>
 
       <div className={styles.grid}>

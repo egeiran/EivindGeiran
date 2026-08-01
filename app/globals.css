@@ -55,24 +55,6 @@ button {
   color: var(--ink);
 }
 
-@keyframes rl-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@keyframes rl-marquee-rev {
-  from {
-    transform: translateX(-50%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
 @keyframes rl-pulse {
   0%,
   100% {
