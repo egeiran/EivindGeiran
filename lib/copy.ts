@@ -10,8 +10,9 @@ export interface ProjectCopy {
   name: string;
   tag: string;
   url: string;
+  webUrl: string;
   link: string;
-  shot: string;
+  openLabel: string;
   description: string;
   stack: string[];
 }
@@ -19,7 +20,6 @@ export interface ProjectCopy {
 export interface CtaCopy {
   label: string;
   title: string;
-  sub: string;
   note: string;
 }
 
@@ -120,9 +120,8 @@ export const COPY: Record<Lang, Copy> = {
     lifeLede: "Fadderuke, Venture Cup, turer — det som skjer utenfor forelesningssalen.",
     cta: {
       label: "Kontakt",
-      title: "Alltid gøy å snakke med folk som bygger ting.",
-      sub: "Ta gjerne kontakt — LinkedIn er raskest, ellers når du meg på e-post eller GitHub.",
-      note: "Trondheim",
+      title: "Ta gjerne kontakt",
+      note: "Trondheim & Oslo",
     },
     footerNote: "Bygget i Trondheim",
     factRoles: "pågående roller",
@@ -166,8 +165,9 @@ export const COPY: Record<Lang, Copy> = {
         name: "NHL ML Prediction Model",
         tag: "ML",
         url: "https://github.com/egeiran/NHL-ML-Prediction-Model",
+        webUrl: "https://nhl-ml.eivindgeiran.no/",
         link: "GitHub",
-        shot: "value bets + fond",
+        openLabel: "Åpne prosjektet",
         description:
           "Predikerer sannsynligheten for hvert utfall i NHL-kamper, sjekker Norsk Tipping sitt Oddsen-API og foreslår value bets. Et fiktivt fond simulerer avkastningen over tid.",
         stack: ["Python", "scikit-learn", "Pandas", "API"],
@@ -176,40 +176,22 @@ export const COPY: Record<Lang, Copy> = {
         name: "Tilbudsscraper",
         tag: "WIP",
         url: "https://github.com/egeiran",
+        webUrl: "https://tilbud.eivindgeiran.no/",
         link: "GitHub",
-        shot: "skjermbilde kommer",
+        openLabel: "Åpne prosjektet",
         description:
           "Web scraper som samler dagligvaretilbud på tvers av kjedene, så handlelisten kan planlegges etter hva som faktisk er billig denne uka.",
         stack: ["Python", "Scraping", "Data"],
       },
       {
-        name: "Sorting Visualizer",
-        tag: "VERKTØY",
-        url: "https://github.com/egeiran/Sorting-Visualizer",
-        link: "GitHub",
-        shot: "skjermbilde kommer",
-        description:
-          "Visualiserer og sammenligner sorteringsalgoritmer side om side. Bygget for å forstå TDT4120 bedre.",
-        stack: ["TypeScript", "Frontend", "Algoritmer"],
-      },
-      {
         name: "TowerDefense",
         tag: "SPILL",
         url: "https://github.com/egeiran/TowerDefense",
+        webUrl: "https://towerdefense.eivindgeiran.no/",
         link: "GitHub",
-        shot: "skjermbilde kommer",
+        openLabel: "Åpne prosjektet",
         description: "Et spillprosjekt med fokus på logikk, struktur og tilstandshåndtering.",
         stack: ["Spill", "Logikk", "OOP"],
-      },
-      {
-        name: "Denne siden",
-        tag: "LIVE",
-        url: "https://github.com/egeiran/EivindGeiran",
-        link: "GitHub",
-        shot: "skjermbilde kommer",
-        description:
-          "Personlig nettside og mini-CV. Redesignet fra bunnen av med Next.js, hostet på Vercel.",
-        stack: ["Next.js", "TypeScript", "Vercel"],
       },
     ],
     kfStack: ["Next.js", "React", "TypeScript", "Supabase", "OpenAI API", "Vercel"],
@@ -259,9 +241,8 @@ export const COPY: Record<Lang, Copy> = {
     lifeLede: "Orientation week, Venture Cup, trips — what happens outside the lecture hall.",
     cta: {
       label: "Contact",
-      title: "Always happy to talk to people who build things.",
-      sub: "Feel free to reach out — LinkedIn is fastest, or find me by email or on GitHub.",
-      note: "Trondheim",
+      title: "Feel free to reach out",
+      note: "Trondheim & Oslo",
     },
     footerNote: "Built in Trondheim",
     factRoles: "active roles",
@@ -305,8 +286,9 @@ export const COPY: Record<Lang, Copy> = {
         name: "NHL ML Prediction Model",
         tag: "ML",
         url: "https://github.com/egeiran/NHL-ML-Prediction-Model",
+        webUrl: "https://nhl-ml.eivindgeiran.no/",
         link: "GitHub",
-        shot: "value bets + fund",
+        openLabel: "Open project",
         description:
           "Predicts the probability of each NHL match outcome, checks Norsk Tipping's Oddsen API and surfaces value bets. A fictional fund simulates returns over time.",
         stack: ["Python", "scikit-learn", "Pandas", "API"],
@@ -315,8 +297,9 @@ export const COPY: Record<Lang, Copy> = {
         name: "Grocery offer scraper",
         tag: "WIP",
         url: "https://github.com/egeiran",
+        webUrl: "https://tilbud.eivindgeiran.no/",
         link: "GitHub",
-        shot: "screenshot pending",
+        openLabel: "Open project",
         description:
           "A scraper that collects grocery offers across the Norwegian chains, so a shopping list can be planned around what's actually cheap this week.",
         stack: ["Python", "Scraping", "Data"],
@@ -325,8 +308,9 @@ export const COPY: Record<Lang, Copy> = {
         name: "TowerDefense",
         tag: "GAME",
         url: "https://github.com/egeiran/TowerDefense",
+        webUrl: "https://towerdefense.eivindgeiran.no/",
         link: "GitHub",
-        shot: "screenshot pending",
+        openLabel: "Open project",
         description: "A game project focused on logic, structure and state handling.",
         stack: ["Game", "Logic", "OOP"],
       },
@@ -394,6 +378,10 @@ export const GALLERY: GalleryItem[] = [
   { src: "/img/karusell/Oscmas.jpg", title: "Abakus", frame: "04", file: "IMG_3392.JPG" },
   { src: "/img/karusell/Lookout.jpg", title: "På tur", frame: "05", file: "IMG_3744.JPG" },
   { src: "/img/karusell/Kragaluf.jpg", title: "Krågaluf", frame: "06", file: "IMG_4021.JPG" },
+  { src: "/img/karusell/SG.webp", title: "Slipsgutta", frame: "07", file: "IMG_4053.JPG" },
+  { src: "/img/karusell/Falken.JPG", title: "Budapest", frame: "08", file: "IMG_4087.JPG" },
+  { src: "/img/karusell/GJ.jpg", title: "Gründerjakten", frame: "09", file: "IMG_4134.JPG" },
+  { src: "/img/karusell/Toralf.JPG", title: "Cruise", frame: "10", file: "IMG_4496.JPG" },
 ];
 
 export const LINKS = {

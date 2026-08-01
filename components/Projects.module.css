@@ -106,36 +106,25 @@
   font-family: var(--font-mono), monospace;
 }
 
-.shotWell {
+.featuredPreview {
   position: relative;
   min-height: 420px;
-  background: repeating-linear-gradient(
-    135deg,
-    #161a20 0px,
-    #161a20 9px,
-    #12151a 9px,
-    #12151a 18px
-  );
-  display: grid;
-  place-items: center;
   border-left: 1px solid rgba(244, 241, 232, 0.1);
+  background: #12151a;
+  overflow: hidden;
 }
 
-.shotLabel {
-  font-family: var(--font-mono), monospace;
-  font-size: 11.5px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(244, 241, 232, 0.42);
-  text-align: center;
+.featuredPreview iframe,
+.cardShot iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  pointer-events: none;
 }
 
-.shotSub {
-  font-family: var(--font-mono), monospace;
-  font-size: 13px;
-  color: rgba(244, 241, 232, 0.62);
-  margin-top: 8px;
-  text-align: center;
+.featuredPreview iframe {
+  min-height: 420px;
 }
 
 .grid {
@@ -160,20 +149,100 @@
 }
 
 .cardShot {
-  height: 132px;
-  background: repeating-linear-gradient(
-    135deg,
-    #161a20 0px,
-    #161a20 9px,
-    #12151a 9px,
-    #12151a 18px
-  );
-  display: grid;
-  place-items: center;
+  position: relative;
+  aspect-ratio: 16 / 9;
+  display: block;
+  overflow: hidden;
+  background: #12151a;
   border-bottom: 1px solid rgba(244, 241, 232, 0.1);
+}
+
+.previewOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 14px;
   font-family: var(--font-mono), monospace;
-  font-size: 11px;
-  color: rgba(244, 241, 232, 0.4);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: linear-gradient(180deg, transparent 42%, rgba(11, 13, 17, 0.64));
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 220ms ease, background 220ms ease;
+}
+
+.previewAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px 7px 12px;
+  border-radius: 999px;
+  background: var(--lime);
+}
+
+.previewAction span:last-child {
+  font-size: 13px;
+  line-height: 0;
+}
+
+.previewOverlay:hover {
+  color: var(--ink);
+}
+
+.card:hover .previewOverlay,
+.previewOverlay:focus-visible,
+.featuredPreview:hover .previewOverlay,
+.featuredPreview .previewOverlay:focus-visible {
+  opacity: 1;
+}
+
+.previewOverlay:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: -2px;
+}
+
+.featuredPreview .previewOverlay {
+  padding: 22px;
+}
+
+.previewExpanding {
+  position: fixed;
+  z-index: 100;
+  overflow: hidden;
+  border: 1px solid rgba(244, 241, 232, 0.16);
+  border-radius: 14px;
+  background: var(--ink);
+  box-shadow: 0 28px 100px rgba(0, 0, 0, 0.55);
+  transition:
+    top 560ms var(--ease-pop),
+    left 560ms var(--ease-pop),
+    width 560ms var(--ease-pop),
+    height 560ms var(--ease-pop),
+    border-radius 560ms var(--ease-pop);
+}
+
+.previewExpanding iframe {
+  min-height: 100%;
+}
+
+.previewExpanded {
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  border-radius: 0;
+  border-color: transparent;
+}
+
+.previewExpanding .previewOverlay {
+  opacity: 1;
+  background: rgba(11, 13, 17, 0.1);
 }
 
 .cardBody {
@@ -258,10 +327,14 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .shotWell {
-    min-height: 220px;
+  .featuredPreview {
+    min-height: 320px;
     border-left: 0;
     border-top: 1px solid rgba(244, 241, 232, 0.1);
+  }
+
+  .featuredPreview iframe {
+    min-height: 320px;
   }
 }
 
@@ -276,5 +349,20 @@
 
   .featuredTitle {
     font-size: 38px;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .previewOverlay,
+  .previewExpanding {
+    transition: none;
+  }
+}
+
+@media (hover: none) {
+  .previewOverlay {
+    opacity: 1;
   }
 }

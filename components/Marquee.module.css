@@ -3,17 +3,19 @@
   background: var(--lime);
 }
 
-/* Konstant fart — aldri koblet til scrollhastighet (eksplisitt avvist i design). */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 .track {
   display: inline-flex;
   min-width: max-content;
-  animation: rl-marquee 48s linear infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .track {
-    animation: none;
-  }
+  animation: marquee-scroll 48s linear infinite;
 }
 
 .item {
