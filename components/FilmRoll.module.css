@@ -73,6 +73,28 @@
   background-size: 26px 9px;
 }
 
+@keyframes sprockets-scroll-forward {
+  to {
+    background-position-x: -26px;
+  }
+}
+
+@keyframes sprockets-scroll-reverse {
+  to {
+    background-position-x: 26px;
+  }
+}
+
+/* Første stripe flytter 2900px på 64 sekunder: 26px per 0,574s. */
+.rollFirst .sprockets {
+  animation: sprockets-scroll-forward 574ms linear infinite;
+}
+
+/* Andre stripe flytter 2220px på 78 sekunder: 26px per 0,914s. */
+.sprocketsReverse {
+  animation: sprockets-scroll-reverse 914ms linear infinite;
+}
+
 .sprocketsTop {
   margin-bottom: 12px;
 }
@@ -157,4 +179,38 @@
   font-size: 10px;
   padding: 3px 7px;
   color: rgba(244, 241, 232, 0.8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track,
+  .trackRev,
+  .rollFirst .sprockets,
+  .sprocketsReverse {
+    animation: none;
+  }
+
+  .frame img {
+    filter: none;
+    transition: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding-bottom: 64px;
+  }
+
+  .head {
+    padding-top: 28px;
+  }
+
+  .frame {
+    width: 224px;
+    height: 150px;
+  }
+
+  .frameSmall {
+    width: 176px;
+    height: 118px;
+  }
 }

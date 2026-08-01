@@ -21,9 +21,16 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://eivindgeiran.no"),
   title: "Eivind Geiran — Datateknologi, NTNU",
   description:
     "Datateknologi ved NTNU. Fem pågående roller, tre ting i produksjon, én ledig sommer.",
+  openGraph: {
+    type: "website",
+    locale: "no_NO",
+    url: "https://eivindgeiran.no",
+    siteName: "Eivind Geiran",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

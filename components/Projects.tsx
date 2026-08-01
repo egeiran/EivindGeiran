@@ -96,6 +96,9 @@ function LivePreview({
         loading="lazy"
         tabIndex={-1}
         aria-hidden="true"
+        // Previewene er kun visuelle — lyd fra embeddede apper skal aldri
+        // spilles av på porteføljen.
+        allow="autoplay 'none'; microphone 'none'; camera 'none'"
       />
       <a
         href={url}

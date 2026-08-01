@@ -318,8 +318,15 @@
 }
 
 @media (max-width: 820px) {
+  /* Innholdet er høyere enn viewporten på mobil, så sticky-scrubbing ville
+     klippet bunnen. Vis som vanlig blokk i stedet. */
   .wrap {
     --gantt-col: 118px;
+    height: auto;
+  }
+
+  .sticky {
+    position: static;
   }
 
   .rowOrg {
@@ -328,5 +335,10 @@
 
   .year {
     font-size: 40px;
+  }
+
+  .detail {
+    flex-direction: column;
+    gap: 14px;
   }
 }

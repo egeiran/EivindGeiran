@@ -31,6 +31,8 @@ export interface Copy {
   navStudy: string;
   navLife: string;
   navContact: string;
+  menuOpenLabel: string;
+  menuCloseLabel: string;
   heroSub: string;
   heroCta: string;
   nowTitle: string;
@@ -85,6 +87,8 @@ export const COPY: Record<Lang, Copy> = {
     navStudy: "Studiet",
     navLife: "Bilder",
     navContact: "Ta kontakt",
+    menuOpenLabel: "Åpne meny",
+    menuCloseLabel: "Lukk meny",
     heroSub: "Datateknologi ved NTNU. Fem pågående roller, tre ting i produksjon, én ledig sommer.",
     heroCta: "Se hva jeg har bygd",
     nowTitle: "Nå.",
@@ -190,7 +194,7 @@ export const COPY: Record<Lang, Copy> = {
         webUrl: "https://towerdefense.eivindgeiran.no/",
         link: "GitHub",
         openLabel: "Åpne prosjektet",
-        description: "Et spillprosjekt med fokus på logikk, struktur og tilstandshåndtering.",
+        description: "Et spillprosjekt med fokus på logikk, struktur og tilstandshåndtering. Laget allerede på videregående!",
         stack: ["Spill", "Logikk", "OOP"],
       },
     ],
@@ -206,6 +210,8 @@ export const COPY: Record<Lang, Copy> = {
     navStudy: "Studies",
     navLife: "Photos",
     navContact: "Get in touch",
+    menuOpenLabel: "Open menu",
+    menuCloseLabel: "Close menu",
     heroSub: "Computer science at NTNU. Five active roles, three things in production, one free summer.",
     heroCta: "See what I've built",
     nowTitle: "Now.",
@@ -369,15 +375,22 @@ export interface GalleryItem {
   title: string;
   frame: string;
   file: string;
+  objectPosition?: string;
 }
 
 export const GALLERY: GalleryItem[] = [
   { src: "/img/karusell/VentureCup.jpg", title: "Venture Cup", frame: "01", file: "IMG_2417.JPG" },
-  { src: "/img/karusell/Newbies.jpg", title: "Faddertid", frame: "02", file: "IMG_2653.JPG" },
-  { src: "/img/karusell/Sigrid.jpg", title: "Studentliv", frame: "03", file: "IMG_3108.JPG" },
-  { src: "/img/karusell/Oscmas.jpg", title: "Abakus", frame: "04", file: "IMG_3392.JPG" },
-  { src: "/img/karusell/Lookout.jpg", title: "På tur", frame: "05", file: "IMG_3744.JPG" },
-  { src: "/img/karusell/Kragaluf.jpg", title: "Krågaluf", frame: "06", file: "IMG_4021.JPG" },
+  { src: "/img/karusell/Newbies.jpg", title: "Arrkom!", frame: "02", file: "IMG_2653.JPG" },
+  {
+    src: "/img/karusell/Sigrid.jpg",
+    title: "<3>",
+    frame: "03",
+    file: "IMG_3108.JPG",
+    objectPosition: "50% 20%",
+  },
+  { src: "/img/karusell/Oscmas.jpg", title: "Gura", frame: "04", file: "IMG_3392.JPG" },
+  { src: "/img/karusell/Lookout.jpg", title: "Amsterdam", frame: "05", file: "IMG_3744.JPG" },
+  { src: "/img/karusell/Kragaluf.jpg", title: "Kragerø", frame: "06", file: "IMG_4021.JPG" },
   { src: "/img/karusell/SG.webp", title: "Slipsgutta", frame: "07", file: "IMG_4053.JPG" },
   { src: "/img/karusell/Falken.JPG", title: "Budapest", frame: "08", file: "IMG_4087.JPG" },
   { src: "/img/karusell/GJ.jpg", title: "Gründerjakten", frame: "09", file: "IMG_4134.JPG" },

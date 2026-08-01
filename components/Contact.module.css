@@ -74,6 +74,11 @@
   flex-wrap: wrap;
   font-family: var(--font-mono), monospace;
   font-size: 12.5px;
+  min-width: 0;
+}
+
+.links a {
+  overflow-wrap: anywhere;
 }
 
 .links a {
@@ -116,5 +121,11 @@
 @media (max-width: 640px) {
   .panel {
     padding: 36px 24px 28px;
+    gap: 28px;
+  }
+
+  .pill {
+    justify-content: center;
+    width: 100%;
   }
 }

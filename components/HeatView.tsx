@@ -77,6 +77,7 @@ export default function HeatView({ t, lang, vms, now }: Props) {
                     <div
                       key={key}
                       onMouseEnter={() => setCell(key)}
+                      onClick={() => setCell(key)}
                       className={styles.cell}
                       style={{
                         background: hits.length

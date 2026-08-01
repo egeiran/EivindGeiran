@@ -55,6 +55,12 @@
   }
 }
 
+@media (max-width: 640px) {
+  .section {
+    padding-bottom: 64px;
+  }
+}
+
 @media (max-width: 560px) {
   .grid {
     grid-template-columns: minmax(0, 1fr);
