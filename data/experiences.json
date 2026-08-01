@@ -1,12 +1,12 @@
 {
-  "_comment": "TODO: Datoene under er seedet fra gamle experiences.json (års-granularitet) pluss måneder som var oppgitt i site-copy (NTNU aug 2024, JrC aug 2025, Computas feb 2026, Sandvika skoleår). Verifiser og finjuster alle from/to og legg inn segments via /admin før lansering. to: null = pågående.",
+  "_comment": "Datoer er desimal-år: år + (måned - 0.5) / 12 (jan = .042, mai = .375, jun = .458, aug = .625, des = .958). to: null = pågående. Alle from/to er verifisert; bruk /admin for videre endringer.",
   "experiences": [
     {
       "id": "computas",
       "title": { "no": "Utvikler (deltid)", "en": "Developer (part-time)" },
       "organization": "Computas",
       "type": "Betalt",
-      "from": 2026.125,
+      "from": 2026.625,
       "to": null,
       "description": {
         "no": "Utvikler på deltid ved siden av studiene.",
@@ -16,6 +16,23 @@
       "tags": {
         "no": ["Utvikling", "Deltid", "Produkt"],
         "en": ["Engineering", "Part-time", "Product"]
+      }
+    },
+    {
+      "id": "askeladden",
+      "title": { "no": "Tech intern", "en": "Tech intern" },
+      "organization": "Askeladden & Co",
+      "type": "Betalt",
+      "from": 2026.458,
+      "to": 2026.625,
+      "description": {
+        "no": "Sommerinternship som utvikler i Askeladden & Co.",
+        "en": "Summer internship as a developer at Askeladden & Co."
+      },
+      "imagePath": "/img/erfaringer/askeladden.svg",
+      "tags": {
+        "no": ["Utvikling", "Produkt", "Internship"],
+        "en": ["Engineering", "Product", "Internship"]
       }
     },
     {
@@ -40,8 +57,8 @@
       "title": { "no": "Mentor", "en": "Mentor" },
       "organization": "ENT3R Trondheim",
       "type": "Betalt",
-      "from": 2025.042,
-      "to": null,
+      "from": 2025.625,
+      "to": 2026.375,
       "description": {
         "no": "Mentor i realfag for ungdomsskoleelever.",
         "en": "STEM mentor for lower secondary school students."
@@ -74,7 +91,7 @@
       "title": { "no": "Sosialansvarlig — Arrkom", "en": "Events lead — Arrkom" },
       "organization": "Abakus linjeforening",
       "type": "Frivillig",
-      "from": 2024.042,
+      "from": 2024.625,
       "to": null,
       "description": {
         "no": "Planlegger og gjennomfører arrangementer i Abakus.",
@@ -108,8 +125,8 @@
       "title": { "no": "Faddersjef", "en": "Orientation week lead" },
       "organization": "Abakus linjeforening",
       "type": "Frivillig",
-      "from": 2025.042,
-      "to": 2025.958,
+      "from": 2025.375,
+      "to": 2025.625,
       "description": {
         "no": "Ledet fadderopplegget for nye datastudenter.",
         "en": "Led the orientation programme for new CS students."
@@ -143,7 +160,7 @@
       "organization": "Meny Bærums Verk",
       "type": "Betalt",
       "from": 2022.042,
-      "to": 2025.958,
+      "to": 2024.625,
       "description": {
         "no": "Kundeservice og varehåndtering i ferskvareavdelingen.",
         "en": "Customer service and stock handling in the fresh food department."
@@ -169,23 +186,6 @@
       "tags": {
         "no": ["Realfag", "Videregående", "Fundament"],
         "en": ["STEM", "Upper secondary", "Foundation"]
-      }
-    },
-    {
-      "id": "nihf",
-      "title": { "no": "Ishockeydommer", "en": "Ice hockey referee" },
-      "organization": "Norges Ishockeyforbund",
-      "type": "Betalt",
-      "from": 2016.042,
-      "to": 2022.958,
-      "description": {
-        "no": "Dømte aldersbestemte ishockeykamper.",
-        "en": "Refereed age-group ice hockey matches."
-      },
-      "imagePath": "/img/erfaringer/nihf.webp",
-      "tags": {
-        "no": ["Beslutninger", "Trygghet", "Ansvar"],
-        "en": ["Decisions", "Composure", "Ownership"]
       }
     }
   ]

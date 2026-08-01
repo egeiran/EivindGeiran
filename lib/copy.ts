@@ -33,7 +33,6 @@ export interface Copy {
   navContact: string;
   heroSub: string;
   heroCta: string;
-  heroHint: string;
   nowTitle: string;
   nowDate: string;
   workTitle: string;
@@ -88,7 +87,6 @@ export const COPY: Record<Lang, Copy> = {
     navContact: "Ta kontakt",
     heroSub: "Datateknologi ved NTNU. Fem pågående roller, tre ting i produksjon, én ledig sommer.",
     heroCta: "Se hva jeg har bygd",
-    heroHint: "Beveg musen",
     nowTitle: "Nå.",
     nowDate: "Juli 2026",
     workTitle: "Prosjekter.",
@@ -228,7 +226,6 @@ export const COPY: Record<Lang, Copy> = {
     navContact: "Get in touch",
     heroSub: "Computer science at NTNU. Five active roles, three things in production, one free summer.",
     heroCta: "See what I've built",
-    heroHint: "Move your cursor",
     nowTitle: "Now.",
     nowDate: "July 2026",
     workTitle: "Work.",
@@ -325,16 +322,6 @@ export const COPY: Record<Lang, Copy> = {
         stack: ["Python", "Scraping", "Data"],
       },
       {
-        name: "Sorting Visualizer",
-        tag: "TOOL",
-        url: "https://github.com/egeiran/Sorting-Visualizer",
-        link: "GitHub",
-        shot: "screenshot pending",
-        description:
-          "Visualises and compares sorting algorithms side by side. Built to understand the algorithms course better.",
-        stack: ["TypeScript", "Frontend", "Algorithms"],
-      },
-      {
         name: "TowerDefense",
         tag: "GAME",
         url: "https://github.com/egeiran/TowerDefense",
@@ -342,15 +329,6 @@ export const COPY: Record<Lang, Copy> = {
         shot: "screenshot pending",
         description: "A game project focused on logic, structure and state handling.",
         stack: ["Game", "Logic", "OOP"],
-      },
-      {
-        name: "This site",
-        tag: "LIVE",
-        url: "https://github.com/egeiran/EivindGeiran",
-        link: "GitHub",
-        shot: "screenshot pending",
-        description: "Personal site and mini-CV. Rebuilt from scratch with Next.js, hosted on Vercel.",
-        stack: ["Next.js", "TypeScript", "Vercel"],
       },
     ],
     kfStack: ["Next.js", "React", "TypeScript", "Supabase", "OpenAI API", "Vercel"],
@@ -422,5 +400,5 @@ export const LINKS = {
   github: "https://github.com/egeiran",
   linkedin: "https://www.linkedin.com/in/eivind-systad-geiran-640231238/",
   email: "eivind.geiran@gmail.com",
-  kortForklart: "https://kort-forklart.vercel.app/",
+  kortForklart: "https://kort-forklart.no/",
 } as const;

@@ -46,7 +46,7 @@ export default function Projects({ t }: { t: Copy }) {
         <div className={styles.featuredBody}>
           <div className={styles.featuredMeta}>
             <span className={styles.featuredTag}>{t.featured}</span>
-            <span className={styles.featuredUrl}>kort-forklart.vercel.app</span>
+            <span className={styles.featuredUrl}>kort-forklart.no</span>
           </div>
           <h3 className={styles.featuredTitle}>Kort Forklart</h3>
           <p className={styles.featuredDesc}>{t.kfDesc}</p>
@@ -65,8 +65,9 @@ export default function Projects({ t }: { t: Copy }) {
         </div>
         <div className={styles.shotWell}>
           <div>
-            <div className={styles.shotLabel}>{t.placeholder}</div>
-            <div className={styles.shotSub}>quiz view + AI explanation</div>
+            <iframe src="https://www.kort-forklart.no" width="100%"></iframe>
+            {/* <div className={styles.shotLabel}>{t.placeholder}</div>
+            <div className={styles.shotSub}>quiz view + AI explanation</div> */}
           </div>
         </div>
       </article>
