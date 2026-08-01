@@ -13,7 +13,6 @@ export default function Contact({ t }: { t: Copy }) {
             {t.cta.label}
           </p>
           <h2 className={styles.title}>{t.cta.title}</h2>
-          <p className={styles.sub}>{t.cta.sub}</p>
         </div>
         <div className={styles.bottom}>
           <div className={styles.links}>
