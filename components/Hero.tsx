@@ -178,7 +178,6 @@ export default function Hero({ t, ongoingCount, totalCount }: Props) {
           <p className={styles.sub}>{t.heroSub}</p>
         </div>
         <div className={styles.ctaCol}>
-          <span className={styles.hint}>{t.heroHint}</span>
           <a href="#prosjekter" className={styles.cta}>
             {t.heroCta} <span className={styles.mono}>→</span>
           </a>
