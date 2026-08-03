@@ -36,7 +36,6 @@ export interface Copy {
   heroHeading: string;
   heroCta: string;
   nowTitle: string;
-  nowDate: string;
   workTitle: string;
   workLede: string;
   featured: string;
@@ -72,6 +71,8 @@ export interface Copy {
   factCredits: string;
   factLive: string;
   now: { tag: string; title: string; detail: string; since: string }[];
+  nowNet: string[];
+  nowCaps: { net: string; corp: string; cube: string };
   roles: string[];
   projects: ProjectCopy[];
   kfStack: string[];
@@ -93,7 +94,6 @@ export const COPY: Record<Lang, Copy> = {
     heroHeading: "Eivind Geiran — datateknologistudent ved NTNU i Trondheim",
     heroCta: "Se hva jeg har bygd",
     nowTitle: "Nå.",
-    nowDate: "Juli 2026",
     workTitle: "Prosjekter.",
     workLede: "Ting jeg har bygd fordi jeg hadde lyst, og som andre faktisk bruker.",
     featured: "Størst",
@@ -138,28 +138,28 @@ export const COPY: Record<Lang, Copy> = {
       {
         tag: "STUDIUM",
         title: "Datateknologi, NTNU",
-        detail: "Master i datateknologi i Trondheim. Fordypning mot maskinlæring og systemutvikling.",
+        detail: "Master i Trondheim. Fordypning mot maskinlæring og systemutvikling.",
         since: "siden aug 2024",
       },
       {
-        tag: "DELTID",
-        title: "Utvikler i Computas",
-        detail: "Jobber som utvikler ved siden av studiene.",
-        since: "siden feb 2026",
-      },
-      {
-        tag: "DELTID",
-        title: "Tech-konsulent i Junior Consulting",
-        detail: "Leverer IT- og teknologiprosjekter for eksterne kunder, sammen med andre studenter.",
+        tag: "JOBB VED SIDEN AV",
+        title: "Computas og Junior Consulting",
+        detail: "20 % utvikler i Computas. Prosjektbasert tech-konsulent i Junior Consulting.",
         since: "siden aug 2025",
       },
       {
         tag: "EGNE PROSJEKTER",
         title: "Kort Forklart, NHL-modellen, AI-assistent",
-        detail: "Kort Forklart er i drift og brukes av studenter. De to andre er under arbeid.",
+        detail: "Kort Forklart er i drift. NHL-modellen og AI-assistenten er under arbeid.",
         since: "løpende",
       },
     ],
+    nowNet: ["INPUT", "SKJULT", "SKJULT", "UT"],
+    nowCaps: {
+      net: "Maskinlæring, lag for lag",
+      corp: "Utvikling, ved siden av studiene",
+      cube: "Problemløsing, på fritida",
+    },
     roles: [
       "Tech-konsulent, Junior Consulting",
       "Utvikler, Computas",
@@ -217,7 +217,6 @@ export const COPY: Record<Lang, Copy> = {
     heroHeading: "Eivind Geiran — computer science student at NTNU in Trondheim",
     heroCta: "See what I've built",
     nowTitle: "Now.",
-    nowDate: "July 2026",
     workTitle: "Work.",
     workLede: "Things I built because I wanted to — and that people actually use.",
     featured: "Biggest",
@@ -262,28 +261,28 @@ export const COPY: Record<Lang, Copy> = {
       {
         tag: "STUDIES",
         title: "Computer Science, NTNU",
-        detail: "MSc in computer science in Trondheim, majoring in machine learning and systems development.",
+        detail: "MSc in Trondheim, majoring in machine learning and systems development.",
         since: "since Aug 2024",
       },
       {
-        tag: "PART-TIME",
-        title: "Developer at Computas",
-        detail: "Working as a developer alongside my studies.",
-        since: "since Feb 2026",
-      },
-      {
-        tag: "PART-TIME",
-        title: "Tech consultant at Junior Consulting",
-        detail: "Delivering IT and technology projects for external clients, together with other students.",
+        tag: "ALONGSIDE STUDIES",
+        title: "Computas and Junior Consulting",
+        detail: "20% developer at Computas. Project-based tech consultant at Junior Consulting.",
         since: "since Aug 2025",
       },
       {
         tag: "OWN PROJECTS",
         title: "Kort Forklart, NHL model, AI assistant",
-        detail: "Kort Forklart is live and used by students. The other two are work in progress.",
+        detail: "Kort Forklart is live. The NHL model and AI assistant are in progress.",
         since: "ongoing",
       },
     ],
+    nowNet: ["INPUT", "HIDDEN", "HIDDEN", "OUT"],
+    nowCaps: {
+      net: "Machine learning, layer by layer",
+      corp: "Building, alongside my studies",
+      cube: "Problem solving, off the clock",
+    },
     roles: [
       "Tech consultant, Junior Consulting",
       "Developer, Computas",
