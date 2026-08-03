@@ -21,11 +21,20 @@
 
 .wordmark {
   position: relative;
+  display: block;
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
   user-select: none;
   will-change: transform, opacity;
 }
 
+.lines {
+  display: block;
+}
+
 .line {
+  display: block;
   font-family: var(--font-display), sans-serif;
   font-weight: 800;
   font-size: clamp(64px, 12.6vw, 190px);
@@ -43,6 +52,7 @@
 
 .mask {
   position: absolute;
+  display: block;
   inset: 0;
   pointer-events: none;
   -webkit-mask-image: radial-gradient(

@@ -16,10 +16,10 @@ interface Props {
 
 export default function Hero({ t, ongoingCount, totalCount }: Props) {
   const gridRef = useRef<HTMLDivElement | null>(null);
-  const wordmarkRef = useRef<HTMLDivElement | null>(null);
-  const maskRef = useRef<HTMLDivElement | null>(null);
-  const line1Refs = useRef<(HTMLDivElement | null)[]>([]);
-  const line2Refs = useRef<(HTMLDivElement | null)[]>([]);
+  const wordmarkRef = useRef<HTMLHeadingElement | null>(null);
+  const maskRef = useRef<HTMLSpanElement | null>(null);
+  const line1Refs = useRef<(HTMLSpanElement | null)[]>([]);
+  const line2Refs = useRef<(HTMLSpanElement | null)[]>([]);
   const roleRef = useRef<HTMLSpanElement | null>(null);
   const statRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const spot = useRef({ px: 0, py: 0, tx: 0, ty: 0, idle: 100, t0: 0 });
@@ -136,37 +136,41 @@ export default function Hero({ t, ongoingCount, totalCount }: Props) {
   };
 
   // Ordmerket rendres to ganger: en nesten usynlig kopi og en lime-kopi bak en
-  // radial maske som følger pekeren.
+  // radial maske som følger pekeren. Begge kopiene er aria-hidden — navnet
+  // leses fra .sr-only-linja i <h1>, så det ikke dukker opp i duplikat.
   const stacked = (offset: number) => (
-    <div>
-      <div
+    <span className={styles.lines} aria-hidden="true">
+      <span
         className={styles.line}
         ref={(el) => {
           line1Refs.current[offset] = el;
         }}
       >
         EIVIND
-      </div>
-      <div
+      </span>
+      <span
         className={styles.line}
         ref={(el) => {
           line2Refs.current[offset] = el;
         }}
       >
         GEIRAN
-      </div>
-    </div>
+      </span>
+    </span>
   );
 
   return (
     <section className={styles.section} onMouseMove={onMove}>
       <div ref={gridRef} className={styles.grid} />
-      <div ref={wordmarkRef} className={styles.wordmark}>
+      {/* Sidens eneste h1. Ordmerket er dekorativt; den maskinlesbare
+          overskriften er fullt navn + hva jeg driver med. */}
+      <h1 ref={wordmarkRef} className={styles.wordmark}>
+        <span className="sr-only">{t.heroHeading}</span>
         {stacked(0)}
-        <div ref={maskRef} className={styles.mask}>
+        <span ref={maskRef} className={styles.mask}>
           {stacked(1)}
-        </div>
-      </div>
+        </span>
+      </h1>
       <div className={styles.below}>
         <div className={styles.lede}>
           <div className={styles.roleRow}>

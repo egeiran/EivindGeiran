@@ -31,6 +31,24 @@ men kan eksportere JSON du legger inn manuelt.
 > Fra/til-datoene er verifisert på månedsnivå. Trenger du diskrete perioder
 > (sesongarbeid), bruk `segments`-feltet via `/admin`.
 
+## SEO
+
+Målet er at søk på **«Eivind Geiran»** treffer eivindgeiran.no. Alt som er i koden:
+
+- `lib/site.ts` — én kilde for navn, URL og `sameAs`-profiler. Navnet må skrives likt
+  overalt; det er slik Google slår sammen signalene til én entitet.
+- `app/layout.tsx` — tittel/description som starter med navnet, canonical,
+  `robots`-direktiver, OG/Twitter, og **JSON-LD** (`Person` + `WebSite` + `ProfilePage`).
+- `app/robots.ts` og `app/sitemap.ts` — genereres av Next. Sitemapet lister også
+  subdomenene; det krever at hele domenet er verifisert som **domain property** i
+  Google Search Console.
+- `components/Hero.tsx` — sidens eneste `<h1>` er fullt navn + rolle (ordmerket er
+  dekorativt og `aria-hidden`).
+- `components/Footer.tsx` — synlige lenker til subdomenene på hver visning.
+
+Gjenstår utenfor repoet: verifisere domenet i Search Console, sende inn sitemapet, og
+lenke hit fra LinkedIn og GitHub-profilen.
+
 ## Deploy
 
 Repoet er klart for Vercel: importer repoet, framework «Next.js», ingen ekstra config.
