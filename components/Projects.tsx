@@ -48,7 +48,18 @@ function LivePreview({
       return () => window.cancelAnimationFrame(frame);
     }
 
-    const timer = window.setTimeout(() => window.location.assign(url), 560);
+    const timer = window.setTimeout(() => {
+      // window.open med kun "_blank" gir oss vindushåndtaket, så vi kan både
+      // kutte opener-lenken og oppdage popup-blokkering (noopener i feature-
+      // strengen hadde returnert null selv ved suksess).
+      const opened = window.open(url, "_blank");
+      if (opened) {
+        opened.opener = null;
+        setExpansion(null);
+      } else {
+        window.location.assign(url);
+      }
+    }, 560);
     return () => window.clearTimeout(timer);
   }, [expansion, url]);
 
@@ -64,12 +75,11 @@ function LivePreview({
       return;
     }
 
-    event.preventDefault();
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      window.location.assign(url);
       return;
     }
 
+    event.preventDefault();
     setExpansion({ phase: "positioned", rect: event.currentTarget.getBoundingClientRect() });
   }
 
@@ -102,6 +112,8 @@ function LivePreview({
       />
       <a
         href={url}
+        target="_blank"
+        rel="noreferrer"
         onClick={openProject}
         className={styles.previewOverlay}
         aria-label={`${label}: ${title}`}

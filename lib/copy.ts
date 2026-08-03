@@ -34,7 +34,6 @@ export interface Copy {
   menuOpenLabel: string;
   menuCloseLabel: string;
   heroHeading: string;
-  heroSub: string;
   heroCta: string;
   nowTitle: string;
   nowDate: string;
@@ -92,7 +91,6 @@ export const COPY: Record<Lang, Copy> = {
     menuOpenLabel: "Åpne meny",
     menuCloseLabel: "Lukk meny",
     heroHeading: "Eivind Geiran — datateknologistudent ved NTNU i Trondheim",
-    heroSub: "Datateknologi ved NTNU. Fem pågående roller, tre ting i produksjon, én ledig sommer.",
     heroCta: "Se hva jeg har bygd",
     nowTitle: "Nå.",
     nowDate: "Juli 2026",
@@ -217,7 +215,6 @@ export const COPY: Record<Lang, Copy> = {
     menuOpenLabel: "Open menu",
     menuCloseLabel: "Close menu",
     heroHeading: "Eivind Geiran — computer science student at NTNU in Trondheim",
-    heroSub: "Computer science at NTNU. Five active roles, three things in production, one free summer.",
     heroCta: "See what I've built",
     nowTitle: "Now.",
     nowDate: "July 2026",
