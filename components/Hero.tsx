@@ -175,7 +175,6 @@ export default function Hero({ t, ongoingCount, totalCount }: Props) {
               {t.roles[0]}
             </span>
           </div>
-          <p className={styles.sub}>{t.heroSub}</p>
         </div>
         <div className={styles.ctaCol}>
           <a href="#prosjekter" className={styles.cta}>

@@ -33,7 +33,6 @@ export interface Copy {
   navContact: string;
   menuOpenLabel: string;
   menuCloseLabel: string;
-  heroSub: string;
   heroCta: string;
   nowTitle: string;
   nowDate: string;
@@ -89,7 +88,6 @@ export const COPY: Record<Lang, Copy> = {
     navContact: "Ta kontakt",
     menuOpenLabel: "Åpne meny",
     menuCloseLabel: "Lukk meny",
-    heroSub: "Datateknologi ved NTNU. Fem pågående roller, tre ting i produksjon, én ledig sommer.",
     heroCta: "Se hva jeg har bygd",
     nowTitle: "Nå.",
     nowDate: "Juli 2026",
@@ -212,7 +210,6 @@ export const COPY: Record<Lang, Copy> = {
     navContact: "Get in touch",
     menuOpenLabel: "Open menu",
     menuCloseLabel: "Close menu",
-    heroSub: "Computer science at NTNU. Five active roles, three things in production, one free summer.",
     heroCta: "See what I've built",
     nowTitle: "Now.",
     nowDate: "July 2026",

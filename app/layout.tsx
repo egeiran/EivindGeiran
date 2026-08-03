@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://eivindgeiran.no"),
   title: "Eivind Geiran — Datateknologi, NTNU",
   description:
-    "Datateknologi ved NTNU. Fem pågående roller, tre ting i produksjon, én ledig sommer.",
+    "Datateknologi ved NTNU. Prosjekter, erfaring og studier — samlet på ett sted.",
   openGraph: {
     type: "website",
     locale: "no_NO",
