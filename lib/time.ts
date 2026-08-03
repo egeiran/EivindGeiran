@@ -28,3 +28,40 @@ export function nowDecimal(): number {
 export function fmtDate(v: number, lang: Lang): string {
   return `${MONTHS[lang][monthOf(v) - 1]} ${yearOf(v)}`;
 }
+
+const MONTHS_FULL: Record<Lang, string[]> = {
+  no: [
+    "januar",
+    "februar",
+    "mars",
+    "april",
+    "mai",
+    "juni",
+    "juli",
+    "august",
+    "september",
+    "oktober",
+    "november",
+    "desember",
+  ],
+  en: [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ],
+};
+
+/** «August 2026» — full månedsetikett for et desimal-år, med stor forbokstav. */
+export function fmtMonthYearFull(v: number, lang: Lang): string {
+  const m = MONTHS_FULL[lang][monthOf(v) - 1];
+  return `${m.charAt(0).toUpperCase()}${m.slice(1)} ${yearOf(v)}`;
+}

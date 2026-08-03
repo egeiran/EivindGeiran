@@ -56,7 +56,7 @@ export default function Site({ experiences, now }: { experiences: Experience[]; 
       <main id="top">
         <Hero t={t} ongoingCount={ongoing} totalCount={vms.length} />
         <Marquee t={t} />
-        <Now t={t} />
+        <Now t={t} lang={lang} now={now} />
         <Projects t={t} />
         <ExperienceSection t={t} lang={lang} vms={vms} now={now} />
         <Studies t={t} />
