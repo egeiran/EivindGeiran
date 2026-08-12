@@ -92,3 +92,15 @@ button {
     --gutter: 20px;
   }
 }
+
+/* /cv skrives ut til PDF; da må papiret være hvitt og blekket svart. */
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  a {
+    color: #000;
+  }
+}

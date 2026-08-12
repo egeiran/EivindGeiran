@@ -9,9 +9,15 @@ import styles from "./ListView.module.css";
 interface Props {
   t: Copy;
   vms: ExperienceVM[];
+  /**
+   * Listen ligger alltid i DOM-en, også når en annen visning er valgt, så
+   * datoene og beskrivelsene finnes i HTML-en. Når den er skjult måler
+   * getBoundingClientRect bare nuller, så scroll-effekten står over.
+   */
+  active: boolean;
 }
 
-export default function ListView({ t, vms }: Props) {
+export default function ListView({ t, vms, active }: Props) {
   const railRef = useRef<HTMLDivElement | null>(null);
   const fillRef = useRef<HTMLDivElement | null>(null);
   const eraRef = useRef<HTMLDivElement | null>(null);
@@ -19,6 +25,7 @@ export default function ListView({ t, vms }: Props) {
   const itemRefs = useRef<(HTMLElement | null)[]>([]);
 
   useScrollFrame(() => {
+    if (!active) return;
     const items = itemRefs.current.filter(Boolean) as HTMLElement[];
     if (!items.length) return;
     const still = prefersReducedMotion();
@@ -97,7 +104,7 @@ export default function ListView({ t, vms }: Props) {
       eraRef.current.textContent = eraFrom;
     if (eraTo && eraToRef.current && eraToRef.current.textContent !== eraTo)
       eraToRef.current.textContent = eraTo;
-  }, [vms]);
+  }, [vms, active]);
 
   const first = vms[0];
 
@@ -136,8 +143,10 @@ export default function ListView({ t, vms }: Props) {
             <div className={styles.card}>
               <div className={styles.cardHead}>
                 <div className={styles.logo}>
+                  {/* Logoen gjentar organisasjonsnavnet som allerede står i
+                      teksten under, så den er dekorativ. */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={e.imagePath} alt={e.organization} loading="lazy" />
+                  <img src={e.imagePath} alt="" loading="lazy" />
                 </div>
                 <div className={styles.titleCol}>
                   <h3 className={styles.cardTitle}>{e.title}</h3>
@@ -148,7 +157,9 @@ export default function ListView({ t, vms }: Props) {
                     className={styles.period}
                     style={{ color: e.live ? "var(--lime)" : "rgba(244,241,232,.6)" }}
                   >
-                    {e.period}
+                    <time dateTime={e.startISO}>{e.startLabel}</time>
+                    <span aria-hidden="true"> – </span>
+                    {e.endISO ? <time dateTime={e.endISO}>{e.endLabel}</time> : e.endLabel}
                   </div>
                   <div className={styles.type}>{e.typeLabel}</div>
                 </div>

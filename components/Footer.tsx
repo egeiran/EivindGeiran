@@ -2,14 +2,15 @@
 
 import type { Copy } from "@/lib/copy";
 import { LINKS } from "@/lib/copy";
-import { SUBSITES } from "@/lib/site";
+import { MACHINE_ROUTES, ROUTES, SUBSITES } from "@/lib/site";
+import type { Lang } from "@/lib/types";
 
 // Faste, synlige lenker til egne subdomener. De er ellers bare nådd via
 // preview-kortene i prosjektseksjonen, og en crawler som følger lenker fra
 // forsiden trenger et sted der ankerteksten faktisk sier hva som ligger der.
 const hostOf = (url: string) => new URL(url).hostname;
 
-export default function Footer({ t }: { t: Copy }) {
+export default function Footer({ t, lang }: { t: Copy; lang: Lang }) {
   return (
     <footer
       style={{
@@ -29,6 +30,17 @@ export default function Footer({ t }: { t: Copy }) {
         aria-label={t.footerSitesLabel}
         style={{ display: "flex", gap: 16, flexWrap: "wrap" }}
       >
+        <a href={ROUTES[lang].cv} style={{ color: "inherit" }}>
+          {t.navCv}
+        </a>
+        {/* Pekere til de maskinlesbare utgavene. En crawler som lander på
+            forsiden finner dem bare hvis noe faktisk lenker dit. */}
+        <a href={MACHINE_ROUTES.cvJson} style={{ color: "inherit" }}>
+          cv.json
+        </a>
+        <a href={MACHINE_ROUTES.llmsTxt} style={{ color: "inherit" }}>
+          llms.txt
+        </a>
         {SUBSITES.map((url) => (
           <a key={url} href={url} style={{ color: "inherit" }}>
             {hostOf(url)}

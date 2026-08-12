@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import { COPY } from "@/lib/copy";
 import { deriveExperiences } from "@/lib/derive";
 import { useScrollFrame } from "@/lib/fx";
@@ -16,16 +16,17 @@ import Now from "./Now";
 import Projects from "./Projects";
 import Studies from "./Studies";
 
-export default function Site({ experiences, now }: { experiences: Experience[]; now: number }) {
-  const [lang, setLang] = useState<Lang>("no");
+export default function Site({
+  experiences,
+  now,
+  lang,
+}: {
+  experiences: Experience[];
+  now: number;
+  lang: Lang;
+}) {
   const t = COPY[lang];
   const vms = useMemo(() => deriveExperiences(experiences, lang, now), [experiences, lang, now]);
-
-  // Språkbyttet er rent klientside, så <html lang> må oppdateres manuelt —
-  // ellers påstår dokumentet fortsatt bokmål mens innholdet er engelsk.
-  useEffect(() => {
-    document.documentElement.lang = lang === "no" ? "nb" : "en";
-  }, [lang]);
 
   const barRef = useRef<HTMLDivElement | null>(null);
   useScrollFrame(() => {
@@ -52,7 +53,7 @@ export default function Site({ experiences, now }: { experiences: Experience[]; 
           pointerEvents: "none",
         }}
       />
-      <Header lang={lang} setLang={setLang} t={t} />
+      <Header lang={lang} t={t} />
       <main id="top">
         <Hero t={t} ongoingCount={ongoing} totalCount={vms.length} />
         <Marquee t={t} />
@@ -63,7 +64,7 @@ export default function Site({ experiences, now }: { experiences: Experience[]; 
         <FilmRoll t={t} />
         <Contact t={t} />
       </main>
-      <Footer t={t} />
+      <Footer t={t} lang={lang} />
     </>
   );
 }

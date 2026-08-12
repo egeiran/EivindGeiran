@@ -4,13 +4,13 @@
 
 export const SITE_URL = "https://eivindgeiran.no";
 
+// Navn og sted er de samme uansett språk. Stillingstittel og landsnavn er det
+// ikke, og ligger derfor under `cv` i lib/copy.ts — én utgave per språk.
 export const PERSON = {
   name: "Eivind Geiran",
   fullName: "Eivind Systad Geiran",
-  jobTitle: "Datateknologistudent",
   email: "eivind.geiran@gmail.com",
   locality: "Trondheim",
-  country: "Norge",
 } as const;
 
 /**
@@ -25,6 +25,24 @@ export const SAME_AS = [
   "https://tilbud.eivindgeiran.no/",
   "https://towerdefense.eivindgeiran.no/",
 ] as const;
+
+/**
+ * Rutene på dette domenet. Forsiden finnes på norsk og engelsk som ekte URL-er
+ * (ikke bare klientside-state), fordi en crawler bare ser språket som faktisk
+ * ligger i HTML-en den blir servert.
+ */
+export const ROUTES = {
+  no: { home: "/", cv: "/cv" },
+  en: { home: "/en", cv: "/en/cv" },
+} as const;
+
+/** Flater som finnes for maskiner heller enn mennesker. */
+export const MACHINE_ROUTES = {
+  /** CV-en i JSON Resume-format (jsonresume.org). */
+  cvJson: "/cv.json",
+  /** Kort oppsummering for språkmodeller, jf. llmstxt.org. */
+  llmsTxt: "/llms.txt",
+} as const;
 
 /** Undersider på egne subdomener — tas med i sitemap for oppdagelse. */
 export const SUBSITES = [

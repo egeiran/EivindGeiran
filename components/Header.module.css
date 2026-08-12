@@ -73,15 +73,23 @@
   font-size: 11px;
 }
 
+/* Språkvalget er lenker, ikke knapper — derfor line-height og egne
+   hover-regler, så den aktive pillen ikke plukker opp a:hover fra globals. */
 .langBtn {
   border: 0;
   padding: 6px 11px;
   cursor: pointer;
   background: transparent;
   color: rgba(244, 241, 232, 0.55);
+  line-height: 1.2;
 }
 
-.langBtnActive {
+.langBtn:hover {
+  color: var(--paper);
+}
+
+.langBtnActive,
+.langBtnActive:hover {
   background: var(--lime);
   color: var(--ink);
 }

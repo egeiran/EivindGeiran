@@ -2,16 +2,23 @@
 
 import { useState } from "react";
 import type { Copy } from "@/lib/copy";
+import { ROUTES } from "@/lib/site";
 import type { Lang } from "@/lib/types";
 import styles from "./Header.module.css";
 
 interface Props {
   lang: Lang;
-  setLang: (l: Lang) => void;
   t: Copy;
 }
 
-export default function Header({ lang, setLang, t }: Props) {
+// Språkvalget er ekte lenker og ikke lokal state: engelsk må finnes på sin egen
+// URL for at en crawler i det hele tatt skal se at teksten er oversatt.
+const LANGS: { key: Lang; label: string; href: string }[] = [
+  { key: "no", label: "NO", href: ROUTES.no.home },
+  { key: "en", label: "EN", href: ROUTES.en.home },
+];
+
+export default function Header({ lang, t }: Props) {
   const [open, setOpen] = useState(false);
 
   const links = [
@@ -20,6 +27,7 @@ export default function Header({ lang, setLang, t }: Props) {
     { href: "#erfaring", label: t.navExp },
     { href: "#studiet", label: t.navStudy },
     { href: "#glimt", label: t.navLife },
+    { href: ROUTES[lang].cv, label: t.navCv },
   ];
 
   return (
@@ -38,15 +46,16 @@ export default function Header({ lang, setLang, t }: Props) {
             ))}
           </nav>
           <div className={styles.langToggle}>
-            {(["no", "en"] as Lang[]).map((l) => (
-              <button
-                key={l}
-                type="button"
-                onClick={() => setLang(l)}
-                className={`${styles.langBtn} ${lang === l ? styles.langBtnActive : ""}`}
+            {LANGS.map((l) => (
+              <a
+                key={l.key}
+                href={l.href}
+                hrefLang={l.key === "no" ? "nb-NO" : "en"}
+                aria-current={lang === l.key ? "true" : undefined}
+                className={`${styles.langBtn} ${lang === l.key ? styles.langBtnActive : ""}`}
               >
-                {l.toUpperCase()}
-              </button>
+                {l.label}
+              </a>
             ))}
           </div>
           <a href="#kontakt" className={styles.contactPill} onClick={() => setOpen(false)}>

@@ -65,3 +65,12 @@ export function fmtMonthYearFull(v: number, lang: Lang): string {
   const m = MONTHS_FULL[lang][monthOf(v) - 1];
   return `${m.charAt(0).toUpperCase()}${m.slice(1)} ${yearOf(v)}`;
 }
+
+/**
+ * «2026-08» — ISO 8601 år-måned for et desimal-år. Desimal-år er praktisk for
+ * tidslinjen, men uleselig for alt annet enn vår egen kode; ISO er formatet
+ * `<time datetime>`, schema.org og CV-parsere faktisk forstår.
+ */
+export function toISOMonth(v: number): string {
+  return `${yearOf(v)}-${String(monthOf(v)).padStart(2, "0")}`;
+}

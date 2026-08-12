@@ -1,0 +1,355 @@
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 32px var(--gutter) 96px;
+}
+
+.topNav {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  color: rgba(244, 241, 232, 0.55);
+}
+
+.topNav a {
+  color: inherit;
+}
+
+.header {
+  padding: 40px 0 32px;
+  border-bottom: 1px solid rgba(244, 241, 232, 0.14);
+}
+
+.name {
+  margin: 0;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(30px, 5vw, 48px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.jobTitle {
+  margin: 12px 0 0;
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  color: var(--lime);
+}
+
+.summary {
+  margin: 20px 0 0;
+  max-width: 62ch;
+  font-size: 17px;
+  color: rgba(244, 241, 232, 0.86);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin: 28px 0 0;
+}
+
+.facts dt {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(244, 241, 232, 0.45);
+}
+
+.facts dd {
+  margin: 6px 0 0;
+  font-size: 14px;
+}
+
+.facts a {
+  border-bottom: 1px solid rgba(217, 255, 99, 0.4);
+}
+
+.profiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  color: rgba(244, 241, 232, 0.55);
+}
+
+.profiles a {
+  color: inherit;
+}
+
+.printHint {
+  margin: 20px 0 0;
+  font-size: 12.5px;
+  color: rgba(244, 241, 232, 0.4);
+}
+
+.section {
+  padding: 40px 0 0;
+}
+
+.sectionTitle {
+  margin: 0 0 20px;
+  font-family: var(--font-display), sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.subTitle {
+  margin: 36px 0 14px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.skills {
+  display: grid;
+  grid-template-columns: minmax(120px, 160px) 1fr;
+  gap: 12px 24px;
+  margin: 0;
+  font-size: 14.5px;
+}
+
+.skills dt {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(244, 241, 232, 0.45);
+  padding-top: 3px;
+}
+
+.skills dd {
+  margin: 0;
+  color: rgba(244, 241, 232, 0.86);
+}
+
+.roles {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.roles > li + li {
+  margin-top: 12px;
+}
+
+.role {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 24px;
+  padding: 20px 0;
+  border-top: 1px solid rgba(244, 241, 232, 0.1);
+}
+
+.roleTitle {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.roleOrg {
+  margin: 3px 0 0;
+  font-size: 14.5px;
+  color: rgba(244, 241, 232, 0.62);
+}
+
+.roleOrg a {
+  color: inherit;
+  border-bottom: 1px solid rgba(244, 241, 232, 0.22);
+}
+
+.roleMeta {
+  text-align: right;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  color: rgba(244, 241, 232, 0.55);
+}
+
+.period {
+  margin: 2px 0 0;
+  white-space: nowrap;
+}
+
+.live {
+  color: var(--lime);
+}
+
+.roleType {
+  margin: 4px 0 0;
+  color: rgba(244, 241, 232, 0.38);
+}
+
+.roleType a {
+  color: inherit;
+  border-bottom: 1px solid rgba(244, 241, 232, 0.22);
+}
+
+.roleBody {
+  grid-column: 1 / -1;
+  margin-top: 10px;
+  max-width: 68ch;
+}
+
+.roleBody p {
+  margin: 0;
+  font-size: 15px;
+  color: rgba(244, 241, 232, 0.8);
+}
+
+.roleNote {
+  margin-top: 6px !important;
+  color: rgba(244, 241, 232, 0.55) !important;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  color: rgba(244, 241, 232, 0.55);
+}
+
+.tags li {
+  padding: 4px 10px;
+  border: 1px solid rgba(244, 241, 232, 0.16);
+  border-radius: 999px;
+}
+
+.courses {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14.5px;
+}
+
+.courses caption {
+  text-align: left;
+  padding-bottom: 12px;
+  font-family: var(--font-mono), monospace;
+  font-size: 11.5px;
+  color: rgba(244, 241, 232, 0.45);
+}
+
+.courses th,
+.courses td {
+  text-align: left;
+  padding: 9px 12px 9px 0;
+  border-bottom: 1px solid rgba(244, 241, 232, 0.1);
+}
+
+.courses th {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(244, 241, 232, 0.45);
+}
+
+.courseCode {
+  font-family: var(--font-mono), monospace;
+  font-size: 12.5px;
+  color: var(--lime);
+  white-space: nowrap;
+}
+
+.machine {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  color: rgba(244, 241, 232, 0.55);
+}
+
+.machine li + li {
+  margin-top: 6px;
+}
+
+.machine a {
+  color: var(--lime);
+}
+
+@media (max-width: 640px) {
+  .role {
+    grid-template-columns: 1fr;
+  }
+
+  .roleMeta {
+    text-align: left;
+    margin-top: 6px;
+  }
+
+  .skills {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .skills dd {
+    margin-bottom: 12px;
+  }
+}
+
+/* Utskrift er den enkleste veien til en PDF en ATS kan lese: svart tekst på
+   hvitt, ingen navigasjon, og ingen sideskift midt i en rolle. */
+@media print {
+  .page {
+    max-width: none;
+    padding: 0;
+    color: #000;
+  }
+
+  .topNav,
+  .printHint {
+    display: none;
+  }
+
+  .name,
+  .roleTitle,
+  .sectionTitle,
+  .subTitle {
+    color: #000;
+  }
+
+  .role,
+  .summary,
+  .roleBody p,
+  .roleOrg,
+  .roleMeta,
+  .roleType,
+  .facts dd,
+  .skills dd,
+  .profiles,
+  .tags,
+  .courses,
+  .machine {
+    color: #000;
+  }
+
+  .role,
+  .courses tr,
+  .section {
+    break-inside: avoid;
+  }
+
+  .courseCode,
+  .role a,
+  .machine a {
+    color: #000;
+  }
+
+  .tags li {
+    border-color: #999;
+  }
+}
