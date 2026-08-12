@@ -164,6 +164,8 @@
 .bandBody {
   border-radius: 9px;
   padding: 3px 0;
+  margin: 0;
+  list-style: none;
 }
 
 .row {

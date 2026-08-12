@@ -1,5 +1,5 @@
 import { COPY, TYPE_COLOR } from "./copy";
-import { fmtDate, yearOf } from "./time";
+import { fmtDate, toISOMonth, yearOf } from "./time";
 import type { Experience, ExperienceType, Lang } from "./types";
 
 /** Ferdig utledet visningsmodell for én erfaring, brukt av alle fire views. */
@@ -20,7 +20,12 @@ export interface ExperienceVM {
   note: string;
   startYear: number;
   period: string;
-  periodFull: string;
+  /** ISO 8601 år-måned, så periodene kan pakkes i `<time datetime>`. */
+  startISO: string;
+  /** null betyr pågående. */
+  endISO: string | null;
+  startLabel: string;
+  endLabel: string;
 }
 
 export function deriveExperiences(
@@ -32,7 +37,9 @@ export function deriveExperiences(
   return raw.map((e) => {
     const live = e.to === null;
     const eNum = e.to ?? now;
-    const period = `${fmtDate(e.from, lang)} – ${live ? t.nowWord.toLowerCase() : fmtDate(eNum, lang)}`;
+    const startLabel = fmtDate(e.from, lang);
+    const endLabel = live ? t.nowWord.toLowerCase() : fmtDate(eNum, lang);
+    const period = `${startLabel} – ${endLabel}`;
     return {
       id: e.id,
       title: e.title[lang],
@@ -50,7 +57,10 @@ export function deriveExperiences(
       note: e.note ? e.note[lang] : "",
       startYear: yearOf(e.from),
       period,
-      periodFull: `${period}  ·  ${t.filters[e.type]}`,
+      startISO: toISOMonth(e.from),
+      endISO: live ? null : toISOMonth(eNum),
+      startLabel,
+      endLabel,
     };
   });
 }

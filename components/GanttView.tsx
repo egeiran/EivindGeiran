@@ -199,54 +199,57 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
                   {t.filters[band.key]}
                   <span className={styles.bandCount}>{band.roles.length}</span>
                 </div>
-                <div className={styles.bandBody} style={{ background: rgba(hex, 0.04) }}>
+                {/* Radene er en liste over roller, ikke løse divver — det er
+                    hierarkiet en parser leser når denne fanen er den aktive. */}
+                <ol className={styles.bandBody} style={{ background: rgba(hex, 0.04) }}>
                   {band.roles.map(({ vm, idx }) => (
-                    <div
-                      key={vm.id}
-                      ref={(el) => {
-                        rowRefs.current[idx] = el;
-                      }}
-                      onClick={() => setSel(idx)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          setSel(idx);
-                        }
-                      }}
-                      role="button"
-                      tabIndex={0}
-                      aria-pressed={sel === idx}
-                      className={`${styles.row} ${sel === idx ? styles.rowSelected : ""}`}
-                    >
-                      <div className={styles.rowName} style={{ borderLeftColor: hex }}>
-                        <span className={styles.rowTitle}>{vm.title}</span>
-                        <span className={styles.rowOrg}>{vm.organization}</span>
+                    <li key={vm.id}>
+                      <div
+                        ref={(el) => {
+                          rowRefs.current[idx] = el;
+                        }}
+                        onClick={() => setSel(idx)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            setSel(idx);
+                          }
+                        }}
+                        role="button"
+                        tabIndex={0}
+                        aria-pressed={sel === idx}
+                        className={`${styles.row} ${sel === idx ? styles.rowSelected : ""}`}
+                      >
+                        <div className={styles.rowName} style={{ borderLeftColor: hex }}>
+                          <span className={styles.rowTitle}>{vm.title}</span>
+                          <span className={styles.rowOrg}>{vm.organization}</span>
+                        </div>
+                        <div className={styles.rowBars}>
+                          {vm.segs.map((s, si) => {
+                            const flatIdx = segStart[idx] + si;
+                            return (
+                              <div
+                                key={si}
+                                ref={(el) => {
+                                  segRefs.current[flatIdx] = el;
+                                }}
+                                className={styles.seg}
+                                style={{
+                                  left: `${pos(s[0])}%`,
+                                  width: `${Math.max(1.1, pos(s[1]) - pos(s[0]))}%`,
+                                  background: rgba(hex, 0.22),
+                                  border: `1px solid ${rgba(hex, 0.6)}`,
+                                }}
+                              >
+                                <span className={styles.segFill} style={{ background: hex }} />
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
-                      <div className={styles.rowBars}>
-                        {vm.segs.map((s, si) => {
-                          const flatIdx = segStart[idx] + si;
-                          return (
-                            <div
-                              key={si}
-                              ref={(el) => {
-                                segRefs.current[flatIdx] = el;
-                              }}
-                              className={styles.seg}
-                              style={{
-                                left: `${pos(s[0])}%`,
-                                width: `${Math.max(1.1, pos(s[1]) - pos(s[0]))}%`,
-                                background: rgba(hex, 0.22),
-                                border: `1px solid ${rgba(hex, 0.6)}`,
-                              }}
-                            >
-                              <span className={styles.segFill} style={{ background: hex }} />
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
+                    </li>
                   ))}
-                </div>
+                </ol>
               </div>
             );
           })}
@@ -262,7 +265,13 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
               <div className={styles.detailHead}>
                 <h3 className={styles.detailTitle}>{d.title}</h3>
                 <span className={styles.detailOrg}>{d.organization}</span>
-                <span className={styles.detailPeriod}>{d.periodFull}</span>
+                <span className={styles.detailPeriod}>
+                  <time dateTime={d.startISO}>{d.startLabel}</time>
+                  <span aria-hidden="true"> – </span>
+                  {d.endISO ? <time dateTime={d.endISO}>{d.endLabel}</time> : d.endLabel}
+                  {"  ·  "}
+                  {d.typeLabel}
+                </span>
               </div>
               <p className={styles.detailDesc}>{d.description}</p>
               {d.note && <p className={styles.detailNote}>↳ {d.note}</p>}

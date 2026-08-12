@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Schibsted_Grotesk, Syne } from "next/font/google";
-import { PERSON, SAME_AS, SITE_URL } from "@/lib/site";
+import { HOME_DESCRIPTION, HOME_TITLE } from "@/lib/meta";
+import { PERSON, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const syne = Syne({
@@ -21,18 +22,15 @@ const jetbrains = JetBrains_Mono({
   variable: "--font-mono",
 });
 
-const DESCRIPTION =
-  "Eivind Geiran er datateknologistudent ved NTNU i Trondheim. Portefølje, " +
-  "erfaring og prosjekter — Kort Forklart, NHL ML Prediction Model og tilbudsscraper.";
-
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  // Tittelen starter med navnet: det er søket siden skal vinne.
+  // Tittelen starter med navnet: det er søket siden skal vinne. Sidene setter
+  // sin egen absolutte tittel; malen gjelder eventuelle framtidige undersider.
   title: {
-    default: "Eivind Geiran — datateknologi ved NTNU, Trondheim",
+    default: HOME_TITLE.no,
     template: "%s | Eivind Geiran",
   },
-  description: DESCRIPTION,
+  description: HOME_DESCRIPTION.no,
   applicationName: "Eivind Geiran",
   authors: [{ name: PERSON.fullName, url: SITE_URL }],
   creator: PERSON.fullName,
@@ -48,7 +46,6 @@ export const metadata: Metadata = {
     "utvikler",
     "Kort Forklart",
   ],
-  alternates: { canonical: "/" },
   robots: {
     index: true,
     follow: true,
@@ -60,6 +57,7 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+  // Standardverdier; hver side setter sin egen canonical, hreflang og tittel.
   openGraph: {
     type: "profile",
     firstName: "Eivind",
@@ -68,88 +66,24 @@ export const metadata: Metadata = {
     alternateLocale: ["en_US"],
     url: SITE_URL,
     siteName: "Eivind Geiran",
-    title: "Eivind Geiran — datateknologi ved NTNU, Trondheim",
-    description: DESCRIPTION,
+    title: HOME_TITLE.no,
+    description: HOME_DESCRIPTION.no,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Eivind Geiran — datateknologi ved NTNU, Trondheim",
-    description: DESCRIPTION,
+    title: HOME_TITLE.no,
+    description: HOME_DESCRIPTION.no,
   },
   category: "portfolio",
 };
 
-// Person- og WebSite-schema. Dette er den sterkeste enkeltfaktoren for at
-// Google skal koble navnesøket «Eivind Geiran» til dette domenet: navnet,
-// stedet, studiet og alle profilene beskrives som én entitet.
-const JSON_LD = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Person",
-      "@id": `${SITE_URL}/#person`,
-      name: PERSON.name,
-      alternateName: PERSON.fullName,
-      givenName: "Eivind",
-      familyName: "Geiran",
-      url: SITE_URL,
-      email: `mailto:${PERSON.email}`,
-      image: `${SITE_URL}/opengraph-image.png`,
-      jobTitle: PERSON.jobTitle,
-      description: DESCRIPTION,
-      nationality: { "@type": "Country", name: PERSON.country },
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: PERSON.locality,
-        addressCountry: "NO",
-      },
-      alumniOf: {
-        "@type": "CollegeOrUniversity",
-        name: "Norges teknisk-naturvitenskapelige universitet (NTNU)",
-        url: "https://www.ntnu.no/",
-      },
-      knowsLanguage: ["nb-NO", "en"],
-      knowsAbout: [
-        "Datateknologi",
-        "Programvareutvikling",
-        "Maskinlæring",
-        "TypeScript",
-        "Python",
-        "Next.js",
-      ],
-      sameAs: [...SAME_AS],
-    },
-    {
-      "@type": "WebSite",
-      "@id": `${SITE_URL}/#website`,
-      url: SITE_URL,
-      name: "Eivind Geiran",
-      inLanguage: "nb-NO",
-      description: DESCRIPTION,
-      publisher: { "@id": `${SITE_URL}/#person` },
-      about: { "@id": `${SITE_URL}/#person` },
-    },
-    {
-      "@type": "ProfilePage",
-      "@id": `${SITE_URL}/#profilepage`,
-      url: SITE_URL,
-      name: "Eivind Geiran — datateknologi ved NTNU, Trondheim",
-      isPartOf: { "@id": `${SITE_URL}/#website` },
-      mainEntity: { "@id": `${SITE_URL}/#person` },
-    },
-  ],
-};
-
+// `lang` settes til nb her og overstyres på de engelske rutene, som pakker
+// innholdet sitt i et element med lang="en". Se app/en/layout.tsx.
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="nb">
       <body className={`${syne.variable} ${schibsted.variable} ${jetbrains.variable}`}>
         {children}
-        <script
-          type="application/ld+json"
-          // JSON_LD er en konstant i denne filen — ingen brukerdata inn hit.
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
-        />
       </body>
     </html>
   );

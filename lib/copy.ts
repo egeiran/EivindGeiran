@@ -23,6 +23,48 @@ export interface CtaCopy {
   note: string;
 }
 
+/**
+ * Tekstene på /cv. Siden er den maskinlesbare flaten — den er det en ATS eller
+ * en AI-screener leser i sin helhet i første respons — så `summary` og
+ * `availability` er de to feltene som faktisk matches mot en stillingsannonse.
+ * Begge er ment å redigeres for hånd når situasjonen endrer seg.
+ */
+export interface CvCopy {
+  heading: string;
+  /** Stillingstittel på sidens eget språk. */
+  jobTitle: string;
+  /** Landsnavnet på sidens eget språk — «Norge» på norsk, «Norway» på engelsk. */
+  countryName: string;
+  metaTitle: string;
+  metaDescription: string;
+  summary: string;
+  availability: string;
+  availabilityLabel: string;
+  updatedLabel: string;
+  contactHeading: string;
+  skillsHeading: string;
+  techLabel: string;
+  domainLabel: string;
+  workHeading: string;
+  volunteerHeading: string;
+  educationHeading: string;
+  coursesHeading: string;
+  codeLabel: string;
+  courseLabel: string;
+  termLabel: string;
+  coursesUnit: string;
+  creditsUnit: string;
+  projectsHeading: string;
+  sourceLabel: string;
+  machineHeading: string;
+  machineLede: string;
+  backToSite: string;
+  otherLangLabel: string;
+  printHint: string;
+  presentWord: string;
+  liveLabel: string;
+}
+
 export interface Copy {
   eyebrow: string;
   navNow: string;
@@ -64,6 +106,8 @@ export interface Copy {
   lifeTitle: string;
   lifeLede: string;
   cta: CtaCopy;
+  cv: CvCopy;
+  navCv: string;
   footerNote: string;
   footerSitesLabel: string;
   factRoles: string;
@@ -128,6 +172,48 @@ export const COPY: Record<Lang, Copy> = {
       title: "Ta gjerne kontakt",
       note: "Trondheim & Oslo",
     },
+    cv: {
+      heading: "CV",
+      jobTitle: "Datateknologistudent",
+      countryName: "Norge",
+      metaTitle: "CV — Eivind Systad Geiran",
+      metaDescription:
+        "Fullstendig CV for Eivind Systad Geiran: erfaring med datoer, utdanning, " +
+        "emner, prosjekter og ferdigheter. Datateknologi (MSc) ved NTNU i Trondheim.",
+      summary:
+        "Datateknologistudent (MSc) ved NTNU i Trondheim. Utvikler på deltid i Computas " +
+        "og tech-konsulent i Junior Consulting ved siden av studiene, med egne prosjekter " +
+        "på si — blant annet læringsappen Kort Forklart, som er i drift.",
+      availability:
+        "Åpen for henvendelser om utvikling, maskinlæring og konsulentoppdrag. " +
+        "Trondheim og Oslo.",
+      availabilityLabel: "Tilgjengelighet",
+      updatedLabel: "Oppdatert",
+      contactHeading: "Kontakt",
+      skillsHeading: "Ferdigheter",
+      techLabel: "Teknologi",
+      domainLabel: "Fagområder",
+      workHeading: "Arbeidserfaring",
+      volunteerHeading: "Frivillig arbeid og verv",
+      educationHeading: "Utdanning",
+      coursesHeading: "Emner",
+      codeLabel: "Kode",
+      courseLabel: "Emne",
+      termLabel: "Semester",
+      coursesUnit: "emner",
+      creditsUnit: "studiepoeng",
+      projectsHeading: "Prosjekter",
+      sourceLabel: "Kildekode",
+      machineHeading: "Maskinlesbare versjoner",
+      machineLede:
+        "Denne siden finnes også i strukturert form, for verktøy som leser CV-er automatisk.",
+      backToSite: "Til forsiden",
+      otherLangLabel: "In English",
+      printHint: "Skriv ut denne siden for å få CV-en som PDF.",
+      presentWord: "nå",
+      liveLabel: "i drift",
+    },
+    navCv: "CV",
     footerNote: "Bygget i Trondheim",
     footerSitesLabel: "Mine sider og profiler",
     factRoles: "pågående roller",
@@ -251,6 +337,48 @@ export const COPY: Record<Lang, Copy> = {
       title: "Feel free to reach out",
       note: "Trondheim & Oslo",
     },
+    cv: {
+      heading: "CV",
+      jobTitle: "Computer science student",
+      countryName: "Norway",
+      metaTitle: "CV — Eivind Systad Geiran",
+      metaDescription:
+        "Full CV for Eivind Systad Geiran: experience with dates, education, coursework, " +
+        "projects and skills. Computer science (MSc) at NTNU in Trondheim, Norway.",
+      summary:
+        "Computer science student (MSc) at NTNU in Trondheim, Norway. Part-time developer " +
+        "at Computas and tech consultant at Junior Consulting alongside my studies, with " +
+        "side projects of my own — including the learning app Kort Forklart, which is live.",
+      availability:
+        "Open to enquiries about software engineering, machine learning and consulting work. " +
+        "Trondheim and Oslo, Norway.",
+      availabilityLabel: "Availability",
+      updatedLabel: "Updated",
+      contactHeading: "Contact",
+      skillsHeading: "Skills",
+      techLabel: "Technology",
+      domainLabel: "Areas",
+      workHeading: "Work experience",
+      volunteerHeading: "Volunteer work and positions of trust",
+      educationHeading: "Education",
+      coursesHeading: "Coursework",
+      codeLabel: "Code",
+      courseLabel: "Course",
+      termLabel: "Term",
+      coursesUnit: "courses",
+      creditsUnit: "ECTS credits",
+      projectsHeading: "Projects",
+      sourceLabel: "Source code",
+      machineHeading: "Machine-readable versions",
+      machineLede:
+        "This page is also available in structured form, for tools that parse CVs automatically.",
+      backToSite: "Back to the site",
+      otherLangLabel: "På norsk",
+      printHint: "Print this page to get the CV as a PDF.",
+      presentWord: "present",
+      liveLabel: "live",
+    },
+    navCv: "CV",
     footerNote: "Built in Trondheim",
     footerSitesLabel: "My sites and profiles",
     factRoles: "active roles",

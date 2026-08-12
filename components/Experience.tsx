@@ -51,6 +51,9 @@ export default function ExperienceSection({ t, lang, vms, now }: Props) {
     { key: "blame", label: "git blame" },
   ];
 
+  const tabId = (key: View) => `erfaring-fane-${key}`;
+  const panelId = (key: View) => `erfaring-panel-${key}`;
+
   return (
     <section id="erfaring" className={styles.section}>
       <div className={headStyles.head}>
@@ -66,11 +69,15 @@ export default function ExperienceSection({ t, lang, vms, now }: Props) {
               {t.filters[k]}
             </button>
           ))}
-          <div className={styles.switcher}>
+          <div className={styles.switcher} role="tablist" aria-label={t.expTitle}>
             {views.map((v) => (
               <button
                 key={v.key}
                 type="button"
+                role="tab"
+                id={tabId(v.key)}
+                aria-selected={effective === v.key}
+                aria-controls={panelId(v.key)}
                 onClick={() => setView(v.key)}
                 className={`${styles.switchBtn} ${effective === v.key ? styles.switchBtnActive : ""}`}
               >
@@ -82,11 +89,34 @@ export default function ExperienceSection({ t, lang, vms, now }: Props) {
       </div>
 
       {effective === "gantt" && (
-        <GanttView t={t} lang={lang} vms={filtered} axis={axis} now={now} />
+        <div role="tabpanel" id={panelId("gantt")} aria-labelledby={tabId("gantt")}>
+          <GanttView t={t} lang={lang} vms={filtered} axis={axis} now={now} />
+        </div>
       )}
-      {effective === "aktivitet" && <HeatView t={t} lang={lang} vms={filtered} now={now} />}
-      {effective === "liste" && <ListView t={t} vms={filtered} />}
-      {effective === "blame" && <BlameView t={t} vms={filtered} />}
+      {effective === "aktivitet" && (
+        <div role="tabpanel" id={panelId("aktivitet")} aria-labelledby={tabId("aktivitet")}>
+          <HeatView t={t} lang={lang} vms={filtered} now={now} />
+        </div>
+      )}
+      {effective === "blame" && (
+        <div role="tabpanel" id={panelId("blame")} aria-labelledby={tabId("blame")}>
+          <BlameView t={t} vms={filtered} />
+        </div>
+      )}
+
+      {/* Listevisningen er alltid montert, også når en annen fane er valgt.
+          Den er den eneste visningen som har periode, beskrivelse og tags for
+          hver rolle, og dermed den eneste teksten en crawler eller CV-parser
+          finner i HTML-en. Skjult med display:none, så skjermlesere fortsatt
+          behandler fanene riktig. */}
+      <div
+        role="tabpanel"
+        id={panelId("liste")}
+        aria-labelledby={tabId("liste")}
+        className={effective === "liste" ? undefined : styles.panelHidden}
+      >
+        <ListView t={t} vms={filtered} active={effective === "liste"} />
+      </div>
     </section>
   );
 }
