@@ -157,6 +157,62 @@
   border-bottom: 1px solid rgba(244, 241, 232, 0.1);
 }
 
+.film {
+  background: #0b0d11;
+}
+
+/* Spilleren legger seg oppå plakatbildet. scale trimmer vekk kanten YouTube
+   legger rundt bildet, så klippet fyller kortet som et skjermbilde. */
+.film iframe {
+  position: absolute;
+  inset: 0;
+  transform: scale(1.02);
+  transform-origin: center;
+}
+
+.film img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.filmLink {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(11, 13, 17, 0.72);
+  border: 1px solid rgba(244, 241, 232, 0.18);
+  backdrop-filter: blur(6px);
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(244, 241, 232, 0.82);
+  transition: color 200ms ease, border-color 200ms ease, background 200ms ease;
+}
+
+.filmLink:hover,
+.filmLink:focus-visible {
+  color: var(--lime);
+  border-color: rgba(217, 255, 99, 0.55);
+  background: rgba(11, 13, 17, 0.88);
+}
+
+.filmLink:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 2px;
+}
+
 .previewOverlay {
   position: absolute;
   inset: 0;
