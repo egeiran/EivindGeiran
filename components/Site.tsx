@@ -28,11 +28,12 @@ export default function Site({ experiences, now }: { experiences: Experience[]; 
   }, [lang]);
 
   const barRef = useRef<HTMLDivElement | null>(null);
-  useScrollFrame(() => {
+  useScrollFrame(({ scrollY, maxScroll }) => {
     const el = barRef.current;
     if (!el) return;
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    el.style.width = `${max > 0 ? Math.min(1, window.scrollY / max) * 100 : 0}%`;
+    // maxScroll er cachet av planleggeren; å lese scrollHeight her ville tvunget
+    // en reflow hver eneste frame.
+    el.style.width = `${maxScroll > 0 ? Math.min(1, scrollY / maxScroll) * 100 : 0}%`;
   });
 
   const ongoing = vms.filter((v) => v.live).length;

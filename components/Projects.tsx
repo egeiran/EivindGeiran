@@ -2,8 +2,8 @@
 
 import type { Copy, ProjectCopy } from "@/lib/copy";
 import { LINKS } from "@/lib/copy";
-import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { useReveal } from "@/lib/fx";
+import { useEffect, useState, type MouseEvent } from "react";
+import { useDeferredMount, useReveal } from "@/lib/fx";
 import headStyles from "./SectionHead.module.css";
 import styles from "./Projects.module.css";
 
@@ -24,6 +24,9 @@ function LivePreview({
   className: string;
 }) {
   const [expansion, setExpansion] = useState<Expansion | null>(null);
+  // Iframen er en hel nettside til. Den skal ikke lastes mens heroen fortsatt
+  // henter fonter og bilder — men den skal være ferdig lenge før man ser den.
+  const [hostRef, showFrame] = useDeferredMount<HTMLDivElement>("1200px");
 
   useEffect(() => {
     const resetPreview = () => setExpansion(null);
@@ -94,22 +97,24 @@ function LivePreview({
 
   return (
     <div
+      ref={hostRef}
       className={`${className} ${expansion ? styles.previewExpanding : ""} ${
         expansion?.phase === "expanding" ? styles.previewExpanded : ""
       }`}
       style={previewStyle}
       aria-busy={expansion ? "true" : undefined}
     >
-      <iframe
-        src={url}
-        title={`Forhåndsvisning av ${title}`}
-        loading="lazy"
-        tabIndex={-1}
-        aria-hidden="true"
-        // Previewene er kun visuelle — lyd fra embeddede apper skal aldri
-        // spilles av på porteføljen.
-        allow="autoplay 'none'; microphone 'none'; camera 'none'"
-      />
+      {showFrame ? (
+        <iframe
+          src={url}
+          title={`Forhåndsvisning av ${title}`}
+          tabIndex={-1}
+          aria-hidden="true"
+          // Previewene er kun visuelle — lyd fra embeddede apper skal aldri
+          // spilles av på porteføljen.
+          allow="autoplay 'none'; microphone 'none'; camera 'none'"
+        />
+      ) : null}
       <a
         href={url}
         target="_blank"
@@ -151,29 +156,26 @@ function FilmPreview({
   filmLabel: string;
   className: string;
 }) {
-  const hostRef = useRef<HTMLDivElement>(null);
-  const [playing, setPlaying] = useState(false);
+  const [hostRef, near] = useDeferredMount<HTMLDivElement>("400px");
+  const [allowed, setAllowed] = useState(true);
   // maxres finnes ikke for alle opplastinger; hqdefault gjør alltid det.
   const [thumb, setThumb] = useState(`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`);
 
   useEffect(() => {
-    const host = hostRef.current;
-    if (!host) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (typeof IntersectionObserver === "undefined") return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          setPlaying(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "240px" },
-    );
-    observer.observe(host);
-    return () => observer.disconnect();
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setAllowed(false);
+      return;
+    }
+    // Har brukeren bedt om datasparing, eller er linja så treg at klippet
+    // uansett ville hakket, blir plakatbildet stående.
+    const conn = (navigator as { connection?: { saveData?: boolean; effectiveType?: string } })
+      .connection;
+    if (conn && (conn.saveData || conn.effectiveType === "2g" || conn.effectiveType === "slow-2g")) {
+      setAllowed(false);
+    }
   }, []);
+
+  const playing = near && allowed;
 
   // mute=1 er det som gjør at nettleseren i det hele tatt lar den starte selv;
   // loop trenger playlist-parameteren for å virke på én enkelt video.

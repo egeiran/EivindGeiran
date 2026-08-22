@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import type { Copy } from "@/lib/copy";
-import { prefersReducedMotion, useScrollFrame } from "@/lib/fx";
+import { prefersReducedMotion, useInView, useScrollFrame } from "@/lib/fx";
 import { startScramble } from "@/lib/scramble";
 import styles from "./Hero.module.css";
 
@@ -15,6 +15,10 @@ interface Props {
 }
 
 export default function Hero({ t, ongoingCount, totalCount }: Props) {
+  // Heroen er øverst, så alt her stopper så snart man har scrollet forbi:
+  // både scramblen og spotlighten skriver hver frame, og ingen av delene er
+  // synlige nedover siden.
+  const [sectionRef, heroInView] = useInView<HTMLElement>("120px");
   const gridRef = useRef<HTMLDivElement | null>(null);
   const wordmarkRef = useRef<HTMLHeadingElement | null>(null);
   const maskRef = useRef<HTMLSpanElement | null>(null);
@@ -38,25 +42,28 @@ export default function Hero({ t, ongoingCount, totalCount }: Props) {
   const firstLang = useRef(true);
   useEffect(() => {
     const el = roleRef.current;
-    if (!el) return;
+    if (!el || !heroInView) return;
     ctrlRef.current = startScramble(el, () => rolesRef.current);
     return () => {
       ctrlRef.current?.stop();
       ctrlRef.current = null;
     };
-  }, []);
+  }, [heroInView]);
   useEffect(() => {
     rolesRef.current = t.roles;
     if (firstLang.current) {
       firstLang.current = false;
       return;
     }
-    ctrlRef.current?.bump();
+    // Står loopen parkert utenfor viewporten, skrives den nye språkversjonen
+    // rett inn — da starter scramblen på riktig streng når man kommer tilbake.
+    if (ctrlRef.current) ctrlRef.current.bump();
+    else if (roleRef.current) roleRef.current.textContent = t.roles[0] ?? "";
   }, [t.roles]);
 
   // Spotlight-easing + idle-drift i egen rAF-loop.
   useEffect(() => {
-    if (!HERO_SPOTLIGHT || prefersReducedMotion()) return;
+    if (!HERO_SPOTLIGHT || prefersReducedMotion() || !heroInView) return;
     const s = spot.current;
     s.t0 = performance.now();
     let raf = 0;
@@ -82,12 +89,10 @@ export default function Hero({ t, ongoingCount, totalCount }: Props) {
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [heroInView]);
 
-  useScrollFrame(() => {
+  useScrollFrame(({ scrollY: y, vhLive: vh }) => {
     const still = prefersReducedMotion();
-    const y = window.scrollY;
-    const vh = window.innerHeight;
     if (!still) {
       const wm = wordmarkRef.current;
       if (wm) {
@@ -160,7 +165,7 @@ export default function Hero({ t, ongoingCount, totalCount }: Props) {
   );
 
   return (
-    <section className={styles.section} onMouseMove={onMove}>
+    <section ref={sectionRef} className={styles.section} onMouseMove={onMove}>
       <div ref={gridRef} className={styles.grid} />
       {/* Sidens eneste h1. Ordmerket er dekorativt; den maskinlesbare
           overskriften er fullt navn + hva jeg driver med. */}

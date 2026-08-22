@@ -39,3 +39,8 @@
     animation: none;
   }
 }
+
+/* Båndet ruller uendelig; utenfor viewporten er det ingen grunn til det. */
+.band[data-paused="true"] .track {
+  animation-play-state: paused;
+}

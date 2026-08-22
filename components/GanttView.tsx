@@ -72,15 +72,16 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
   const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
   const segRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  useScrollFrame(() => {
+  useScrollFrame(({ vh, vw }) => {
     const wrap = wrapRef.current;
     if (!wrap) return;
-    const vh = window.innerHeight;
     const r = wrap.getBoundingClientRect();
+    // Er diagrammet utenfor bildet står alle verdiene stille uansett.
+    if (r.bottom < -200 || r.top > vh + 200) return;
     const dist = Math.max(1, r.height - vh * 0.8);
     // På smale skjermer er layouten statisk (se CSS), så diagrammet vises
     // ferdig utfylt i stedet for å scrubbe.
-    const narrow = window.innerWidth <= 820;
+    const narrow = vw <= 820;
     const p =
       prefersReducedMotion() || !GANTT_SCRUB || narrow
         ? 1
@@ -92,7 +93,14 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
     // prefers-reduced-motion, der p alltid er 1.
     const yEff = Math.min(year, now);
 
-    if (headRef.current) headRef.current.style.left = `${p * 100}%`;
+    // Identiske tilordninger trigger style recalc likevel, så alt sjekkes mot
+    // inline-stilen først. På mobil er p låst til 1, og da blir hele
+    // skrivefasen under en no-op i stedet for 40+ oppdateringer per frame.
+    const setStyle = (el: HTMLElement, prop: "left" | "width" | "opacity", v: string) => {
+      if (el.style[prop] !== v) el.style[prop] = v;
+    };
+
+    if (headRef.current) setStyle(headRef.current, "left", `${p * 100}%`);
     if (yearRef.current) {
       const yv = String(Math.floor(yEff));
       if (yearRef.current.textContent !== yv) yearRef.current.textContent = yv;
@@ -109,8 +117,8 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
       if (!el) continue;
       const k = Math.max(0, Math.min(1, (year - s.a) / Math.max(0.0001, s.b - s.a)));
       const fill = el.firstElementChild as HTMLElement | null;
-      if (fill) fill.style.width = `${k * 100}%`;
-      el.style.opacity = k > 0 ? "1" : "0.72";
+      if (fill) setStyle(fill, "width", `${k * 100}%`);
+      setStyle(el, "opacity", k > 0 ? "1" : "0.72");
       if (yEff >= s.a && yEff <= s.b) live[s.role] = true;
     }
 
@@ -121,7 +129,7 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
       if (!el || !vm) continue;
       const act = !!live[i];
       if (act) conc += 1;
-      el.style.opacity = act ? "1" : yEff > vm.eNum ? "0.55" : "0.45";
+      setStyle(el, "opacity", act ? "1" : yEff > vm.eNum ? "0.55" : "0.45");
     }
     if (concRef.current) {
       const c = String(conc);
