@@ -23,12 +23,12 @@ export const SAME_AS = [
   "https://kort-forklart.no/",
   "https://nhl-ml.eivindgeiran.no/",
   "https://tilbud.eivindgeiran.no/",
-  "https://towerdefense.eivindgeiran.no/",
+  "https://mnist.eivindgeiran.no/",
 ] as const;
 
 /** Undersider på egne subdomener — tas med i sitemap for oppdagelse. */
 export const SUBSITES = [
   "https://nhl-ml.eivindgeiran.no/",
   "https://tilbud.eivindgeiran.no/",
-  "https://towerdefense.eivindgeiran.no/",
+  "https://mnist.eivindgeiran.no/",
 ] as const;
