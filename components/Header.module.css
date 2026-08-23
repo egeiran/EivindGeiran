@@ -228,3 +228,13 @@
     transition: none;
   }
 }
+
+/* Trykkflate: på touch matcher språkpillen menyknappens 40 px. Typografi og
+   farger er uendret — det er bare treffområdet som vokser. */
+@media (hover: none) {
+  .langBtn {
+    min-height: 40px;
+    display: grid;
+    place-items: center;
+  }
+}

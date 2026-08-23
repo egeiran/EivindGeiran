@@ -136,7 +136,11 @@
 
 .cardTitle {
   margin: 0;
-  font-size: 19px;
+  /* Lange stillingstitler («Ferskvaremedarbeider») er ett ord og kan ikke brytes
+     av seg selv. min() lar 19px gi etter under 360px, der ordet ellers ville
+     blitt delt midt inni; break-word er nettet under for enda lengre titler. */
+  overflow-wrap: break-word;
+  font-size: min(19px, 5.3vw);
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.15;
@@ -205,5 +209,34 @@
 
   .node {
     left: -38px;
+  }
+}
+
+/* Under 560px er det ikke plass til logo, tittel og periode på én linje. Lange
+   titler ble presset ut av kortet og la seg oppå periodekolonnen — på 320px
+   endte de utenfor viewporten og ga vannrett scroll. Perioden faller ned på
+   egen linje under tittelen i stedet. Over 560px er raden uendret. */
+@media (max-width: 560px) {
+  .cardHead {
+    flex-wrap: wrap;
+  }
+
+  .titleCol {
+    flex: 1 1 auto;
+  }
+
+  .periodCol {
+    flex: 1 0 100%;
+    text-align: left;
+  }
+
+  /* Periode og type på samme linje, så oppstillingen koster én linje og ikke to. */
+  .period,
+  .type {
+    display: inline;
+  }
+
+  .type {
+    margin-left: 10px;
   }
 }

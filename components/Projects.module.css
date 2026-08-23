@@ -290,7 +290,9 @@
 .previewExpanded {
   top: 0 !important;
   left: 0 !important;
-  width: 100vw !important;
+  /* 100% mot den initielle blokken, ikke 100vw: vw teller med scrollbaren og
+     ga en pikselbred horisontal overflow under utvidelsen. */
+  width: 100% !important;
   height: 100dvh !important;
   border-radius: 0;
   border-color: transparent;
