@@ -1,6 +1,10 @@
 .section {
   padding: 0 var(--gutter) 96px;
   scroll-margin-top: 70px;
+  /* Listevisningen skyver kortene under fokus opptil 110px mot høyre. Uten klipp gjør det
+     siden bredere enn skjermen på mobil, og nettleseren zoomer ut hele siden. clip (ikke
+     hidden) lager ingen scroll-container, så sticky-elementene inni virker fortsatt. */
+  overflow-x: clip;
 }
 
 .controls {

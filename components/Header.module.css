@@ -1,10 +1,51 @@
+/* Headeren svever over heroen. Øverst er den en flat, gjennomsiktig linje i full bredde;
+   når siden scrolles krymper skallet til en pille med glass-bakgrunn og skygge. Alle
+   overgangene deler samme kurve, så formen leses som én bevegelse. */
+
 .header {
-  position: sticky;
+  --morph: 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 40;
-  background: rgba(12, 14, 17, 0.82);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(244, 241, 232, 0.1);
+  padding: 0;
+  /* Stripa rundt pillen skal ikke stjele klikk fra innholdet under. */
+  pointer-events: none;
+  transition: padding var(--morph);
+  animation: header-in 1000ms cubic-bezier(0.16, 1, 0.3, 1) 150ms backwards;
+}
+
+.header[data-floating] {
+  padding: 12px 12px 0;
+}
+
+.shell {
+  pointer-events: auto;
+  max-width: 100vw;
+  margin: 0 auto;
+  border: 1px solid transparent;
+  border-radius: 0;
+  background-color: rgba(16, 19, 24, 0);
+  box-shadow: 0 18px 50px -18px rgba(0, 0, 0, 0);
+  transition:
+    max-width var(--morph),
+    border-radius var(--morph),
+    background-color 500ms ease,
+    border-color 500ms ease,
+    box-shadow var(--morph),
+    -webkit-backdrop-filter 500ms ease,
+    backdrop-filter 500ms ease;
+}
+
+.header[data-floating] .shell {
+  max-width: 1040px;
+  border-radius: 30px;
+  border-color: rgba(244, 241, 232, 0.1);
+  background-color: rgba(16, 19, 24, 0.72);
+  box-shadow: 0 18px 50px -18px rgba(0, 0, 0, 0.75);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
 }
 
 .bar {
@@ -12,13 +53,29 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 18px var(--gutter);
+  padding: 22px var(--gutter);
+  transition: padding var(--morph);
+}
+
+.header[data-floating] .bar {
+  padding: 9px 9px 9px 16px;
+}
+
+@keyframes header-in {
+  from {
+    translate: 0 -28px;
+    opacity: 0;
+  }
+  to {
+    translate: 0 0;
+    opacity: 1;
+  }
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  min-width: 0;
 }
 
 .logoMark {
@@ -31,16 +88,32 @@
   place-items: center;
   font-family: var(--font-display), sans-serif;
   font-weight: 800;
-  font-size: 14px;
-  letter-spacing: -0.03em;
+  /* Syne er bred: på 14px fylte «EG» hele ruta og G-en ble klippet i kanten. */
+  font-size: 12px;
+  letter-spacing: -0.04em;
 }
 
 .eyebrow {
+  margin-left: 12px;
+  max-width: 360px;
+  overflow: hidden;
+  white-space: nowrap;
   font-family: var(--font-mono), monospace;
   font-size: 11.5px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: rgba(244, 241, 232, 0.55);
+  transition:
+    max-width var(--morph),
+    margin-left var(--morph),
+    opacity 300ms ease;
+}
+
+/* Pillen er for smal til undertittelen; den trekker seg inn bak logoen. */
+.header[data-floating] .eyebrow {
+  max-width: 0;
+  margin-left: 0;
+  opacity: 0;
 }
 
 .right {
@@ -127,7 +200,9 @@
   height: 2px;
   border-radius: 2px;
   background: var(--paper);
-  transition: transform 240ms var(--ease-pop), top 240ms var(--ease-pop);
+  transition:
+    transform 240ms var(--ease-pop),
+    top 240ms var(--ease-pop);
 }
 
 .menuIcon span:first-child {
@@ -154,7 +229,13 @@
   padding: 0 var(--gutter);
   max-height: 0;
   overflow: hidden;
-  transition: max-height 320ms var(--ease-pop);
+  transition:
+    max-height 320ms var(--ease-pop),
+    padding var(--morph);
+}
+
+.header[data-floating] .mobileNav {
+  padding: 0 16px;
 }
 
 .mobileNav a {
@@ -169,7 +250,9 @@
   letter-spacing: -0.03em;
   opacity: 0;
   transform: translateY(-6px);
-  transition: opacity 260ms ease, transform 260ms var(--ease-pop);
+  transition:
+    opacity 260ms ease,
+    transform 260ms var(--ease-pop);
 }
 
 .mobileNavOpen {
@@ -212,6 +295,10 @@
 }
 
 @media (max-width: 560px) {
+  .header[data-floating] {
+    padding: 10px 10px 0;
+  }
+
   .eyebrow {
     display: none;
   }
@@ -222,9 +309,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .header,
+  .shell,
+  .bar,
+  .eyebrow,
   .menuIcon span,
   .mobileNav,
   .mobileNav a {
     transition: none;
+    animation: none;
   }
 }
