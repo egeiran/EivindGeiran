@@ -132,6 +132,55 @@ export function useScrollFrame(frame: FrameFn, deps: unknown[] = []) {
 }
 
 /**
+ * Lar en scroll-avledet verdi gli etter i stedet for å hakke i takt med
+ * hjulet. `set(mål)` kalles fra scroll-callbacken; `render(verdi)` kalles per
+ * frame mens verdien er på vei, og loopen stopper av seg selv når den er
+ * framme. Første verdi og redusert bevegelse hopper rett til målet. Står
+ * verdien allerede stille, tegnes den på nytt med én gang — da fanges også
+ * re-rendringer (filterbytte o.l.) opp av neste scroll-frame.
+ */
+export function useGlide(render: (v: number) => void, tauMs = 110): (target: number) => void {
+  const renderRef = useRef(render);
+  renderRef.current = render;
+  const s = useRef({ v: NaN, target: 0, raf: 0, last: 0 }).current;
+  const setRef = useRef<((target: number) => void) | null>(null);
+  if (!setRef.current) {
+    const tick = (ts: number) => {
+      // Tidsbasert demping, så glidet er like langt på 60 og 120 Hz.
+      const dt = s.last ? Math.min(64, ts - s.last) : 16;
+      s.last = ts;
+      s.v += (s.target - s.v) * (1 - Math.exp(-dt / tauMs));
+      if (Math.abs(s.target - s.v) < 1e-4) {
+        s.v = s.target;
+        s.raf = 0;
+      } else {
+        s.raf = requestAnimationFrame(tick);
+      }
+      renderRef.current(s.v);
+    };
+    setRef.current = (target) => {
+      s.target = target;
+      if (s.raf) return;
+      if (Number.isNaN(s.v) || prefersReducedMotion() || Math.abs(target - s.v) < 1e-4) {
+        s.v = target;
+        renderRef.current(target);
+        return;
+      }
+      s.last = 0;
+      s.raf = requestAnimationFrame(tick);
+    };
+  }
+  useEffect(
+    () => () => {
+      cancelAnimationFrame(s.raf);
+      s.raf = 0;
+    },
+    [s]
+  );
+  return setRef.current;
+}
+
+/**
  * Er elementet i eller nær viewporten? Brukes til å parkere loops og
  * CSS-animasjoner som ellers ville brent hovedtråden på noe ingen ser.
  * Faller tilbake til `true` uten IntersectionObserver, så ingenting kan bli

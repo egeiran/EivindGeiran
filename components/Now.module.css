@@ -1,10 +1,16 @@
-/* Scrollstory: seksjonen er 360vh høy, barnet pinnes i full skjerm og
-   scroll driver de tre kapitlene. Aktiv tilstand markeres med [data-on]. */
+/* Scrollstory i to varianter mens vi tester (se Now.tsx). Aktiv tilstand
+   markeres med [data-on]; scenene tones inn og ut av JS. */
 
 .section {
   position: relative;
-  height: 360vh;
   scroll-margin-top: 70px;
+}
+
+/* Variant B: seksjonen er 200vh høy, barnet pinnes i full skjerm og scroll
+   driver de tre kapitlene. JS legger en myk inn- og utbremsing oppå pinnen. */
+
+.pinned {
+  height: 200vh;
 }
 
 .pin {
@@ -33,34 +39,6 @@
   font-size: clamp(38px, 5vw, 64px);
   line-height: 0.9;
   letter-spacing: -0.045em;
-}
-
-.headMeta {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.ticks {
-  display: flex;
-  gap: 6px;
-}
-
-.tick {
-  position: relative;
-  width: 42px;
-  height: 2px;
-  background: rgba(244, 241, 232, 0.16);
-  overflow: hidden;
-}
-
-.tickFill {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 0%;
-  background: var(--lime);
 }
 
 .date {
@@ -115,7 +93,8 @@
   transition: color 260ms ease;
 }
 
-.chap[data-on] .num {
+.chap[data-on] .num,
+.flowChap[data-on] .num {
   color: var(--lime);
 }
 
@@ -135,7 +114,8 @@
   flex: none;
 }
 
-.chap[data-on] .dot {
+.chap[data-on] .dot,
+.flowChap[data-on] .dot {
   background: var(--lime);
   animation: rl-pulse 2.4s ease-in-out infinite;
 }
@@ -148,7 +128,8 @@
   transition: color 260ms ease;
 }
 
-.chap[data-on] .tag {
+.chap[data-on] .tag,
+.flowChap[data-on] .tag {
   color: var(--lime);
 }
 
@@ -216,7 +197,7 @@
   background: var(--lime);
 }
 
-/* Høyre side: grafikkpanelet */
+/* Høyre side: grafikken, fritt på sidens bakgrunn */
 
 .stageCol {
   display: flex;
@@ -230,14 +211,10 @@
   flex: 1 1 auto;
   min-height: 0;
   max-height: 410px;
-  border: 1px solid rgba(244, 241, 232, 0.12);
-  border-radius: 16px;
-  background: var(--panel);
-  overflow: hidden;
   touch-action: pan-y;
 }
 
-/* 400×410-lerret som fitStage() skalerer ned til panelets faktiske mål. */
+/* 400×410-lerret som fitStage() skalerer ned til flatens faktiske mål. */
 .stageInner {
   position: absolute;
   left: 50%;
@@ -248,11 +225,12 @@
   transform-origin: 50% 50%;
 }
 
+/* Første scene vises før JS har tegnet; deretter styrer JS opasiteten inline,
+   uten CSS-overgang — glidet i JS er selve overtoningen. */
 .scene {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity 150ms linear;
 }
 
 .scene[data-on] {
@@ -268,7 +246,7 @@
   margin: -7px 0 0 -7px;
   border-radius: 50%;
   border: 1px solid rgba(244, 241, 232, 0.3);
-  background: var(--panel);
+  background: var(--ink);
   transition:
     background 400ms ease,
     box-shadow 400ms ease,
@@ -406,10 +384,12 @@
 }
 
 @keyframes caretBlink {
+
   0%,
   49% {
     opacity: 1;
   }
+
   50%,
   100% {
     opacity: 0;
@@ -460,48 +440,118 @@
   border-radius: 6px;
 }
 
-/* Bildetekst under panelet */
+/* ---------- Variant A: teksten scroller, bare grafikken står fast ---------- */
 
-.caption {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 12px;
-  flex: none;
+.flow {
+  padding: 96px var(--gutter) 64px;
 }
 
-.capDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
+.flow .head {
+  margin-bottom: 8px;
+}
+
+.flowGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  gap: 48px;
+}
+
+.flowChapters {
+  position: relative;
+}
+
+/* Tynn tidslinje gjennom kapittelnumrene. JS setter topp og høyde etter hvor
+   numrene faktisk ligger, og fyller den fram til leselinja. */
+.flowRail {
+  position: absolute;
+  left: 20.5px;
+  width: 1px;
+  background: rgba(244, 241, 232, 0.12);
+  pointer-events: none;
+}
+
+.flowFill {
+  position: absolute;
+  left: -0.5px;
+  top: 0;
+  width: 2px;
+  height: 0;
   background: var(--lime);
+  box-shadow: 0 0 10px rgba(217, 255, 99, 0.35);
+}
+
+/* Hvert kapittel får godt med scroll, med teksten midt i. Ingen kort eller
+   skillelinjer: kapitlene er ett sammenhengende løp. */
+.flowChap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 62vh;
+}
+
+/* Første kapittel starter rett under tittelen i stedet for midt i sin blokk,
+   så seksjonen ikke åpner med et tomt felt. */
+.flowRail + .flowChap {
+  justify-content: flex-start;
+  min-height: 60vh;
+  padding-top: 11vh;
+}
+
+/* Numrene ligger oppå tidslinja og skjuler den bak seg. */
+.flowChap .num {
+  position: relative;
+  padding: 6px 0;
+  background: var(--ink);
+  text-align: center;
+}
+
+.flowTitle {
+  margin: 0;
+  font-family: var(--font-display), sans-serif;
+  font-weight: 800;
+  font-size: clamp(26px, 3.2vw, 46px);
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+  text-wrap: pretty;
+}
+
+.flowDetail {
+  margin: 16px 0 0;
+  max-width: 42ch;
+  font-size: 16px;
+  line-height: 1.55;
+  color: rgba(244, 241, 232, 0.62);
+  text-wrap: pretty;
+}
+
+/* Grafikken står midt i viewporten mens kapitlene scroller forbi. */
+.flowStageCol {
+  position: sticky;
+  top: max(88px, calc(50vh - 205px));
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+}
+
+.flowStageCol .stage {
   flex: none;
-}
-
-.cap {
-  display: none;
-  font-family: var(--font-mono), monospace;
-  font-size: 10.5px;
-  letter-spacing: 0.09em;
-  color: rgba(244, 241, 232, 0.45);
-  line-height: 1.4;
-}
-
-.cap[data-on] {
-  display: inline;
+  height: min(410px, calc(100vh - 200px));
+  max-height: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .chap[data-on] .dot,
+  .flowChap[data-on] .dot,
   .caret {
     animation: none;
   }
 }
 
-/* Mobil: grafikken flyttes over teksten, løpet kortes til 300vh og
+/* Mobil: grafikken flyttes over teksten. I B kortes løpet til 300vh og
    dvh-enheter hindrer hopp fra adresselinja. */
 @media (max-width: 820px) {
-  .section {
+  .pinned {
     height: 300vh;
   }
 
@@ -551,5 +601,88 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  /* A: grafikken står fast øverst, og teksten scroller inn under den. */
+  .flow {
+    padding: 64px var(--gutter) 24px;
+  }
+
+  /* Over dekket til grafikken (se ::before under), så tittelen ikke forsvinner
+     bak det før grafikken har festet seg. */
+  .flow .head {
+    position: relative;
+    z-index: 3;
+  }
+
+  .flowGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .flowStageCol {
+    order: -1;
+    top: 76px;
+    z-index: 2;
+    align-self: stretch;
+    margin: 0 calc(-1 * var(--gutter));
+    padding: 12px var(--gutter) 10px;
+    background: var(--ink);
+  }
+
+  /* Dekker stripa bak toppmenyen, så teksten ikke dukker opp igjen over
+     grafikken etter å ha scrollet under den. */
+  .flowStageCol::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 100%;
+    height: 76px;
+    background: var(--ink);
+  }
+
+  /* Teksten løses opp inn under grafikken i stedet for å kuttes i en kant. */
+  .flowStageCol::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 56px;
+    background: linear-gradient(var(--ink), rgba(12, 14, 17, 0));
+    pointer-events: none;
+  }
+
+  /* svh: høyden skal ikke hoppe når adresselinja kommer og går. */
+  .flowStageCol .stage {
+    height: 26svh;
+  }
+
+  .flowChap {
+    min-height: 52svh;
+  }
+
+  .flowRail + .flowChap {
+    min-height: 50svh;
+    padding-top: 5svh;
+  }
+
+  /* Grafikken slipper først når slutten av kapitlene når den. Uten luft under
+     siste kapittel følger den med ut rett etter at teksten har gått under. */
+  .flowChap:last-child {
+    justify-content: flex-start;
+    min-height: 0;
+    padding-bottom: 14svh;
+  }
+
+  .flowTitle {
+    font-size: 24px;
+  }
+
+  .flowDetail {
+    margin-top: 12px;
+    font-size: 15px;
   }
 }

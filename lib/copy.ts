@@ -73,7 +73,6 @@ export interface Copy {
   factLive: string;
   now: { tag: string; title: string; detail: string; since: string }[];
   nowNet: string[];
-  nowCaps: { net: string; corp: string; cube: string };
   roles: string[];
   projects: ProjectCopy[];
   kfStack: string[];
@@ -159,11 +158,6 @@ export const COPY: Record<Lang, Copy> = {
       },
     ],
     nowNet: ["INPUT", "SKJULT", "SKJULT", "UT"],
-    nowCaps: {
-      net: "Maskinlæring, lag for lag",
-      corp: "Utvikling, ved siden av studiene",
-      cube: "Problemløsing, på fritida",
-    },
     roles: [
       "Tech-konsulent, Junior Consulting",
       "Utvikler, Computas",
@@ -282,11 +276,6 @@ export const COPY: Record<Lang, Copy> = {
       },
     ],
     nowNet: ["INPUT", "HIDDEN", "HIDDEN", "OUT"],
-    nowCaps: {
-      net: "Machine learning, layer by layer",
-      corp: "Building, alongside my studies",
-      cube: "Problem solving, off the clock",
-    },
     roles: [
       "Tech consultant, Junior Consulting",
       "Developer, Computas",
