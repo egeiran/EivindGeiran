@@ -278,12 +278,11 @@ export default function Projects({ t }: { t: Copy }) {
         <h2 className={headStyles.title}>{t.workTitle}</h2>
       </div>
 
+      {/* Kort Forklart er en egen seksjon, ikke et kort: teksten står rett på
+          sidens bakgrunn, og appen vises i et nettleservindu ved siden av. */}
       <article className={styles.featured}>
         <div className={styles.featuredBody}>
-          <div className={styles.featuredMeta}>
-            <span className={styles.featuredTag}>{t.featured}</span>
-            <span className={styles.featuredUrl}>kort-forklart.no</span>
-          </div>
+          <span className={styles.featuredTag}>{t.featured}</span>
           <h3 className={styles.featuredTitle}>Kort Forklart</h3>
           <p className={styles.featuredDesc}>{t.kfDesc}</p>
           <div className={styles.stack}>
@@ -299,12 +298,26 @@ export default function Projects({ t }: { t: Copy }) {
             </a>
           </div>
         </div>
-        <LivePreview
-          url={LINKS.kortForklart}
-          title="Kort Forklart"
-          label={t.openLive}
-          className={styles.featuredPreview}
-        />
+        <div className={styles.browser}>
+          <div className={styles.browserBar} aria-hidden="true">
+            <span className={styles.browserDots}>
+              <span />
+              <span />
+              <span />
+            </span>
+            <span className={styles.browserUrl}>kort-forklart.no</span>
+          </div>
+          {/* Flaten holder størrelsen sin mens previewet løftes ut og utvides til
+              hele skjermen, så vinduet ikke klapper sammen under animasjonen. */}
+          <div className={styles.browserView}>
+            <LivePreview
+              url={LINKS.kortForklart}
+              title="Kort Forklart"
+              label={t.openLive}
+              className={styles.featuredPreview}
+            />
+          </div>
+        </div>
       </article>
 
       <div className={styles.grid}>

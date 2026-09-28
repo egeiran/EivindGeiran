@@ -3,28 +3,20 @@
   scroll-margin-top: 70px;
 }
 
+/* Kort Forklart: en egen seksjon uten ramme rundt. Teksten står på sidens
+   bakgrunn, og appen vises i et nettleservindu ved siden av. */
 .featured {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
-  gap: 0;
-  border: 1px solid rgba(244, 241, 232, 0.12);
-  border-radius: 16px;
-  overflow: hidden;
-  background: var(--panel);
-  margin-bottom: 20px;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 64px;
+  align-items: center;
+  margin: 24px 0 112px;
 }
 
 .featuredBody {
-  padding: 44px;
   display: flex;
   flex-direction: column;
-}
-
-.featuredMeta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 26px;
+  align-items: flex-start;
 }
 
 .featuredTag {
@@ -36,29 +28,24 @@
   background: var(--lime);
   color: var(--ink);
   font-weight: 700;
-}
-
-.featuredUrl {
-  font-family: var(--font-mono), monospace;
-  font-size: 11px;
-  color: rgba(244, 241, 232, 0.4);
+  margin-bottom: 24px;
 }
 
 .featuredTitle {
   margin: 0;
   font-family: var(--font-display), sans-serif;
   font-weight: 800;
-  font-size: 52px;
-  line-height: 0.94;
-  letter-spacing: -0.04em;
+  font-size: clamp(48px, 5.6vw, 88px);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
 }
 
 .featuredDesc {
-  margin: 20px 0 0;
-  font-size: 16.5px;
+  margin: 24px 0 0;
+  font-size: 17px;
   line-height: 1.55;
   color: rgba(244, 241, 232, 0.7);
-  max-width: 44ch;
+  max-width: 40ch;
   text-wrap: pretty;
 }
 
@@ -79,8 +66,7 @@
 }
 
 .featuredActions {
-  margin-top: auto;
-  padding-top: 34px;
+  padding-top: 36px;
   display: flex;
   gap: 12px;
 }
@@ -106,10 +92,59 @@
   font-family: var(--font-mono), monospace;
 }
 
-.featuredPreview {
+/* Nettleservinduet rundt appen: en tittellinje med adressen, og selve siden
+   under. Rammen gjør at det leses som et skjermbilde av produktet. */
+.browser {
+  border: 1px solid rgba(244, 241, 232, 0.12);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #12151a;
+  box-shadow: 0 40px 120px -40px rgba(0, 0, 0, 0.9);
+}
+
+.browserBar {
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 280px) 1fr;
+  align-items: center;
+  height: 36px;
+  padding: 0 14px;
+  border-bottom: 1px solid rgba(244, 241, 232, 0.08);
+  background: #0f1216;
+}
+
+.browserDots {
+  display: flex;
+  gap: 6px;
+}
+
+.browserDots span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(244, 241, 232, 0.16);
+}
+
+.browserUrl {
+  padding: 4px 12px;
+  border-radius: 6px;
+  background: rgba(244, 241, 232, 0.06);
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  color: rgba(244, 241, 232, 0.5);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.browserView {
   position: relative;
-  min-height: 420px;
-  border-left: 1px solid rgba(244, 241, 232, 0.1);
+  aspect-ratio: 16 / 10;
+}
+
+.featuredPreview {
+  position: absolute;
+  inset: 0;
   background: #12151a;
   overflow: hidden;
 }
@@ -121,10 +156,6 @@
   height: 100%;
   border: 0;
   pointer-events: none;
-}
-
-.featuredPreview iframe {
-  min-height: 420px;
 }
 
 .grid {
@@ -383,16 +414,8 @@
 @media (max-width: 900px) {
   .featured {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .featuredPreview {
-    min-height: 320px;
-    border-left: 0;
-    border-top: 1px solid rgba(244, 241, 232, 0.1);
-  }
-
-  .featuredPreview iframe {
-    min-height: 320px;
+    gap: 40px;
+    margin-bottom: 88px;
   }
 }
 
@@ -405,25 +428,25 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .featuredBody {
-    padding: 24px 20px;
+  .featured {
+    margin: 8px 0 72px;
   }
 
   .featuredTitle {
-    font-size: 38px;
+    font-size: 44px;
   }
 
   .featuredDesc {
-    font-size: 15px;
+    font-size: 15.5px;
   }
 
   .featuredActions {
-    padding-top: 26px;
+    padding-top: 28px;
   }
 
-  .featuredPreview,
-  .featuredPreview iframe {
-    min-height: 260px;
+  /* Høyere flate på mobil, så appen vises i sin egen mobillayout. */
+  .browserView {
+    aspect-ratio: 4 / 5;
   }
 
   .cardBody {
