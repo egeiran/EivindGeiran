@@ -20,6 +20,11 @@ const LIGHTS_ON_MS = 650;
 const GPU_WAIT_MS = 1400;
 /** Tallene teller ikke før tallraden er animert inn (målt fra sidelasting). */
 const STATS_COUNT_AT_MS = 900;
+/**
+ * Hvor mørkt glasset i bokstavene er: absorpsjon per em. En stamme er ~0.24 em bred, så 3.8
+ * slipper ~40 % av lyset gjennom én stamme, og mindre gjennom tykke partier og overlapp.
+ */
+const GLASS_ABSORB_PER_EM = 1.6;
 /** Scene-piksler lyset får regne på: finpeker (desktop) vs. berøringsskjerm. */
 const BUDGET_FINE = 420_000;
 const BUDGET_COARSE = 220_000;
@@ -127,6 +132,7 @@ export default function Hero({ t, ongoingCount, totalCount }: Props) {
     let lastExposure = -1;
     let maskScrollY = NaN;
     let lightRadius = 12;
+    let glassAbsorb = 0;
     let runs: GlyphRun[] | null = null;
     // Skjermens egen frame-takt, målt før GPU-lyset starter (60, 120 — eller 30 i
     // strømsparing). En frame er treg først når den er klart lengre enn den.
@@ -153,9 +159,10 @@ export default function Hero({ t, ongoingCount, totalCount }: Props) {
     const measure = () => {
       const first = lines()[0];
       const size = first ? parseFloat(getComputedStyle(first).fontSize) : 120;
-      // Stor nok til å stikke ut på begge sider av en bokstavstamme, så lyset aldri
-      // forsvinner helt når pekeren står midt i en bokstav.
       lightRadius = Math.max(10, Math.min(19, size * 0.1));
+      // Glasset absorberer per em, så en bokstavstamme slipper gjennom like mye lys uansett
+      // skjermstørrelse.
+      glassAbsorb = GLASS_ABSORB_PER_EM / size;
       runs = null;
       light?.invalidateMask();
       invalidate();
@@ -247,7 +254,13 @@ export default function Hero({ t, ongoingCount, totalCount }: Props) {
         // står til lyset tennes, så første lyse frame får fersk maske.
         const dark = exposure === 0 && lastExposure === 0 && shownLit;
         if (!dark && (!still || needsRender)) {
-          const drew = current.render({ x: spot.px, y: spot.py, radius: lightRadius, exposure });
+          const drew = current.render({
+            x: spot.px,
+            y: spot.py,
+            radius: lightRadius,
+            exposure,
+            absorb: glassAbsorb,
+          });
           needsRender = false;
           gpuBusy = true;
           lastExposure = exposure;

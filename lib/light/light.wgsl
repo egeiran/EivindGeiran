@@ -8,13 +8,12 @@ export struct Light {
   radius: f32,
   /** Global eksponering: intro-flimmer og fade når heroen scrolles ut. */
   exposure: f32,
-  /** Lineær radians. */
+  /** Lysets egen radians (lineær). */
   color: vec3f,
   /** Scene-piksler per CSS-piksel. */
   scale: f32,
-  /**
-   * Radius på hullet lyset brenner i bokstavene rundt seg, i scene-piksler. Står lyset inni
-   * en bokstav, når hullet ut til nærmeste kant, så lyset alltid slipper ut et sted.
-   */
-  carve: f32,
+  /** Radians for lys som har gått gjennom glassbokstavene (lineær): glassets farge. */
+  tint: vec3f,
+  /** Hvor mye glasset absorberer per scene-piksel det lyset går gjennom (Beer–Lambert). */
+  absorb: f32,
 };

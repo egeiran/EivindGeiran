@@ -24,11 +24,12 @@ import resolveWgsl from "./resolve.wgsl";
 import sdfFinalizeWgsl from "./sdf-finalize.wgsl";
 
 /*
- * Hero-lyset: 2D global belysning med radiance cascades på WebGPU (vgpu). Bokstavene i
- * ordmerket er skyggekastere, pekeren er en lime lyskilde, og gulvet under er skrå fliser
- * som bare synes der lyset treffer. Kjeden er tilpasset fra vgpu sitt radiance-cascades-
- * eksempel (MIT): bokstavmasken → jump flood → avstandsfelt (bare når bokstavene flytter
- * seg) → cascadene ovenfra og ned → irradians → present til lerretet.
+ * Hero-lyset: 2D global belysning med radiance cascades på WebGPU (vgpu). Pekeren er en lime
+ * lyskilde, bokstavene i ordmerket er farget glass som demper og farger lyset som går
+ * gjennom dem, og gulvet under er skrå fliser som bare synes der lyset treffer. Kjeden er
+ * tilpasset fra vgpu sitt radiance-cascades-eksempel (MIT): bokstavmasken → to jump floods →
+ * avstandsfelt inn til og ut av glasset (bare når bokstavene flytter seg) → cascadene ovenfra
+ * og ned → irradians → present til lerretet.
  */
 
 type Vec2 = readonly [number, number];
@@ -41,10 +42,13 @@ const RC_INTERVAL0 = 2;
 /** Lime (#d9ff63) i lineært rom, dratt mot hvitt så gulvet ikke blir neongrønt. */
 const LIGHT_TINT = [0.816, 1, 0.475] as const;
 const LIGHT_POWER = 11;
-/** Hvor langt forbi skiva hullet i bokstavene når, som andel av lysets radius. */
-const CARVE_REACH = 1.2;
-/** Søkeradius for nærmeste bokstavkant, som andel av lysets radius. */
-const CARVE_SEARCH = 4;
+/**
+ * Bokstavene er blått glass (sidens --blue, lineært): lime lys foran, blått bak. Lyset som
+ * går gjennom kommer ut i denne fargen, dempet etter hvor tykt glasset er. Styrken følger
+ * lyset, så forholdet holder seg likt.
+ */
+const GLASS_TINT = [0.1, 0.42, 1] as const;
+const GLASS_POWER = LIGHT_POWER * 1.15;
 /** Scenen bygges på nytt først når størrelsen har stått i ro så lenge (ms). */
 const REBUILD_DEBOUNCE_MS = 160;
 /** Hvor mye sceneoppløsningen krymper per nedgradering når GPU-en ikke henger med. */
@@ -59,6 +63,8 @@ export interface LightFrame {
   readonly radius: number;
   /** 0–1: intro-flimmer ganger fade når heroen scrolles ut. */
   readonly exposure: number;
+  /** Hvor mye glasset i bokstavene absorberer per CSS-piksel (følger skriftstørrelsen). */
+  readonly absorb: number;
 }
 
 export interface HeroLightOptions {
@@ -140,6 +146,7 @@ function createScene(gpu: Gpu, size: Vec2, light: SharedUniforms) {
       own(target(gpu, { size, format: SEED })),
       own(target(gpu, { size, format: SEED })),
     ] as const;
+    const sdfOutside = own(target(gpu, { size, format: HDR }));
     const sdf = own(target(gpu, { size, format: HDR }));
     const cascades = [
       own(target(gpu, { size: atlas, format: HDR })),
@@ -153,21 +160,41 @@ function createScene(gpu: Gpu, size: Vec2, light: SharedUniforms) {
       addressModeV: "clamp-to-edge",
     });
 
-    // Avstandsfeltet: all ping-pong er kjent på forhånd, så bindingene settes én gang.
-    const sdfPasses: Pass[] = [];
-    const jfaInit = effect(gpu, jfaInitWgsl, { set: { mask } });
-    sdfPasses.push({ target: jfa[0], effect: jfaInit });
+    // Avstandsfeltet: to jump floods — inn til glasset og ut av det — gjennom samme par med
+    // frø-targets. All ping-pong er kjent på forhånd, så bindingene settes én gang, og
+    // steg-effektene gjenbrukes av begge (samme hopp, samme targets).
+    const steps: Pass[] = [];
     let seedRead = 0;
     for (const jump of jumps) {
       // set() skriver umiddelbart, så hvert pass med egne uniforms trenger egen effect.
       const step = effect(gpu, jfaPassWgsl, {
         set: { jfa: { jump: [jump, 0, 0, 0] }, seeds: jfa[seedRead] },
       });
-      sdfPasses.push({ target: jfa[1 - seedRead], effect: step });
+      steps.push({ target: jfa[1 - seedRead], effect: step });
       seedRead = 1 - seedRead;
     }
-    const sdfFinalize = effect(gpu, sdfFinalizeWgsl, { set: { seeds: jfa[seedRead] } });
-    sdfPasses.push({ target: sdf, effect: sdfFinalize });
+    const flood = (invert: number, finalize: Pass): Pass[] => [
+      {
+        target: jfa[0],
+        effect: effect(gpu, jfaInitWgsl, { set: { init: { invert: [invert, 0, 0, 0] }, mask } }),
+      },
+      ...steps,
+      finalize,
+    ];
+    const sdfPasses: Pass[] = [
+      ...flood(0, {
+        target: sdfOutside,
+        effect: effect(gpu, sdfFinalizeWgsl, {
+          set: { finalize: { inside: [0, 0, 0, 0] }, seeds: jfa[seedRead], previous: sdf },
+        }),
+      }),
+      ...flood(1, {
+        target: sdf,
+        effect: effect(gpu, sdfFinalizeWgsl, {
+          set: { finalize: { inside: [1, 0, 0, 0] }, seeds: jfa[seedRead], previous: sdfOutside },
+        }),
+      }),
+    ];
 
     // Cascadene ovenfra og ned, to atlas som resirkuleres.
     const lightPasses: Pass[] = [];
@@ -186,7 +213,11 @@ function createScene(gpu: Gpu, size: Vec2, light: SharedUniforms) {
       atlasWrite = 1 - atlasWrite;
     }
     const resolve = effect(gpu, resolveWgsl, {
-      set: { resolve: { size: [width, height, 0, 0] }, cascade_tex: cascades[1 - atlasWrite] },
+      set: {
+        resolve: { size: [width, height, 0, 0] },
+        light,
+        cascade_tex: cascades[1 - atlasWrite],
+      },
     });
     lightPasses.push({ target: irradiance, effect: resolve });
 
@@ -230,13 +261,8 @@ export async function createHeroLight(
   let scaleY = 1;
   const started = performance.now();
 
-  // Gjenbrukes av carveRadius, så flood fill-en ikke allokerer hver frame.
-  let open = new Uint8Array(0);
-  let queue = new Int32Array(0);
-
   const maskCanvas = document.createElement("canvas");
-  // Leses tilbake rundt lyset hver frame (se carveRadius), så den skal ligge i CPU-minne.
-  const maskCtx = maskCanvas.getContext("2d", { willReadFrequently: true });
+  const maskCtx = maskCanvas.getContext("2d");
 
   const light = uniforms(gpu, {
     pos: [0, 0],
@@ -244,7 +270,8 @@ export async function createHeroLight(
     exposure: 0,
     color: LIGHT_TINT.map((c) => c * LIGHT_POWER),
     scale: 1,
-    carve: 0,
+    tint: GLASS_TINT.map((c) => c * GLASS_POWER),
+    absorb: 0,
   });
 
   const dispose = () => {
@@ -357,72 +384,6 @@ export async function createHeroLight(
     );
   };
 
-  /**
-   * Radius på hullet lyset brenner i bokstavene, i scene-piksler. Står lyset inni en bokstav,
-   * når hullet til nærmeste kant pluss litt, så lyset alltid slipper ut; står det utenfor men
-   * tett inntil, krymper hullet til null med avstanden. Kontinuerlig i begge retninger, så
-   * lyset glir inn og ut av bokstavene uten å hoppe.
-   *
-   * «Utenfor» betyr tomrom som henger sammen med kanten av søkevinduet. Hullene i D, R og A
-   * er tomme, men lukket inne — står lyset der, regnes det som inni bokstaven, ellers ville
-   * ringen rundt stengt alt lys inne og hele gulvet blitt svart.
-   */
-  const carveRadius = (cx: number, cy: number, r: number): number => {
-    if (!maskCtx) return 0;
-    const reach = r * CARVE_REACH;
-    const search = Math.ceil(r * CARVE_SEARCH);
-    const x0 = Math.max(0, Math.floor(cx) - search);
-    const y0 = Math.max(0, Math.floor(cy) - search);
-    const x1 = Math.min(maskCanvas.width, Math.floor(cx) + search + 1);
-    const y1 = Math.min(maskCanvas.height, Math.floor(cy) + search + 1);
-    if (x1 <= x0 || y1 <= y0) return 0;
-    const w = x1 - x0;
-    const h = y1 - y0;
-    const n = w * h;
-    const alpha = maskCtx.getImageData(x0, y0, w, h).data;
-    if (open.length < n) {
-      open = new Uint8Array(n);
-      queue = new Int32Array(n);
-    }
-    open.fill(0, 0, n);
-    // Flood fill av tomrom fra vinduskanten (4-nabo).
-    let head = 0;
-    let tail = 0;
-    const seed = (i: number) => {
-      if (open[i] || alpha[i * 4 + 3] > 127) return;
-      open[i] = 1;
-      queue[tail++] = i;
-    };
-    for (let x = 0; x < w; x++) {
-      seed(x);
-      seed((h - 1) * w + x);
-    }
-    for (let y = 0; y < h; y++) {
-      seed(y * w);
-      seed(y * w + w - 1);
-    }
-    while (head < tail) {
-      const i = queue[head++];
-      const x = i % w;
-      if (x > 0) seed(i - 1);
-      if (x < w - 1) seed(i + 1);
-      if (i >= w) seed(i - w);
-      if (i < n - w) seed(i + w);
-    }
-    const px = Math.min(w - 1, Math.max(0, Math.floor(cx) - x0));
-    const py = Math.min(h - 1, Math.max(0, Math.floor(cy) - y0));
-    const outside = open[py * w + px];
-    let nearest = search;
-    for (let y = 0; y < h; y++) {
-      for (let x = 0; x < w; x++) {
-        if (open[y * w + x] === outside) continue;
-        const d = Math.hypot(x0 + x + 0.5 - cx, y0 + y + 0.5 - cy);
-        if (d < nearest) nearest = d;
-      }
-    }
-    return outside ? Math.max(0, reach - nearest) : nearest + reach;
-  };
-
   try {
     canvasSurface = surface(gpu, canvas, { autoResize: false, dpr: [1, 2] });
     applyResize();
@@ -451,7 +412,7 @@ export async function createHeroLight(
     invalidateMask() {
       maskDirty = true;
     },
-    render({ x, y, radius, exposure }) {
+    render({ x, y, radius, exposure, absorb }) {
       if (disposed || !canvasSurface) return false;
       const output = canvasSurface;
       try {
@@ -463,10 +424,13 @@ export async function createHeroLight(
           uploadMask(current);
           maskDirty = false;
         }
-        const lx = x * scale;
-        const ly = y * scaleY;
-        const r = radius * scale;
-        light.set({ pos: [lx, ly], radius: r, exposure, scale, carve: carveRadius(lx, ly, r) });
+        light.set({
+          pos: [x * scale, y * scaleY],
+          radius: radius * scale,
+          exposure,
+          scale,
+          absorb: absorb / scale,
+        });
         current.present.set({
           present: { view: [css[0], css[1], (performance.now() - started) / 1000, dpr] },
         });

@@ -73,3 +73,39 @@
   font-size: 12px;
   color: rgba(244, 241, 232, 0.5);
 }
+
+/* Mobil: forfatter/dato og linjenummer tar 250px før selve innholdet, så innholdet havnet
+   utenfor skjermen. Her vises bare hash + tekst, og teksten brytes i stedet for å scrolles. */
+@media (max-width: 640px) {
+  .header,
+  .footer {
+    padding: 12px 14px;
+    font-size: 11px;
+  }
+
+  .rows,
+  .row {
+    width: 100%;
+  }
+
+  .row {
+    grid-template-columns: 72px minmax(0, 1fr);
+    font-size: 11.5px;
+    line-height: 1.8;
+  }
+
+  .hash {
+    padding-left: 14px;
+  }
+
+  .rowMeta,
+  .lineNo {
+    display: none;
+  }
+
+  .text {
+    padding: 0 14px 0 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+}

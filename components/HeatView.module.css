@@ -108,3 +108,37 @@
 .pillOrg {
   color: rgba(244, 241, 232, 0.38);
 }
+
+/* Mobil: alle tolv månedene får plass uten sidelengs scrolling — mindre ruter og etiketter
+   i stedet for et kart som klippes midt i juli. */
+@media (max-width: 640px) {
+  .inner {
+    min-width: 0;
+  }
+
+  .headerRow,
+  .yearRow {
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 6px;
+  }
+
+  .months,
+  .cells {
+    gap: 3px;
+  }
+
+  .monthLabel {
+    font-size: 8.5px;
+    letter-spacing: 0;
+  }
+
+  .yearLabel {
+    font-size: 10.5px;
+  }
+
+  .cell {
+    height: 22px;
+    border-radius: 3px;
+    font-size: 9.5px;
+  }
+}

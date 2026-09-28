@@ -24,6 +24,9 @@ export default function ListView({ t, vms }: Props) {
     const still = prefersReducedMotion();
     const vh = window.innerHeight;
     const line = vh * 0.55;
+    // Kortene under fokus glir inn fra høyre. På mobil er 110px en tredjedel av skjermen,
+    // så der er glidet bare antydet.
+    const reach = window.innerWidth <= 640 ? 16 : 110;
 
     // Railen måles fra første til siste node-senter så fyllet lander eksakt.
     const start = items[0].getBoundingClientRect().top + 33;
@@ -82,7 +85,7 @@ export default function ListView({ t, vms }: Props) {
           card.style.transform = "none";
         } else {
           card.style.opacity = String(Math.max(0.14, 1 - dRel * 1.9));
-          card.style.transform = `translate3d(${Math.min(dRel * 90, 110)}px,0,0) scale(${
+          card.style.transform = `translate3d(${Math.min(dRel * reach * 0.82, reach)}px,0,0) scale(${
             1 - Math.min(dRel * 0.07, 0.09)
           })`;
         }

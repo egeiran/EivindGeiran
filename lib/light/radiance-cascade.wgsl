@@ -24,8 +24,18 @@ fn rc_interval_end(cascade: f32) -> f32 {
 
 const RC_BRANCH_WEIGHT: f32 = 0.25;
 
+/**
+ * Fletter en nær stråle med fortsettelsen bak den. Gikk den nære strålen gjennom glass, blir
+ * alt lys bak den glass-lys — også det som var direkte sett derfra. Se sdf-sample.wgsl.
+ */
 fn rc_merge(near: vec4f, far: vec4f) -> vec4f {
-  return vec4f(near.rgb + near.a * far.rgb, near.a * far.a);
+  let through = near.b;
+  return vec4f(
+    near.r + near.a * far.r * (1.0 - through),
+    near.g + near.a * (far.g + far.r * through),
+    max(through, far.b),
+    near.a * far.a,
+  );
 }
 
 fn rc_bilinear_weights(fraction: vec2f) -> vec4f {

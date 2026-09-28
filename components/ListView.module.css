@@ -207,3 +207,85 @@
     left: -38px;
   }
 }
+
+/* Mobil: tittelen får hele bredden ved siden av en mindre logo, og periode + type flyttes
+   til en egen linje under. I tre kolonner ble tittelkolonnen så smal at lange ord
+   («Innholdsansvarlig,») rant inn over datoen. */
+@media (max-width: 640px) {
+  .items {
+    padding-left: 22px;
+  }
+
+  .node {
+    left: -28px;
+  }
+
+  .item {
+    padding-bottom: 12px;
+  }
+
+  .card {
+    padding: 16px 16px 18px;
+    border-radius: 12px;
+  }
+
+  .cardHead {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo {
+    width: 40px;
+    height: 40px;
+    padding: 6px;
+    border-radius: 8px;
+  }
+
+  .logo img {
+    max-height: 28px;
+  }
+
+  .cardTitle {
+    font-size: 16.5px;
+    overflow-wrap: anywhere;
+  }
+
+  .cardOrg {
+    margin-top: 2px;
+    font-size: 13px;
+  }
+
+  .periodCol {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    text-align: left;
+  }
+
+  .period {
+    font-size: 12px;
+  }
+
+  .type {
+    margin-top: 0;
+    font-size: 10px;
+  }
+
+  .cardDesc {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  .tags {
+    gap: 5px;
+    margin-top: 12px;
+  }
+
+  .tag {
+    padding: 3px 8px;
+    font-size: 10.5px;
+  }
+}
