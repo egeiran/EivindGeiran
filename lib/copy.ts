@@ -59,6 +59,8 @@ export interface Copy {
   blameHint: string;
   concurrent: string;
   ganttHint: string;
+  ganttAutoHint: string;
+  ganttReplay: string;
   rollMeta: string;
   framesWord: string;
   lifeTitle: string;
@@ -115,6 +117,8 @@ export const COPY: Record<Lang, Copy> = {
     blameHint: "Hold over en linje for å se commiten",
     concurrent: "roller samtidig",
     ganttHint: "Rull for å spole gjennom årene",
+    ganttAutoHint: "Dra i tidsaksen for å spole",
+    ganttReplay: "Spill av igjen",
     rollMeta: "Rull 01 · Trondheim · 2024–2026",
     framesWord: "bilder",
     lifeTitle: "Filmrull.",
@@ -227,6 +231,8 @@ export const COPY: Record<Lang, Copy> = {
     blameHint: "Hover a line to see the commit",
     concurrent: "roles at once",
     ganttHint: "Scroll to sweep through the years",
+    ganttAutoHint: "Drag the time axis to scrub",
+    ganttReplay: "Play again",
     rollMeta: "Roll 01 · Trondheim · 2024–2026",
     framesWord: "frames",
     lifeTitle: "Film roll.",
