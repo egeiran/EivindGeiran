@@ -1,13 +1,9 @@
+/* Diagrammet ligger i vanlig flyt — ingen pin. Playheaden spoler mens det
+   scroller inn i bildet (se GanttView.tsx). */
 .wrap {
   position: relative;
-  height: 235vh;
-  --gantt-col: 216px;
-}
-
-.sticky {
-  position: sticky;
-  top: 92px;
   padding-top: 6px;
+  --gantt-col: 216px;
 }
 
 .readout {
@@ -318,15 +314,8 @@
 }
 
 @media (max-width: 820px) {
-  /* Innholdet er høyere enn viewporten på mobil, så sticky-scrubbing ville
-     klippet bunnen. Vis som vanlig blokk i stedet. */
   .wrap {
     --gantt-col: 118px;
-    height: auto;
-  }
-
-  .sticky {
-    position: static;
   }
 
   .rowOrg {

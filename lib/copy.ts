@@ -40,7 +40,6 @@ export interface Copy {
   heroCta: string;
   nowTitle: string;
   workTitle: string;
-  workLede: string;
   featured: string;
   openLive: string;
   placeholder: string;
@@ -63,17 +62,11 @@ export interface Copy {
   rollMeta: string;
   framesWord: string;
   lifeTitle: string;
-  lifeLede: string;
   cta: CtaCopy;
   footerNote: string;
   footerSitesLabel: string;
-  factRoles: string;
-  factTotal: string;
-  factCredits: string;
-  factLive: string;
   now: { tag: string; title: string; detail: string; since: string }[];
   nowNet: string[];
-  nowCaps: { net: string; corp: string; cube: string };
   roles: string[];
   projects: ProjectCopy[];
   kfStack: string[];
@@ -101,7 +94,6 @@ export const COPY: Record<Lang, Copy> = {
     heroCta: "Se hva jeg har bygd",
     nowTitle: "Nå.",
     workTitle: "Prosjekter.",
-    workLede: "Ting jeg har bygd fordi jeg hadde lyst, og som andre faktisk bruker.",
     featured: "Størst",
     openLive: "Åpne appen",
     placeholder: "Skjermbilde kommer",
@@ -126,7 +118,6 @@ export const COPY: Record<Lang, Copy> = {
     rollMeta: "Rull 01 · Trondheim · 2024–2026",
     framesWord: "bilder",
     lifeTitle: "Filmrull.",
-    lifeLede: "Fadderuke, Venture Cup, turer — det som skjer utenfor forelesningssalen.",
     cta: {
       label: "Kontakt",
       title: "Ta gjerne kontakt",
@@ -134,10 +125,6 @@ export const COPY: Record<Lang, Copy> = {
     },
     footerNote: "Bygget i Trondheim",
     footerSitesLabel: "Mine sider og profiler",
-    factRoles: "pågående roller",
-    factTotal: "erfaringer så langt",
-    factCredits: "studiepoeng",
-    factLive: "prosjekter i drift",
     now: [
       {
         tag: "STUDIUM",
@@ -159,11 +146,6 @@ export const COPY: Record<Lang, Copy> = {
       },
     ],
     nowNet: ["INPUT", "SKJULT", "SKJULT", "UT"],
-    nowCaps: {
-      net: "Maskinlæring, lag for lag",
-      corp: "Utvikling, ved siden av studiene",
-      cube: "Problemløsing, på fritida",
-    },
     roles: [
       "Tech-konsulent, Junior Consulting",
       "Utvikler, Computas",
@@ -224,7 +206,6 @@ export const COPY: Record<Lang, Copy> = {
     heroCta: "See what I've built",
     nowTitle: "Now.",
     workTitle: "Work.",
-    workLede: "Things I built because I wanted to — and that people actually use.",
     featured: "Biggest",
     openLive: "Open the app",
     placeholder: "Screenshot pending",
@@ -249,7 +230,6 @@ export const COPY: Record<Lang, Copy> = {
     rollMeta: "Roll 01 · Trondheim · 2024–2026",
     framesWord: "frames",
     lifeTitle: "Film roll.",
-    lifeLede: "Orientation week, Venture Cup, trips — what happens outside the lecture hall.",
     cta: {
       label: "Contact",
       title: "Feel free to reach out",
@@ -257,10 +237,6 @@ export const COPY: Record<Lang, Copy> = {
     },
     footerNote: "Built in Trondheim",
     footerSitesLabel: "My sites and profiles",
-    factRoles: "active roles",
-    factTotal: "roles to date",
-    factCredits: "ECTS credits",
-    factLive: "shipped & live",
     now: [
       {
         tag: "STUDIES",
@@ -282,11 +258,6 @@ export const COPY: Record<Lang, Copy> = {
       },
     ],
     nowNet: ["INPUT", "HIDDEN", "HIDDEN", "OUT"],
-    nowCaps: {
-      net: "Machine learning, layer by layer",
-      corp: "Building, alongside my studies",
-      cube: "Problem solving, off the clock",
-    },
     roles: [
       "Tech consultant, Junior Consulting",
       "Developer, Computas",

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import type { Copy } from "@/lib/copy";
-import { prefersReducedMotion, useInView, useScrollFrame } from "@/lib/fx";
+import { prefersReducedMotion, useGlide, useInView, useScrollFrame } from "@/lib/fx";
 import { fmtMonthYearFull } from "@/lib/time";
 import type { Lang } from "@/lib/types";
 import styles from "./Now.module.css";
@@ -10,6 +10,19 @@ import styles from "./Now.module.css";
 // Tweaks fra handoffen: musefølging 0–100 % og fri spinn på kuben.
 const CUBE_FOLLOW = 40;
 const CUBE_SPIN = true;
+
+/* Scrollstory: kapitlene er vanlig tekst som scroller forbi, og bare grafikken
+   står fast ved siden av (på mobil: over). Siden stopper aldri opp; scenene
+   drives av hvor teksten ligger i forhold til en leselinje. */
+
+// Hvor i hvert kapittel (0 = toppen når leselinja, 1 = bunnen) scenen starter
+// og er ferdig animert — resten av veien holder den ferdigtilstanden.
+// Kapittel 01 venter til grafikken har festet seg; før det er den fortsatt på
+// vei inn i bildet, og animasjonen ville vært ferdig før man så den.
+const SCENE_FROM = [0.42, -0.1, -0.1];
+const SCENE_TO = [0.88, 0.6, 0.6];
+// Hvor stor del av et kapittel overtoningen mellom to scener tar.
+const SCENE_FADE = 0.2;
 
 /* ---------- Kapittel 01: nevralt nett — statisk geometri ---------- */
 
@@ -186,17 +199,23 @@ const CUBE_STATES: Cubie[][] = (() => {
   return out;
 })();
 
-const SCENES = ["net", "corp", "cube"] as const;
+const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
+const smoothstep = (e0: number, e1: number, x: number) => {
+  const v = clamp01((x - e0) / (e1 - e0));
+  return v * v * (3 - 2 * v);
+};
 
 export default function Now({ t, lang, now }: { t: Copy; lang: Lang; now: number }) {
   // Kuben spinner i sin egen rAF-loop; den skal ikke rulle videre når
   // seksjonen er ute av bildet.
   const [sectionRef, sectionInView] = useInView<HTMLElement>("200px");
+  const stageColRef = useRef<HTMLDivElement | null>(null);
   const chapRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const fillRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const tickRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const textRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const numRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const railRef = useRef<HTMLDivElement | null>(null);
+  const railFillRef = useRef<HTMLDivElement | null>(null);
   const sceneRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const capRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const stageRef = useRef<HTMLDivElement | null>(null);
   const stageInnerRef = useRef<HTMLDivElement | null>(null);
   const nodeRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -210,6 +229,9 @@ export default function Now({ t, lang, now }: { t: Copy; lang: Lang; now: number
   // Interaksjonstilstand som lever utenfor React — skrives per frame.
   const st = useRef({
     chapIdx: 0,
+    // Sist tegnede fremdrift og opasitet per scene; NaN tvinger ny tegning.
+    sceneQ: [NaN, NaN, NaN],
+    sceneO: ["", "", ""],
     spinX: 0,
     spinY: 0,
     vx: 0,
@@ -239,7 +261,6 @@ export default function Now({ t, lang, now }: { t: Copy; lang: Lang; now: number
     st.chapIdx = idx;
     mark(chapRefs.current, idx);
     mark(sceneRefs.current, idx);
-    mark(capRefs.current, idx);
   };
 
   const fitStage = () => {
@@ -327,7 +348,97 @@ export default function Now({ t, lang, now }: { t: Copy; lang: Lang; now: number
     }
   };
 
-  useScrollFrame(({ vh, vw }) => {
+  /**
+   * Tegner scenene for en kontinuerlig posisjon i historien: 0–1 er kapittel
+   * 01, 1–2 kapittel 02 og 2–3 kapittel 03. Scenene tones over i hverandre
+   * rundt grensene i stedet for å bytte brått.
+   */
+  const renderStory = (pos: number) => {
+    const still = prefersReducedMotion();
+    const idx = Math.max(0, Math.min(2, Math.floor(pos)));
+    if (idx !== st.chapIdx) setChapter(idx);
+    for (let i = 0; i < 3; i++) {
+      const from = SCENE_FROM[i];
+      const q = still ? 1 : clamp01((pos - i - from) / (SCENE_TO[i] - from));
+      let o = 1;
+      if (i > 0) o = Math.min(o, clamp01((pos - i) / SCENE_FADE + 0.5));
+      if (i < 2) o = Math.min(o, clamp01((i + 1 - pos) / SCENE_FADE + 0.5));
+      const ov = String(Math.round(o * 1000) / 1000);
+      const scene = sceneRefs.current[i];
+      if (scene && st.sceneO[i] !== ov) {
+        st.sceneO[i] = ov;
+        scene.style.opacity = ov;
+      }
+      if (o > 0 && q !== st.sceneQ[i]) {
+        st.sceneQ[i] = q;
+        if (i === 0) netFrame(q);
+        else if (i === 1) corpFrame(q);
+        else cubeFrame(q, still);
+      }
+    }
+  };
+
+  const glide = useGlide(renderStory, 110);
+
+  // Posisjonen kommer fra hvor kapittelteksten ligger i forhold til en
+  // leselinje. Teksten scroller helt vanlig; bare scenene glir etter.
+  const storyFrame = (vh: number, vw: number) => {
+    // Lesefase: alle rects hentes før noe skrives.
+    const rects: DOMRect[] = [];
+    for (const el of chapRefs.current) if (el) rects.push(el.getBoundingClientRect());
+    const n = rects.length;
+    if (!n) return;
+    // På mobil står grafikken øverst, så leselinja ligger i feltet under den.
+    let line = vh * 0.5;
+    const col = stageColRef.current;
+    if (vw <= 820 && col) {
+      const b = col.getBoundingClientRect().bottom;
+      line = b + (vh - b) * 0.36;
+    }
+    const first = numRefs.current[0]?.getBoundingClientRect();
+    const last = numRefs.current[n - 1]?.getBoundingClientRect();
+
+    let pos = n;
+    for (let i = 0; i < n; i++) {
+      if (line < rects[i].bottom) {
+        pos = i + (line - rects[i].top) / Math.max(1, rects[i].height);
+        break;
+      }
+    }
+    pos = Math.max(-1, Math.min(n, pos));
+
+    const textRects = textRefs.current.map((el) => (el ? el.getBoundingClientRect() : null));
+
+    // Skrivefase. Teksten dimmes etter avstand til leselinja — direkte, uten
+    // glid, siden den allerede følger scrollen.
+    for (let i = 0; i < n; i++) {
+      const el = textRefs.current[i];
+      const tr = textRects[i];
+      if (!el || !tr) continue;
+      const c = tr.top + tr.height / 2;
+      const e = 1 - smoothstep(vh * 0.08, vh * 0.42, Math.abs(c - line));
+      const o = String(Math.round((0.26 + 0.74 * e) * 100) / 100);
+      if (el.style.opacity !== o) el.style.opacity = o;
+    }
+    const rail = railRef.current;
+    const fill = railFillRef.current;
+    if (rail && first && last) {
+      const y0 = first.top + first.height / 2;
+      const y1 = last.top + last.height / 2;
+      const top = `${Math.round(y0 - rects[0].top)}px`;
+      const h = `${Math.round(y1 - y0)}px`;
+      if (rail.style.top !== top) rail.style.top = top;
+      if (rail.style.height !== h) rail.style.height = h;
+      if (fill) {
+        const f = `${Math.round(Math.max(0, Math.min(y1 - y0, line - y0)))}px`;
+        if (fill.style.height !== f) fill.style.height = f;
+      }
+    }
+
+    glide(pos);
+  };
+
+  useScrollFrame(({ vhLive, vw }) => {
     const sec = sectionRef.current;
     if (!sec) return;
     const sh = stageRef.current ? stageRef.current.clientHeight : 0;
@@ -337,25 +448,8 @@ export default function Now({ t, lang, now }: { t: Copy; lang: Lang; now: number
       fitStage();
     }
     const r = sec.getBoundingClientRect();
-    if (r.bottom < 0 || r.top > vh) return;
-    const still = prefersReducedMotion();
-    const p = Math.max(0, Math.min(0.99999, -r.top / Math.max(1, r.height - vh)));
-    const idx = Math.min(2, Math.floor(p * 3));
-    // 0.84: kapitlet er ferdig animert etter 84 % av sin tredjedel og holder
-    // ferdigtilstanden resten — det er dét som gjør at overgangene lander.
-    const q = Math.max(0, Math.min(1, (p * 3 - idx) / 0.84));
-    const qe = still ? 1 : q;
-    if (idx !== st.chapIdx) setChapter(idx);
-    for (let i = 0; i < 3; i++) {
-      const w = `${(i < idx ? 100 : i > idx ? 0 : qe * 100).toFixed(1)}%`;
-      const cf = fillRefs.current[i];
-      const tf = tickRefs.current[i];
-      if (cf && cf.style.width !== w) cf.style.width = w;
-      if (tf && tf.style.width !== w) tf.style.width = w;
-    }
-    if (idx === 0) netFrame(qe);
-    else if (idx === 1) corpFrame(qe);
-    else cubeFrame(qe, still);
+    if (r.bottom < 0 || r.top > vhLive) return;
+    storyFrame(vhLive, vw);
   });
 
   // Re-marker aktivt kapittel etter re-render (f.eks. språkbytte), i tilfelle
@@ -463,207 +557,179 @@ export default function Now({ t, lang, now }: { t: Copy; lang: Lang; now: number
     if (stageRef.current) stageRef.current.style.cursor = "grab";
   };
 
-  return (
-    <section id="na" ref={sectionRef} className={styles.section}>
-      <div className={styles.pin}>
-        <div className={styles.head}>
-          <h2 className={styles.title}>{t.nowTitle}</h2>
-          <div className={styles.headMeta}>
-            <div className={styles.ticks}>
-              {t.now.map((n, i) => (
-                <div key={i} className={styles.tick}>
-                  <div
-                    ref={(el) => {
-                      tickRefs.current[i] = el;
-                    }}
-                    className={styles.tickFill}
-                  />
-                </div>
-              ))}
-            </div>
-            <span className={styles.date}>{fmtMonthYearFull(now, lang)}</span>
+  const stage = (
+    <div
+      ref={stageRef}
+      className={styles.stage}
+      onPointerMove={onPointerMove}
+      onPointerLeave={onPointerLeave}
+      onPointerDown={onPointerDown}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
+    >
+      <div ref={stageInnerRef} className={styles.stageInner}>
+        <div
+          ref={(el) => {
+            sceneRefs.current[0] = el;
+          }}
+          className={styles.scene}
+          data-on=""
+        >
+          {NET_EDGES.map((e, i) => (
+            <div
+              key={`${e.x}-${e.y}-${e.deg}`}
+              ref={(el) => {
+                edgeRefs.current[i] = el;
+              }}
+              className={styles.netEdge}
+              style={{ left: e.x, top: e.y, width: e.w, transform: `rotate(${e.deg}deg)` }}
+            />
+          ))}
+          {NET_NODES.map((nd, i) => (
+            <div
+              key={`${nd.x}-${nd.y}`}
+              ref={(el) => {
+                nodeRefs.current[i] = el;
+              }}
+              className={styles.netNode}
+              style={{ left: nd.x, top: nd.y }}
+            />
+          ))}
+          <div className={styles.netLabels}>
+            {t.nowNet.map((l, i) => (
+              <span key={`${l}-${i}`}>{l}</span>
+            ))}
           </div>
         </div>
 
-        <div className={styles.grid}>
-          <div className={styles.chapters}>
-            {t.now.map((n, i) => (
+        <div
+          ref={(el) => {
+            sceneRefs.current[1] = el;
+          }}
+          className={`${styles.scene} ${styles.sceneCorp}`}
+        >
+          <div className={styles.monitor}>
+            <div className={styles.screen}>
+              <div className={styles.screenBar}>
+                <div className={styles.trafficDots}>
+                  <span />
+                  <span />
+                  <span />
+                </div>
+                <div className={styles.crewRow}>
+                  {CREW.map((c, i) => (
+                    <span
+                      key={c}
+                      ref={(el) => {
+                        crewRefs.current[i] = el;
+                      }}
+                      className={styles.crew}
+                      style={{ background: c }}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className={styles.code}>
+                {CODE_LINES.map((l, i) => (
+                  <div
+                    // Statisk liste — indeksen er stabil.
+                    key={i}
+                    ref={(el) => {
+                      rowRefs.current[i] = el;
+                    }}
+                    className={styles.codeRow}
+                    style={{ marginLeft: l.indent }}
+                  >
+                    {l.segs.map((s, j) => (
+                      <span key={j} style={{ width: s.w, background: s.c }} />
+                    ))}
+                  </div>
+                ))}
+                <span ref={caretRef} className={styles.caret} />
+              </div>
+            </div>
+          </div>
+          <div className={styles.monitorNeck} />
+          <div className={styles.monitorFoot} />
+        </div>
+
+        <div
+          ref={(el) => {
+            sceneRefs.current[2] = el;
+          }}
+          className={`${styles.scene} ${styles.sceneCube}`}
+        >
+          <div ref={cubeRef} className={styles.cube}>
+            {CUBIE_FACES.map((faces, i) => (
               <div
-                // Indeks som key: listen er fast, og en stabil key hindrer at
-                // språkbytte remonterer kapitlene og mister aktiv-markeringen.
+                // Statisk liste — indeksen er stabil.
                 key={i}
                 ref={(el) => {
-                  chapRefs.current[i] = el;
+                  cubieRefs.current[i] = el;
                 }}
-                className={styles.chap}
-                data-on={i === 0 ? "" : undefined}
+                className={styles.cubie}
               >
-                <div className={styles.chapRow}>
-                  <span className={styles.num}>0{i + 1}</span>
-                  <div>
-                    <div className={styles.tagRow}>
-                      <span className={styles.dot} />
-                      <span className={styles.tag}>{n.tag}</span>
-                    </div>
-                    <h3 className={styles.chapTitle}>{n.title}</h3>
-                    <div className={styles.body}>
-                      <div className={styles.bodyInner}>
-                        <p className={styles.detail}>{n.detail}</p>
-                        <span className={styles.since}>{n.since}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className={styles.rail}>
-                  <div
-                    ref={(el) => {
-                      fillRefs.current[i] = el;
-                    }}
-                    className={styles.fill}
-                  />
-                </div>
+                {faces.map((bg, j) => (
+                  <div key={j} className={styles.face} style={{ transform: FACE_TF[j], background: bg }} />
+                ))}
               </div>
             ))}
           </div>
+        </div>
+      </div>
+    </div>
+  );
 
-          <div className={styles.stageCol}>
+  return (
+    <section id="na" ref={sectionRef} className={styles.section}>
+      <div className={styles.head}>
+        <h2 className={styles.title}>{t.nowTitle}</h2>
+        <span className={styles.date}>{fmtMonthYearFull(now, lang)}</span>
+      </div>
+
+      <div className={styles.grid}>
+        <div className={styles.chapters}>
+          <div ref={railRef} className={styles.rail}>
+            <div ref={railFillRef} className={styles.fill} />
+          </div>
+          {t.now.map((n, i) => (
             <div
-              ref={stageRef}
-              className={styles.stage}
-              onPointerMove={onPointerMove}
-              onPointerLeave={onPointerLeave}
-              onPointerDown={onPointerDown}
-              onPointerUp={onPointerUp}
-              onPointerCancel={onPointerUp}
+              // Indeks som key: listen er fast, og en stabil key hindrer at
+              // språkbytte remonterer kapitlene og mister aktiv-markeringen.
+              key={i}
+              ref={(el) => {
+                chapRefs.current[i] = el;
+              }}
+              className={styles.chap}
+              data-on={i === 0 ? "" : undefined}
             >
-              <div ref={stageInnerRef} className={styles.stageInner}>
-                <div
-                  ref={(el) => {
-                    sceneRefs.current[0] = el;
-                  }}
-                  className={styles.scene}
-                  data-on=""
-                >
-                  {NET_EDGES.map((e, i) => (
-                    <div
-                      key={`${e.x}-${e.y}-${e.deg}`}
-                      ref={(el) => {
-                        edgeRefs.current[i] = el;
-                      }}
-                      className={styles.netEdge}
-                      style={{ left: e.x, top: e.y, width: e.w, transform: `rotate(${e.deg}deg)` }}
-                    />
-                  ))}
-                  {NET_NODES.map((nd, i) => (
-                    <div
-                      key={`${nd.x}-${nd.y}`}
-                      ref={(el) => {
-                        nodeRefs.current[i] = el;
-                      }}
-                      className={styles.netNode}
-                      style={{ left: nd.x, top: nd.y }}
-                    />
-                  ))}
-                  <div className={styles.netLabels}>
-                    {t.nowNet.map((l, i) => (
-                      <span key={`${l}-${i}`}>{l}</span>
-                    ))}
-                  </div>
+              <span
+                ref={(el) => {
+                  numRefs.current[i] = el;
+                }}
+                className={styles.num}
+              >
+                0{i + 1}
+              </span>
+              <div
+                ref={(el) => {
+                  textRefs.current[i] = el;
+                }}
+              >
+                <div className={styles.tagRow}>
+                  <span className={styles.dot} />
+                  <span className={styles.tag}>{n.tag}</span>
                 </div>
-
-                <div
-                  ref={(el) => {
-                    sceneRefs.current[1] = el;
-                  }}
-                  className={`${styles.scene} ${styles.sceneCorp}`}
-                >
-                  <div className={styles.monitor}>
-                    <div className={styles.screen}>
-                      <div className={styles.screenBar}>
-                        <div className={styles.trafficDots}>
-                          <span />
-                          <span />
-                          <span />
-                        </div>
-                        <div className={styles.crewRow}>
-                          {CREW.map((c, i) => (
-                            <span
-                              key={c}
-                              ref={(el) => {
-                                crewRefs.current[i] = el;
-                              }}
-                              className={styles.crew}
-                              style={{ background: c }}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                      <div className={styles.code}>
-                        {CODE_LINES.map((l, i) => (
-                          <div
-                            // Statisk liste — indeksen er stabil.
-                            key={i}
-                            ref={(el) => {
-                              rowRefs.current[i] = el;
-                            }}
-                            className={styles.codeRow}
-                            style={{ marginLeft: l.indent }}
-                          >
-                            {l.segs.map((s, j) => (
-                              <span key={j} style={{ width: s.w, background: s.c }} />
-                            ))}
-                          </div>
-                        ))}
-                        <span ref={caretRef} className={styles.caret} />
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles.monitorNeck} />
-                  <div className={styles.monitorFoot} />
-                </div>
-
-                <div
-                  ref={(el) => {
-                    sceneRefs.current[2] = el;
-                  }}
-                  className={`${styles.scene} ${styles.sceneCube}`}
-                >
-                  <div ref={cubeRef} className={styles.cube}>
-                    {CUBIE_FACES.map((faces, i) => (
-                      <div
-                        // Statisk liste — indeksen er stabil.
-                        key={i}
-                        ref={(el) => {
-                          cubieRefs.current[i] = el;
-                        }}
-                        className={styles.cubie}
-                      >
-                        {faces.map((bg, j) => (
-                          <div key={j} className={styles.face} style={{ transform: FACE_TF[j], background: bg }} />
-                        ))}
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <h3 className={styles.chapTitle}>{n.title}</h3>
+                <p className={styles.detail}>{n.detail}</p>
+                <span className={styles.since}>{n.since}</span>
               </div>
             </div>
+          ))}
+        </div>
 
-            <div className={styles.caption}>
-              <span className={styles.capDot} />
-              {SCENES.map((k, i) => (
-                <span
-                  key={k}
-                  ref={(el) => {
-                    capRefs.current[i] = el;
-                  }}
-                  className={styles.cap}
-                  data-on={i === 0 ? "" : undefined}
-                >
-                  {t.nowCaps[k]}
-                </span>
-              ))}
-            </div>
-          </div>
+        <div ref={stageColRef} className={styles.stageCol}>
+          {stage}
         </div>
       </div>
     </section>

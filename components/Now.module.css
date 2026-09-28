@@ -1,20 +1,11 @@
-/* Scrollstory: seksjonen er 360vh høy, barnet pinnes i full skjerm og
-   scroll driver de tre kapitlene. Aktiv tilstand markeres med [data-on]. */
+/* Scrollstory: kapitlene er vanlig tekst som scroller forbi, og bare grafikken
+   står fast ved siden av (på mobil: øverst). Aktivt kapittel markeres med
+   [data-on]; scenene tones inn og ut av JS. */
 
 .section {
   position: relative;
-  height: 360vh;
+  padding: 96px var(--gutter) 64px;
   scroll-margin-top: 70px;
-}
-
-.pin {
-  position: sticky;
-  top: 0;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  height: 100vh;
-  padding: 96px var(--gutter) 42px;
 }
 
 .head {
@@ -23,7 +14,7 @@
   justify-content: space-between;
   gap: 20px;
   flex-wrap: wrap;
-  flex: none;
+  margin-bottom: 8px;
 }
 
 .title {
@@ -35,34 +26,6 @@
   letter-spacing: -0.045em;
 }
 
-.headMeta {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.ticks {
-  display: flex;
-  gap: 6px;
-}
-
-.tick {
-  position: relative;
-  width: 42px;
-  height: 2px;
-  background: rgba(244, 241, 232, 0.16);
-  overflow: hidden;
-}
-
-.tickFill {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 0%;
-  background: var(--lime);
-}
-
 .date {
   font-family: var(--font-mono), monospace;
   font-size: 11.5px;
@@ -72,42 +35,63 @@
 }
 
 .grid {
-  flex: 1;
-  min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 400px;
   gap: 48px;
-  align-items: stretch;
-  padding-top: 22px;
 }
 
-/* Venstre side: accordion med kapitlene */
+/* Venstre side: kapitlene */
 
 .chapters {
-  min-height: 0;
-  align-self: center;
-  border-top: 1px solid rgba(244, 241, 232, 0.14);
+  position: relative;
 }
 
+/* Tynn tidslinje gjennom kapittelnumrene. JS setter topp og høyde etter hvor
+   numrene faktisk ligger, og fyller den fram til leselinja. */
+.rail {
+  position: absolute;
+  left: 20.5px;
+  width: 1px;
+  background: rgba(244, 241, 232, 0.12);
+  pointer-events: none;
+}
+
+.fill {
+  position: absolute;
+  left: -0.5px;
+  top: 0;
+  width: 2px;
+  height: 0;
+  background: var(--lime);
+  box-shadow: 0 0 10px rgba(217, 255, 99, 0.35);
+}
+
+/* Hvert kapittel får godt med scroll, med teksten midt i. Ingen kort eller
+   skillelinjer: kapitlene er ett sammenhengende løp. */
 .chap {
-  border-bottom: 1px solid rgba(244, 241, 232, 0.12);
-  opacity: 0.42;
-  transition: opacity 260ms cubic-bezier(0.2, 0.9, 0.25, 1);
-}
-
-.chap[data-on] {
-  opacity: 1;
-}
-
-.chapRow {
   display: grid;
   grid-template-columns: 42px minmax(0, 1fr);
-  gap: 16px;
+  column-gap: 16px;
   align-items: baseline;
+  align-content: center;
+  min-height: 62vh;
   padding: 16px 0 14px;
 }
 
+/* Første kapittel starter rett under tittelen i stedet for midt i sin blokk,
+   så seksjonen ikke åpner med et tomt felt. */
+.rail + .chap {
+  align-content: start;
+  min-height: 60vh;
+  padding-top: 11vh;
+}
+
+/* Numrene ligger oppå tidslinja og skjuler den bak seg. */
 .num {
+  position: relative;
+  padding: 6px 0;
+  background: var(--ink);
+  text-align: center;
   font-family: var(--font-mono), monospace;
   font-size: 12px;
   letter-spacing: 0.08em;
@@ -156,42 +140,16 @@
   margin: 0;
   font-family: var(--font-display), sans-serif;
   font-weight: 800;
-  font-size: clamp(21px, 2.3vw, 31px);
-  letter-spacing: -0.035em;
-  line-height: 1.06;
-  color: rgba(244, 241, 232, 0.42);
-  transition: color 260ms ease;
+  font-size: clamp(26px, 3.2vw, 46px);
+  letter-spacing: -0.04em;
+  line-height: 1.02;
   text-wrap: pretty;
 }
 
-.chap[data-on] .chapTitle {
-  color: var(--paper);
-}
-
-/* 0fr → 1fr slipper å måle scrollHeight og tåler resize og språkbytte. */
-.body {
-  display: grid;
-  grid-template-rows: 0fr;
-  opacity: 0;
-  transition:
-    grid-template-rows 320ms cubic-bezier(0.2, 0.9, 0.25, 1),
-    opacity 200ms ease;
-}
-
-.chap[data-on] .body {
-  grid-template-rows: 1fr;
-  opacity: 1;
-}
-
-.bodyInner {
-  min-height: 0;
-  overflow: hidden;
-}
-
 .detail {
-  margin: 12px 0 0;
-  max-width: 46ch;
-  font-size: 14.5px;
+  margin: 16px 0 0;
+  max-width: 42ch;
+  font-size: 16px;
   line-height: 1.55;
   color: rgba(244, 241, 232, 0.62);
   text-wrap: pretty;
@@ -205,39 +163,22 @@
   color: rgba(244, 241, 232, 0.34);
 }
 
-.rail {
-  height: 2px;
-  background: rgba(244, 241, 232, 0.06);
-}
-
-.fill {
-  height: 2px;
-  width: 0%;
-  background: var(--lime);
-}
-
-/* Høyre side: grafikkpanelet */
+/* Høyre side: grafikken, fritt på sidens bakgrunn, midt i viewporten mens
+   kapitlene scroller forbi. */
 
 .stageCol {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  justify-content: center;
+  position: sticky;
+  top: max(88px, calc(50vh - 205px));
+  align-self: start;
 }
 
 .stage {
   position: relative;
-  flex: 1 1 auto;
-  min-height: 0;
-  max-height: 410px;
-  border: 1px solid rgba(244, 241, 232, 0.12);
-  border-radius: 16px;
-  background: var(--panel);
-  overflow: hidden;
+  height: min(410px, calc(100vh - 200px));
   touch-action: pan-y;
 }
 
-/* 400×410-lerret som fitStage() skalerer ned til panelets faktiske mål. */
+/* 400×410-lerret som fitStage() skalerer ned til flatens faktiske mål. */
 .stageInner {
   position: absolute;
   left: 50%;
@@ -248,11 +189,12 @@
   transform-origin: 50% 50%;
 }
 
+/* Første scene vises før JS har tegnet; deretter styrer JS opasiteten inline,
+   uten CSS-overgang — glidet i JS er selve overtoningen. */
 .scene {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity 150ms linear;
 }
 
 .scene[data-on] {
@@ -268,7 +210,7 @@
   margin: -7px 0 0 -7px;
   border-radius: 50%;
   border: 1px solid rgba(244, 241, 232, 0.3);
-  background: var(--panel);
+  background: var(--ink);
   transition:
     background 400ms ease,
     box-shadow 400ms ease,
@@ -406,10 +348,12 @@
 }
 
 @keyframes caretBlink {
+
   0%,
   49% {
     opacity: 1;
   }
+
   50%,
   100% {
     opacity: 0;
@@ -460,96 +404,97 @@
   border-radius: 6px;
 }
 
-/* Bildetekst under panelet */
-
-.caption {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 12px;
-  flex: none;
-}
-
-.capDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--lime);
-  flex: none;
-}
-
-.cap {
-  display: none;
-  font-family: var(--font-mono), monospace;
-  font-size: 10.5px;
-  letter-spacing: 0.09em;
-  color: rgba(244, 241, 232, 0.45);
-  line-height: 1.4;
-}
-
-.cap[data-on] {
-  display: inline;
-}
 
 @media (prefers-reduced-motion: reduce) {
+
   .chap[data-on] .dot,
   .caret {
     animation: none;
   }
 }
 
-/* Mobil: grafikken flyttes over teksten, løpet kortes til 300vh og
-   dvh-enheter hindrer hopp fra adresselinja. */
+/* Mobil: grafikken står fast øverst, og teksten scroller inn under den. */
 @media (max-width: 820px) {
   .section {
-    height: 300vh;
+    padding: 64px var(--gutter) 24px;
   }
 
-  .pin {
-    /* Toppmenyen er fast og ~77px høy — tittelen må klarere den. */
-    height: 100dvh;
-    padding: 90px 18px 20px;
+  /* Over dekket til grafikken (se ::before under), så tittelen ikke forsvinner
+     bak det før grafikken har festet seg. */
+  .head {
+    position: relative;
+    z-index: 3;
   }
 
   .grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
-  }
-
-  .chapters {
-    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
   }
 
   .stageCol {
     order: -1;
+    top: 76px;
+    z-index: 2;
+    align-self: stretch;
+    margin: 0 calc(-1 * var(--gutter));
+    padding: 12px var(--gutter) 10px;
+    background: var(--ink);
   }
 
+  /* Dekker stripa bak toppmenyen, så teksten ikke dukker opp igjen over
+     grafikken etter å ha scrollet under den. */
+  .stageCol::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 100%;
+    height: 76px;
+    background: var(--ink);
+  }
+
+  /* Teksten løses opp inn under grafikken i stedet for å kuttes i en kant. */
+  .stageCol::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 56px;
+    background: linear-gradient(var(--ink), rgba(12, 14, 17, 0));
+    pointer-events: none;
+  }
+
+  /* svh: høyden skal ikke hoppe når adresselinja kommer og går. */
   .stage {
-    flex: none;
-    height: 24dvh;
-    max-height: none;
+    height: 26svh;
   }
 
-  .chapRow {
+  .chap {
+    min-height: 52svh;
     padding: 13px 0 11px;
   }
 
+  .rail + .chap {
+    min-height: 50svh;
+    padding-top: 5svh;
+  }
+
+  /* Grafikken slipper først når slutten av kapitlene når den. Uten luft under
+     siste kapittel følger den med ut rett etter at teksten har gått under. */
+  .chap:last-child {
+    align-content: start;
+    min-height: 0;
+    padding-bottom: 14svh;
+  }
+
   .chapTitle {
-    font-size: 17px;
+    font-size: 24px;
   }
 
-  .chap[data-on] .chapTitle {
-    font-size: 21px;
-  }
-
-  /* Inaktive kapitler kollapses til én linje. */
-  .chap:not([data-on]) .tagRow {
-    display: none;
-  }
-
-  .chap:not([data-on]) .chapTitle {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .detail {
+    margin-top: 12px;
+    font-size: 15px;
   }
 }

@@ -3,13 +3,19 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { TYPE_COLOR, type Copy } from "@/lib/copy";
 import { rgba, type ExperienceVM } from "@/lib/derive";
-import { prefersReducedMotion, useScrollFrame } from "@/lib/fx";
+import { prefersReducedMotion, useGlide, useScrollFrame } from "@/lib/fx";
 import { MONTHS, yearOf } from "@/lib/time";
 import type { ExperienceType, Lang } from "@/lib/types";
 import styles from "./GanttView.module.css";
 
 const GANTT_SCRUB = true;
 const BAND_ORDER: ExperienceType[] = ["Betalt", "Frivillig", "Utdanning"];
+
+/* Diagrammet pinnes ikke: playheaden spoler mens det scroller inn i bildet,
+   så siden stopper aldri opp. Spolingen starter når toppen av radene er 92 %
+   ned i viewporten og er ferdig når den har nådd 30 %. */
+const SCRUB_FROM = 0.92;
+const SCRUB_TO = 0.3;
 
 interface Props {
   t: Copy;
@@ -64,7 +70,7 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [minY, maxY]);
 
-  const wrapRef = useRef<HTMLDivElement | null>(null);
+  const chartRef = useRef<HTMLDivElement | null>(null);
   const headRef = useRef<HTMLDivElement | null>(null);
   const yearRef = useRef<HTMLDivElement | null>(null);
   const monRef = useRef<HTMLDivElement | null>(null);
@@ -72,20 +78,8 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
   const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
   const segRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  useScrollFrame(({ vh, vw }) => {
-    const wrap = wrapRef.current;
-    if (!wrap) return;
-    const r = wrap.getBoundingClientRect();
-    // Er diagrammet utenfor bildet står alle verdiene stille uansett.
-    if (r.bottom < -200 || r.top > vh + 200) return;
-    const dist = Math.max(1, r.height - vh * 0.8);
-    // På smale skjermer er layouten statisk (se CSS), så diagrammet vises
-    // ferdig utfylt i stedet for å scrubbe.
-    const narrow = vw <= 820;
-    const p =
-      prefersReducedMotion() || !GANTT_SCRUB || narrow
-        ? 1
-        : Math.max(0, Math.min(1, (110 - r.top) / dist));
+  // Tegner diagrammet for en fremdrift p (0 = første år, 1 = aksens slutt).
+  const render = (p: number) => {
     const year = minY + p * (maxY - minY);
     // Aksen har luft etter «nå» (maxY = now + margin); informasjonsverdiene
     // (måned, aktive roller, samtidighet) klampes til nå så slutt-tilstanden
@@ -94,8 +88,8 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
     const yEff = Math.min(year, now);
 
     // Identiske tilordninger trigger style recalc likevel, så alt sjekkes mot
-    // inline-stilen først. På mobil er p låst til 1, og da blir hele
-    // skrivefasen under en no-op i stedet for 40+ oppdateringer per frame.
+    // inline-stilen først. Står p stille, blir hele skrivefasen en no-op i
+    // stedet for 40+ oppdateringer per frame.
     const setStyle = (el: HTMLElement, prop: "left" | "width" | "opacity", v: string) => {
       if (el.style[prop] !== v) el.style[prop] = v;
     };
@@ -135,150 +129,168 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
       const c = String(conc);
       if (concRef.current.textContent !== c) concRef.current.textContent = c;
     }
-  }, [segFlat, roleFlat, minY, maxY, lang]);
+  };
+
+  // Fremdriften glir etter scrollen i stedet for å hakke.
+  const glide = useGlide(render, 140);
+
+  useScrollFrame(
+    ({ vh }) => {
+      const chart = chartRef.current;
+      if (!chart) return;
+      const r = chart.getBoundingClientRect();
+      // Er diagrammet utenfor bildet står alle verdiene stille uansett.
+      if (r.bottom < -200 || r.top > vh + 200) return;
+      if (prefersReducedMotion() || !GANTT_SCRUB) {
+        render(1);
+        return;
+      }
+      const p = (vh * SCRUB_FROM - r.top) / (vh * (SCRUB_FROM - SCRUB_TO));
+      glide(Math.max(0, Math.min(1, p)));
+    },
+    [segFlat, roleFlat, minY, maxY, lang]
+  );
 
   return (
-    <div ref={wrapRef} className={styles.wrap}>
-      <div className={styles.sticky}>
-        <div className={styles.readout}>
-          <div className={styles.readoutLeft}>
-            <div className={styles.yearGroup}>
-              <div ref={yearRef} className={styles.year}>
-                {Math.ceil(minY)}
-              </div>
-              <div ref={monRef} className={styles.month}>
-                {MONTHS[lang][0]}
-              </div>
+    <div className={styles.wrap}>
+      <div className={styles.readout}>
+        <div className={styles.readoutLeft}>
+          <div className={styles.yearGroup}>
+            <div ref={yearRef} className={styles.year}>
+              {Math.ceil(minY)}
             </div>
-            <div>
-              <div className={styles.concRow}>
-                <span ref={concRef} className={styles.conc}>
-                  0
-                </span>
-                <span className={styles.concLabel}>{t.concurrent}</span>
-              </div>
-              <p className={styles.hint}>
-                {t.ganttHint} · {t.pickHint}
-              </p>
+            <div ref={monRef} className={styles.month}>
+              {MONTHS[lang][0]}
             </div>
           </div>
-        </div>
-
-        <div className={styles.axisRow}>
-          <span className={styles.axisLabel}>{t.roleCol}</span>
-          <div className={styles.axis}>
-            {ticks.map((tk) => (
-              <span
-                key={tk.year}
-                className={styles.tick}
-                style={{
-                  left: `${tk.x}%`,
-                  color: tk.year === yearOf(now) ? "var(--lime)" : "rgba(244,241,232,.34)",
-                }}
-              >
-                {tk.year}
+          <div>
+            <div className={styles.concRow}>
+              <span ref={concRef} className={styles.conc}>
+                0
               </span>
-            ))}
+              <span className={styles.concLabel}>{t.concurrent}</span>
+            </div>
+            <p className={styles.hint}>
+              {t.ganttHint} · {t.pickHint}
+            </p>
           </div>
         </div>
-
-        <div className={styles.chart}>
-          <div className={styles.overlay}>
-            {ticks.map((tk) => (
-              <div
-                key={tk.year}
-                className={styles.gridline}
-                style={{
-                  left: `${tk.x}%`,
-                  background:
-                    tk.year === yearOf(now) ? "rgba(217,255,99,.14)" : "rgba(244,241,232,.05)",
-                }}
-              />
-            ))}
-            <div ref={headRef} className={styles.playhead} />
-          </div>
-
-          {bands.map((band) => {
-            const hex = TYPE_COLOR[band.key];
-            return (
-              <div key={band.key} className={styles.band}>
-                <div className={styles.bandHead} style={{ color: hex }}>
-                  <span className={styles.bandDot} style={{ background: hex }} />
-                  {t.filters[band.key]}
-                  <span className={styles.bandCount}>{band.roles.length}</span>
-                </div>
-                <div className={styles.bandBody} style={{ background: rgba(hex, 0.04) }}>
-                  {band.roles.map(({ vm, idx }) => (
-                    <div
-                      key={vm.id}
-                      ref={(el) => {
-                        rowRefs.current[idx] = el;
-                      }}
-                      onClick={() => setSel(idx)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          setSel(idx);
-                        }
-                      }}
-                      role="button"
-                      tabIndex={0}
-                      aria-pressed={sel === idx}
-                      className={`${styles.row} ${sel === idx ? styles.rowSelected : ""}`}
-                    >
-                      <div className={styles.rowName} style={{ borderLeftColor: hex }}>
-                        <span className={styles.rowTitle}>{vm.title}</span>
-                        <span className={styles.rowOrg}>{vm.organization}</span>
-                      </div>
-                      <div className={styles.rowBars}>
-                        {vm.segs.map((s, si) => {
-                          const flatIdx = segStart[idx] + si;
-                          return (
-                            <div
-                              key={si}
-                              ref={(el) => {
-                                segRefs.current[flatIdx] = el;
-                              }}
-                              className={styles.seg}
-                              style={{
-                                left: `${pos(s[0])}%`,
-                                width: `${Math.max(1.1, pos(s[1]) - pos(s[0]))}%`,
-                                background: rgba(hex, 0.22),
-                                border: `1px solid ${rgba(hex, 0.6)}`,
-                              }}
-                            >
-                              <span className={styles.segFill} style={{ background: hex }} />
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {d && (
-          <div className={styles.detail}>
-            <div className={styles.detailLogo}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={d.imagePath} alt="" />
-            </div>
-            <div className={styles.detailBody}>
-              <div className={styles.detailHead}>
-                <h3 className={styles.detailTitle}>{d.title}</h3>
-                <span className={styles.detailOrg}>{d.organization}</span>
-                <span className={styles.detailPeriod}>{d.periodFull}</span>
-              </div>
-              <p className={styles.detailDesc}>{d.description}</p>
-              {d.note && <p className={styles.detailNote}>↳ {d.note}</p>}
-              <p className={styles.detailTags}>{d.tags.join("   ·   ")}</p>
-            </div>
-          </div>
-        )}
       </div>
+
+      <div className={styles.axisRow}>
+        <span className={styles.axisLabel}>{t.roleCol}</span>
+        <div className={styles.axis}>
+          {ticks.map((tk) => (
+            <span
+              key={tk.year}
+              className={styles.tick}
+              style={{
+                left: `${tk.x}%`,
+                color: tk.year === yearOf(now) ? "var(--lime)" : "rgba(244,241,232,.34)",
+              }}
+            >
+              {tk.year}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div ref={chartRef} className={styles.chart}>
+        <div className={styles.overlay}>
+          {ticks.map((tk) => (
+            <div
+              key={tk.year}
+              className={styles.gridline}
+              style={{
+                left: `${tk.x}%`,
+                background:
+                  tk.year === yearOf(now) ? "rgba(217,255,99,.14)" : "rgba(244,241,232,.05)",
+              }}
+            />
+          ))}
+          <div ref={headRef} className={styles.playhead} />
+        </div>
+
+        {bands.map((band) => {
+          const hex = TYPE_COLOR[band.key];
+          return (
+            <div key={band.key} className={styles.band}>
+              <div className={styles.bandHead} style={{ color: hex }}>
+                <span className={styles.bandDot} style={{ background: hex }} />
+                {t.filters[band.key]}
+                <span className={styles.bandCount}>{band.roles.length}</span>
+              </div>
+              <div className={styles.bandBody} style={{ background: rgba(hex, 0.04) }}>
+                {band.roles.map(({ vm, idx }) => (
+                  <div
+                    key={vm.id}
+                    ref={(el) => {
+                      rowRefs.current[idx] = el;
+                    }}
+                    onClick={() => setSel(idx)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSel(idx);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-pressed={sel === idx}
+                    className={`${styles.row} ${sel === idx ? styles.rowSelected : ""}`}
+                  >
+                    <div className={styles.rowName} style={{ borderLeftColor: hex }}>
+                      <span className={styles.rowTitle}>{vm.title}</span>
+                      <span className={styles.rowOrg}>{vm.organization}</span>
+                    </div>
+                    <div className={styles.rowBars}>
+                      {vm.segs.map((s, si) => {
+                        const flatIdx = segStart[idx] + si;
+                        return (
+                          <div
+                            key={si}
+                            ref={(el) => {
+                              segRefs.current[flatIdx] = el;
+                            }}
+                            className={styles.seg}
+                            style={{
+                              left: `${pos(s[0])}%`,
+                              width: `${Math.max(1.1, pos(s[1]) - pos(s[0]))}%`,
+                              background: rgba(hex, 0.22),
+                              border: `1px solid ${rgba(hex, 0.6)}`,
+                            }}
+                          >
+                            <span className={styles.segFill} style={{ background: hex }} />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {d && (
+        <div className={styles.detail}>
+          <div className={styles.detailLogo}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={d.imagePath} alt="" />
+          </div>
+          <div className={styles.detailBody}>
+            <div className={styles.detailHead}>
+              <h3 className={styles.detailTitle}>{d.title}</h3>
+              <span className={styles.detailOrg}>{d.organization}</span>
+              <span className={styles.detailPeriod}>{d.periodFull}</span>
+            </div>
+            <p className={styles.detailDesc}>{d.description}</p>
+            {d.note && <p className={styles.detailNote}>↳ {d.note}</p>}
+            <p className={styles.detailTags}>{d.tags.join("   ·   ")}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
