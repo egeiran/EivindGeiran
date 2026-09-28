@@ -5,31 +5,24 @@ import type { Copy } from "@/lib/copy";
 import { prefersReducedMotion, useGlide, useInView, useScrollFrame } from "@/lib/fx";
 import { fmtMonthYearFull } from "@/lib/time";
 import type { Lang } from "@/lib/types";
-import { useQueryVariant } from "@/lib/variant";
 import styles from "./Now.module.css";
 
 // Tweaks fra handoffen: musefølging 0–100 % og fri spinn på kuben.
 const CUBE_FOLLOW = 40;
 const CUBE_SPIN = true;
 
-/* Scrollstoryen finnes i to varianter mens vi tester dem (?now=pin gir B):
-   A «flow»: kapitlene er vanlig tekst som scroller forbi, og bare grafikken
-   står fast ved siden av (på mobil: over). Siden stopper aldri opp.
-   B «pin»: hele seksjonen pinnes som før, men bremser mykt inn og ut i stedet
-   for å stoppe brått, og driver litt mens den står. */
-const VARIANTS = ["flow", "pin"] as const;
+/* Scrollstory: kapitlene er vanlig tekst som scroller forbi, og bare grafikken
+   står fast ved siden av (på mobil: over). Siden stopper aldri opp; scenene
+   drives av hvor teksten ligger i forhold til en leselinje. */
 
-// A: hvor i hvert kapittel (0 = toppen når leselinja, 1 = bunnen) scenen
-// starter og er ferdig animert — resten av veien holder den ferdigtilstanden.
+// Hvor i hvert kapittel (0 = toppen når leselinja, 1 = bunnen) scenen starter
+// og er ferdig animert — resten av veien holder den ferdigtilstanden.
 // Kapittel 01 venter til grafikken har festet seg; før det er den fortsatt på
 // vei inn i bildet, og animasjonen ville vært ferdig før man så den.
-const FLOW_FROM = [0.42, -0.1, -0.1];
-const FLOW_TO = [0.88, 0.6, 0.6];
-
-// B: bremsesonen i andel av viewporthøyden, og hvor fort scenen fortsatt
-// driver oppover mens den står, i andel av scrollfarten.
-const SOFT_RAMP = 0.45;
-const SOFT_DRIFT = 0.1;
+const SCENE_FROM = [0.42, -0.1, -0.1];
+const SCENE_TO = [0.88, 0.6, 0.6];
+// Hvor stor del av et kapittel overtoningen mellom to scener tar.
+const SCENE_FADE = 0.2;
 
 /* ---------- Kapittel 01: nevralt nett — statisk geometri ---------- */
 
@@ -206,46 +199,6 @@ const CUBE_STATES: Cubie[][] = (() => {
   return out;
 })();
 
-/* ---------- Myk pin (variant B) ---------- */
-
-type ViewTimelineCtor = new (opts: { subject: Element }) => AnimationTimeline;
-
-/**
- * Sonen der den myke pinnen avviker fra en vanlig sticky-pin, for en seksjon
- * der sticky ville stått stille i `L` px. Farten bremser fra 1 ned til
- * SOFT_DRIFT over R px, driver sakte, og akselererer tilbake over R px.
- * Sonen er sentrert slik at scenen står nøyaktig på plass midt i pinnen.
- */
-function softPinZone(L: number, vh: number) {
-  const k = SOFT_DRIFT;
-  const R = Math.min(SOFT_RAMP * vh, L / (1 - k));
-  const Z = R + L / (1 - k);
-  return { k, R, Z, a: (L - Z) / 2 };
-}
-
-/**
- * Hvor mange px den myke pinnen ligger fra en vanlig sticky-pin når seksjonen
- * er scrollet `s` px forbi toppen av viewporten. Utenfor sonen er svaret 0, og
- * farten er kontinuerlig hele veien — ingen knekk der sticky ville slått inn.
- */
-function softPinOffset(s: number, L: number, vh: number): number {
-  if (L <= 0) return 0;
-  const { k, R, Z, a } = softPinZone(L, vh);
-  const u = s - a;
-  if (u <= 0 || u >= Z) return 0;
-  // Integralet av smoothstep, så strekningen i rampene kan regnes eksakt.
-  const S = (x: number) => x * x * x - (x * x * x * x) / 2;
-  let moved: number;
-  if (u < R) moved = u - (1 - k) * R * S(u / R);
-  else if (u <= Z - R) moved = (R * (1 + k)) / 2 + k * (u - R);
-  else {
-    const w = u - (Z - R);
-    moved = (R * (1 + k)) / 2 + k * (Z - 2 * R) + k * w + (1 - k) * R * S(w / R);
-  }
-  const sticky = Math.min(Math.max(-s, 0), L - s);
-  return -a - moved - sticky;
-}
-
 const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
 const smoothstep = (e0: number, e1: number, x: number) => {
   const v = clamp01((x - e0) / (e1 - e0));
@@ -253,18 +206,15 @@ const smoothstep = (e0: number, e1: number, x: number) => {
 };
 
 export default function Now({ t, lang, now }: { t: Copy; lang: Lang; now: number }) {
-  const variant = useQueryVariant("now", VARIANTS);
   // Kuben spinner i sin egen rAF-loop; den skal ikke rulle videre når
   // seksjonen er ute av bildet.
   const [sectionRef, sectionInView] = useInView<HTMLElement>("200px");
-  const pinRef = useRef<HTMLDivElement | null>(null);
   const stageColRef = useRef<HTMLDivElement | null>(null);
   const chapRefs = useRef<(HTMLDivElement | null)[]>([]);
   const textRefs = useRef<(HTMLDivElement | null)[]>([]);
   const numRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const railRef = useRef<HTMLDivElement | null>(null);
   const railFillRef = useRef<HTMLDivElement | null>(null);
-  const fillRefs = useRef<(HTMLDivElement | null)[]>([]);
   const sceneRefs = useRef<(HTMLDivElement | null)[]>([]);
   const stageRef = useRef<HTMLDivElement | null>(null);
   const stageInnerRef = useRef<HTMLDivElement | null>(null);
@@ -282,8 +232,6 @@ export default function Now({ t, lang, now }: { t: Copy; lang: Lang; now: number
     // Sist tegnede fremdrift og opasitet per scene; NaN tvinger ny tegning.
     sceneQ: [NaN, NaN, NaN],
     sceneO: ["", "", ""],
-    // Uten ViewTimeline flyttes den myke pinnen fra scroll-callbacken i stedet.
-    softFallback: false,
     spinX: 0,
     spinY: 0,
     vx: 0,
@@ -407,29 +355,20 @@ export default function Now({ t, lang, now }: { t: Copy; lang: Lang; now: number
    */
   const renderStory = (pos: number) => {
     const still = prefersReducedMotion();
-    const flow = variant === "flow";
-    const fade = flow ? 0.2 : 0.12;
     const idx = Math.max(0, Math.min(2, Math.floor(pos)));
     if (idx !== st.chapIdx) setChapter(idx);
     for (let i = 0; i < 3; i++) {
-      // 0.84 i pin-varianten: kapitlet er ferdig animert etter 84 % av sin
-      // tredjedel og holder ferdigtilstanden resten — det er dét som gjør at
-      // overgangene lander.
-      const from = flow ? FLOW_FROM[i] : 0;
-      const to = flow ? FLOW_TO[i] : 0.84;
-      const q = still ? 1 : clamp01((pos - i - from) / (to - from));
+      const from = SCENE_FROM[i];
+      const q = still ? 1 : clamp01((pos - i - from) / (SCENE_TO[i] - from));
       let o = 1;
-      if (i > 0) o = Math.min(o, clamp01((pos - i) / fade + 0.5));
-      if (i < 2) o = Math.min(o, clamp01((i + 1 - pos) / fade + 0.5));
+      if (i > 0) o = Math.min(o, clamp01((pos - i) / SCENE_FADE + 0.5));
+      if (i < 2) o = Math.min(o, clamp01((i + 1 - pos) / SCENE_FADE + 0.5));
       const ov = String(Math.round(o * 1000) / 1000);
       const scene = sceneRefs.current[i];
       if (scene && st.sceneO[i] !== ov) {
         st.sceneO[i] = ov;
         scene.style.opacity = ov;
       }
-      const w = `${(q * 100).toFixed(1)}%`;
-      const cf = fillRefs.current[i];
-      if (cf && cf.style.width !== w) cf.style.width = w;
       if (o > 0 && q !== st.sceneQ[i]) {
         st.sceneQ[i] = q;
         if (i === 0) netFrame(q);
@@ -441,9 +380,9 @@ export default function Now({ t, lang, now }: { t: Copy; lang: Lang; now: number
 
   const glide = useGlide(renderStory, 110);
 
-  // Variant A: posisjonen kommer fra hvor kapittelteksten ligger i forhold
-  // til en leselinje. Teksten scroller helt vanlig; bare scenene glir etter.
-  const flowFrame = (vh: number, vw: number) => {
+  // Posisjonen kommer fra hvor kapittelteksten ligger i forhold til en
+  // leselinje. Teksten scroller helt vanlig; bare scenene glir etter.
+  const storyFrame = (vh: number, vw: number) => {
     // Lesefase: alle rects hentes før noe skrives.
     const rects: DOMRect[] = [];
     for (const el of chapRefs.current) if (el) rects.push(el.getBoundingClientRect());
@@ -499,32 +438,19 @@ export default function Now({ t, lang, now }: { t: Copy; lang: Lang; now: number
     glide(pos);
   };
 
-  useScrollFrame(
-    ({ vh, vhLive, vw }) => {
-      const sec = sectionRef.current;
-      if (!sec) return;
-      const sh = stageRef.current ? stageRef.current.clientHeight : 0;
-      if (st.lastW !== vw || st.lastSH !== sh) {
-        st.lastW = vw;
-        st.lastSH = sh;
-        fitStage();
-      }
-      const r = sec.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > vhLive) return;
-      if (variant === "flow") {
-        flowFrame(vhLive, vw);
-        return;
-      }
-      const pin = pinRef.current;
-      if (st.softFallback && pin) {
-        const d = softPinOffset(-r.top, r.height - pin.offsetHeight, vhLive);
-        const v = `0px ${d.toFixed(1)}px`;
-        if (pin.style.translate !== v) pin.style.translate = v;
-      }
-      glide(3 * Math.max(0, Math.min(0.99999, -r.top / Math.max(1, r.height - vh))));
-    },
-    [variant]
-  );
+  useScrollFrame(({ vhLive, vw }) => {
+    const sec = sectionRef.current;
+    if (!sec) return;
+    const sh = stageRef.current ? stageRef.current.clientHeight : 0;
+    if (st.lastW !== vw || st.lastSH !== sh) {
+      st.lastW = vw;
+      st.lastSH = sh;
+      fitStage();
+    }
+    const r = sec.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > vhLive) return;
+    storyFrame(vhLive, vw);
+  });
 
   // Re-marker aktivt kapittel etter re-render (f.eks. språkbytte), i tilfelle
   // React har byttet ut noder siden forrige imperative markering.
@@ -533,67 +459,13 @@ export default function Now({ t, lang, now }: { t: Copy; lang: Lang; now: number
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [t]);
 
-  // Oppsett ved montering og ved variantbytte, der scenene blir nye DOM-noder.
-  // Kjøres ikke ellers — da ville kuben blitt nullstilt hver gang seksjonen
-  // kom inn i viewporten igjen.
+  // Førstegangsoppsett kjøres kun ved montering — ellers ville kuben blitt
+  // nullstilt hver gang seksjonen kom inn i viewporten igjen.
   useEffect(() => {
-    st.rx = undefined;
-    st.sceneQ = [NaN, NaN, NaN];
-    st.sceneO = ["", "", ""];
     fitStage();
     cubeFrame(0, prefersReducedMotion());
-    setChapter(st.chapIdx);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [variant]);
-
-  // Variant B: pinnen bremser mykt inn og ut. Forskyvningen kjøres som en
-  // scroll-drevet animasjon, så nettleseren flytter den i samme frame som den
-  // scroller — fra JS ville den hakket ett bilde etter ved rask scroll.
-  useEffect(() => {
-    if (variant !== "pin") return;
-    const sec = sectionRef.current;
-    const pin = pinRef.current;
-    if (!sec || !pin || prefersReducedMotion()) return;
-    const VT = (window as unknown as { ViewTimeline?: ViewTimelineCtor }).ViewTimeline;
-    if (!VT) {
-      st.softFallback = true;
-      return () => {
-        st.softFallback = false;
-        pin.style.translate = "";
-      };
-    }
-    let anim: Animation | null = null;
-    const build = () => {
-      anim?.cancel();
-      const vh = window.innerHeight;
-      const H = sec.offsetHeight;
-      const L = H - pin.offsetHeight;
-      // Tidslinjen går fra seksjonstoppen treffer bunnen av viewporten
-      // (s = -vh) til bunnen passerer toppen (s = H).
-      const at = (s: number) => (s + vh) / (H + vh);
-      const { a, Z } = softPinZone(L, vh);
-      const frames: Keyframe[] = [{ offset: 0, translate: "0px 0px" }];
-      const N = 96;
-      for (let j = 0; j <= N; j++) {
-        const s = a + (Z * j) / N;
-        const off = at(s);
-        if (off <= 0 || off >= 1) continue;
-        frames.push({ offset: off, translate: `0px ${softPinOffset(s, L, vh).toFixed(2)}px` });
-      }
-      frames.push({ offset: 1, translate: "0px 0px" });
-      anim = pin.animate(frames, { timeline: new VT({ subject: sec }), fill: "both" });
-    };
-    build();
-    const ro = new ResizeObserver(build);
-    ro.observe(sec);
-    window.addEventListener("resize", build);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", build);
-      anim?.cancel();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [variant]);
+  }, []);
 
   useEffect(() => {
     if (!sectionInView) return;
@@ -808,114 +680,55 @@ export default function Now({ t, lang, now }: { t: Copy; lang: Lang; now: number
     </div>
   );
 
-  if (variant === "pin") {
-    return (
-      <section id="na" ref={sectionRef} className={`${styles.section} ${styles.pinned}`}>
-        <div ref={pinRef} className={styles.pin}>
-          <div className={styles.head}>
-            <h2 className={styles.title}>{t.nowTitle}</h2>
-            <span className={styles.date}>{fmtMonthYearFull(now, lang)}</span>
-          </div>
-
-          <div className={styles.grid}>
-            <div className={styles.chapters}>
-              {t.now.map((n, i) => (
-                <div
-                  // Indeks som key: listen er fast, og en stabil key hindrer at
-                  // språkbytte remonterer kapitlene og mister aktiv-markeringen.
-                  key={i}
-                  ref={(el) => {
-                    chapRefs.current[i] = el;
-                  }}
-                  className={styles.chap}
-                  data-on={i === 0 ? "" : undefined}
-                >
-                  <div className={styles.chapRow}>
-                    <span className={styles.num}>0{i + 1}</span>
-                    <div>
-                      <div className={styles.tagRow}>
-                        <span className={styles.dot} />
-                        <span className={styles.tag}>{n.tag}</span>
-                      </div>
-                      <h3 className={styles.chapTitle}>{n.title}</h3>
-                      <div className={styles.body}>
-                        <div className={styles.bodyInner}>
-                          <p className={styles.detail}>{n.detail}</p>
-                          <span className={styles.since}>{n.since}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles.rail}>
-                    <div
-                      ref={(el) => {
-                        fillRefs.current[i] = el;
-                      }}
-                      className={styles.fill}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className={styles.stageCol}>{stage}</div>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
   return (
-    <section id="na" ref={sectionRef} className={`${styles.section} ${styles.flow}`}>
+    <section id="na" ref={sectionRef} className={styles.section}>
       <div className={styles.head}>
         <h2 className={styles.title}>{t.nowTitle}</h2>
         <span className={styles.date}>{fmtMonthYearFull(now, lang)}</span>
       </div>
 
-      <div className={styles.flowGrid}>
-        <div className={styles.flowChapters}>
-          <div ref={railRef} className={styles.flowRail}>
-            <div ref={railFillRef} className={styles.flowFill} />
+      <div className={styles.grid}>
+        <div className={styles.chapters}>
+          <div ref={railRef} className={styles.rail}>
+            <div ref={railFillRef} className={styles.fill} />
           </div>
           {t.now.map((n, i) => (
             <div
-              // Indeks som key, som i pin-varianten.
+              // Indeks som key: listen er fast, og en stabil key hindrer at
+              // språkbytte remonterer kapitlene og mister aktiv-markeringen.
               key={i}
               ref={(el) => {
                 chapRefs.current[i] = el;
               }}
-              className={styles.flowChap}
+              className={styles.chap}
               data-on={i === 0 ? "" : undefined}
             >
-              <div className={styles.chapRow}>
-                <span
-                  ref={(el) => {
-                    numRefs.current[i] = el;
-                  }}
-                  className={styles.num}
-                >
-                  0{i + 1}
-                </span>
-                <div
-                  ref={(el) => {
-                    textRefs.current[i] = el;
-                  }}
-                  className={styles.flowText}
-                >
-                  <div className={styles.tagRow}>
-                    <span className={styles.dot} />
-                    <span className={styles.tag}>{n.tag}</span>
-                  </div>
-                  <h3 className={styles.flowTitle}>{n.title}</h3>
-                  <p className={styles.flowDetail}>{n.detail}</p>
-                  <span className={styles.since}>{n.since}</span>
+              <span
+                ref={(el) => {
+                  numRefs.current[i] = el;
+                }}
+                className={styles.num}
+              >
+                0{i + 1}
+              </span>
+              <div
+                ref={(el) => {
+                  textRefs.current[i] = el;
+                }}
+              >
+                <div className={styles.tagRow}>
+                  <span className={styles.dot} />
+                  <span className={styles.tag}>{n.tag}</span>
                 </div>
+                <h3 className={styles.chapTitle}>{n.title}</h3>
+                <p className={styles.detail}>{n.detail}</p>
+                <span className={styles.since}>{n.since}</span>
               </div>
             </div>
           ))}
         </div>
 
-        <div ref={stageColRef} className={styles.flowStageCol}>
+        <div ref={stageColRef} className={styles.stageCol}>
           {stage}
         </div>
       </div>

@@ -6,23 +6,16 @@ import { rgba, type ExperienceVM } from "@/lib/derive";
 import { prefersReducedMotion, useGlide, useScrollFrame } from "@/lib/fx";
 import { MONTHS, yearOf } from "@/lib/time";
 import type { ExperienceType, Lang } from "@/lib/types";
-import { useQueryVariant } from "@/lib/variant";
 import styles from "./GanttView.module.css";
 
 const GANTT_SCRUB = true;
 const BAND_ORDER: ExperienceType[] = ["Betalt", "Frivillig", "Utdanning"];
 
-/* To måter å spole på mens vi tester dem (?gantt=auto gir den andre). Ingen av
-   dem pinner diagrammet, så siden stopper aldri opp.
-   «scroll»: playheaden spoler mens diagrammet scroller inn i bildet.
-   «auto»: playheaden spiller av av seg selv når diagrammet kommer i syne, og
-   tidsaksen kan dras i etterpå. */
-const MODES = ["scroll", "auto"] as const;
-// Scroll: spolingen starter når toppen av radene er 92 % ned i viewporten og
-// er ferdig når den har nådd 30 %.
+/* Diagrammet pinnes ikke: playheaden spoler mens det scroller inn i bildet,
+   så siden stopper aldri opp. Spolingen starter når toppen av radene er 92 %
+   ned i viewporten og er ferdig når den har nådd 30 %. */
 const SCRUB_FROM = 0.92;
 const SCRUB_TO = 0.3;
-const AUTO_MS = 2800;
 
 interface Props {
   t: Copy;
@@ -77,10 +70,7 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [minY, maxY]);
 
-  const mode = useQueryVariant("gantt", MODES);
   const chartRef = useRef<HTMLDivElement | null>(null);
-  const axisRef = useRef<HTMLDivElement | null>(null);
-  const knobRef = useRef<HTMLSpanElement | null>(null);
   const headRef = useRef<HTMLDivElement | null>(null);
   const yearRef = useRef<HTMLDivElement | null>(null);
   const monRef = useRef<HTMLDivElement | null>(null);
@@ -105,7 +95,6 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
     };
 
     if (headRef.current) setStyle(headRef.current, "left", `${p * 100}%`);
-    if (knobRef.current) setStyle(knobRef.current, "left", `${p * 100}%`);
     if (yearRef.current) {
       const yv = String(Math.floor(yEff));
       if (yearRef.current.textContent !== yv) yearRef.current.textContent = yv;
@@ -141,40 +130,9 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
       if (concRef.current.textContent !== c) concRef.current.textContent = c;
     }
   };
-  // Avspillingen går over flere frames og må alltid tegne med siste filter og
-  // språk, ikke de som gjaldt da den startet.
-  const renderRef = useRef(render);
-  renderRef.current = render;
 
-  // Scroll-modus: fremdriften glir etter scrollen i stedet for å hakke.
+  // Fremdriften glir etter scrollen i stedet for å hakke.
   const glide = useGlide(render, 140);
-
-  // Auto-modus: avspilling, og dra i tidsaksen etterpå.
-  const auto = useRef({ p: 0, raf: 0, played: false, drag: false }).current;
-
-  const play = () => {
-    cancelAnimationFrame(auto.raf);
-    auto.played = true;
-    let t0 = 0;
-    const step = (ts: number) => {
-      if (!t0) t0 = ts;
-      const k = Math.min(1, (ts - t0) / AUTO_MS);
-      auto.p = k < 0.5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2;
-      renderRef.current(auto.p);
-      auto.raf = k < 1 ? requestAnimationFrame(step) : 0;
-    };
-    auto.raf = requestAnimationFrame(step);
-  };
-
-  // Nytt filter: spill av på nytt neste gang diagrammet er i bildet.
-  useEffect(() => {
-    cancelAnimationFrame(auto.raf);
-    auto.raf = 0;
-    auto.played = false;
-    auto.p = 0;
-  }, [segFlat, auto]);
-
-  useEffect(() => () => cancelAnimationFrame(auto.raf), [auto]);
 
   useScrollFrame(
     ({ vh }) => {
@@ -187,49 +145,14 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
         render(1);
         return;
       }
-      if (mode === "scroll") {
-        const p = (vh * SCRUB_FROM - r.top) / (vh * (SCRUB_FROM - SCRUB_TO));
-        glide(Math.max(0, Math.min(1, p)));
-        return;
-      }
-      if (!auto.played && r.top < vh * 0.72 && r.bottom > vh * 0.28) play();
-      else if (!auto.raf) render(auto.p);
+      const p = (vh * SCRUB_FROM - r.top) / (vh * (SCRUB_FROM - SCRUB_TO));
+      glide(Math.max(0, Math.min(1, p)));
     },
-    [segFlat, roleFlat, minY, maxY, lang, mode]
+    [segFlat, roleFlat, minY, maxY, lang]
   );
 
-  const scrubTo = (x: number) => {
-    const el = axisRef.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    auto.p = Math.max(0, Math.min(1, (x - r.left) / Math.max(1, r.width)));
-    render(auto.p);
-  };
-
-  const onAxisDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (mode !== "auto") return;
-    cancelAnimationFrame(auto.raf);
-    auto.raf = 0;
-    auto.played = true;
-    auto.drag = true;
-    try {
-      e.currentTarget.setPointerCapture(e.pointerId);
-    } catch {
-      // Eldre nettlesere uten pointer capture — dra fungerer likevel.
-    }
-    scrubTo(e.clientX);
-  };
-
-  const onAxisMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (auto.drag) scrubTo(e.clientX);
-  };
-
-  const onAxisUp = () => {
-    auto.drag = false;
-  };
-
   return (
-    <div className={styles.wrap} data-scrub={mode === "auto" ? "" : undefined}>
+    <div className={styles.wrap}>
       <div className={styles.readout}>
         <div className={styles.readoutLeft}>
           <div className={styles.yearGroup}>
@@ -248,34 +171,15 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
               <span className={styles.concLabel}>{t.concurrent}</span>
             </div>
             <p className={styles.hint}>
-              {mode === "auto" ? t.ganttAutoHint : t.ganttHint} · {t.pickHint}
+              {t.ganttHint} · {t.pickHint}
             </p>
           </div>
         </div>
-        {mode === "auto" && (
-          <button
-            type="button"
-            className={styles.replay}
-            onClick={() => {
-              auto.p = 0;
-              play();
-            }}
-          >
-            ↻ {t.ganttReplay}
-          </button>
-        )}
       </div>
 
       <div className={styles.axisRow}>
         <span className={styles.axisLabel}>{t.roleCol}</span>
-        <div
-          ref={axisRef}
-          className={styles.axis}
-          onPointerDown={onAxisDown}
-          onPointerMove={onAxisMove}
-          onPointerUp={onAxisUp}
-          onPointerCancel={onAxisUp}
-        >
+        <div className={styles.axis}>
           {ticks.map((tk) => (
             <span
               key={tk.year}
@@ -288,7 +192,6 @@ export default function GanttView({ t, lang, vms, axis, now }: Props) {
               {tk.year}
             </span>
           ))}
-          <span ref={knobRef} className={styles.knob} />
         </div>
       </div>
 

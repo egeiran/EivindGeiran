@@ -1,5 +1,5 @@
 /* Diagrammet ligger i vanlig flyt — ingen pin. Playheaden spoler mens det
-   scroller inn i bildet, eller spiller av av seg selv (se GanttView.tsx). */
+   scroller inn i bildet (se GanttView.tsx). */
 .wrap {
   position: relative;
   padding-top: 6px;
@@ -61,25 +61,6 @@
   color: rgba(244, 241, 232, 0.6);
 }
 
-.replay {
-  padding: 8px 14px;
-  border: 1px solid rgba(244, 241, 232, 0.2);
-  border-radius: 999px;
-  background: transparent;
-  color: rgba(244, 241, 232, 0.6);
-  cursor: pointer;
-  font-family: var(--font-mono), monospace;
-  font-size: 11px;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  transition: all 180ms ease;
-}
-
-.replay:hover {
-  border-color: var(--lime);
-  color: var(--lime);
-}
-
 .hint {
   margin: 8px 0 0;
   font-family: var(--font-mono), monospace;
@@ -109,30 +90,6 @@
   position: relative;
   height: 22px;
   border-bottom: 1px solid rgba(244, 241, 232, 0.14);
-}
-
-/* I auto-modus er tidsaksen et håndtak: dra for å spole. */
-.wrap[data-scrub] .axis {
-  cursor: ew-resize;
-  touch-action: none;
-}
-
-.knob {
-  display: none;
-  position: absolute;
-  bottom: -6px;
-  left: 0;
-  width: 11px;
-  height: 11px;
-  margin-left: -5.5px;
-  border-radius: 50%;
-  background: var(--lime);
-  box-shadow: 0 0 0 4px rgba(217, 255, 99, 0.18);
-  pointer-events: none;
-}
-
-.wrap[data-scrub] .knob {
-  display: block;
 }
 
 .tick {
