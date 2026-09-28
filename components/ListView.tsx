@@ -18,11 +18,14 @@ export default function ListView({ t, vms }: Props) {
   const eraToRef = useRef<HTMLDivElement | null>(null);
   const itemRefs = useRef<(HTMLElement | null)[]>([]);
 
-  useScrollFrame(({ vhLive: vh }) => {
+  useScrollFrame(({ vhLive: vh, vw }) => {
     const items = itemRefs.current.filter(Boolean) as HTMLElement[];
     if (!items.length) return;
     const still = prefersReducedMotion();
     const line = vh * 0.55;
+    // Kortene under fokus glir inn fra høyre. På mobil er 110px en tredjedel av skjermen,
+    // så der er glidet bare antydet.
+    const reach = vw <= 640 ? 16 : 110;
 
     // Lesefase: alle rects hentes før noe skrives, så ingen av skrivingene
     // under tvinger fram en ny layout midt i løkka.
@@ -98,7 +101,7 @@ export default function ListView({ t, vms }: Props) {
           set(
             card,
             "transform",
-            `translate3d(${Math.min(dRel * 90, 110)}px,0,0) scale(${
+            `translate3d(${Math.min(dRel * reach * 0.82, reach)}px,0,0) scale(${
               1 - Math.min(dRel * 0.07, 0.09)
             })`
           );

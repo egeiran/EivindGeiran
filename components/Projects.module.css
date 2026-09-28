@@ -406,11 +406,28 @@
   }
 
   .featuredBody {
-    padding: 28px 24px;
+    padding: 24px 20px;
   }
 
   .featuredTitle {
     font-size: 38px;
+  }
+
+  .featuredDesc {
+    font-size: 15px;
+  }
+
+  .featuredActions {
+    padding-top: 26px;
+  }
+
+  .featuredPreview,
+  .featuredPreview iframe {
+    min-height: 260px;
+  }
+
+  .cardBody {
+    padding: 20px;
   }
 }
 

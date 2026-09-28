@@ -506,7 +506,7 @@
   }
 
   .pin {
-    /* Toppmenyen er sticky og ~77px høy — tittelen må klarere den. */
+    /* Toppmenyen er fast og ~77px høy — tittelen må klarere den. */
     height: 100dvh;
     padding: 90px 18px 20px;
   }

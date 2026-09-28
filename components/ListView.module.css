@@ -212,31 +212,85 @@
   }
 }
 
-/* Under 560px er det ikke plass til logo, tittel og periode på én linje. Lange
-   titler ble presset ut av kortet og la seg oppå periodekolonnen — på 320px
-   endte de utenfor viewporten og ga vannrett scroll. Perioden faller ned på
-   egen linje under tittelen i stedet. Over 560px er raden uendret. */
-@media (max-width: 560px) {
-  .cardHead {
-    flex-wrap: wrap;
+/* Mobil: tittelen får hele bredden ved siden av en mindre logo, og periode + type flyttes
+   til en egen linje under. I tre kolonner ble tittelkolonnen så smal at lange titler
+   («Ferskvaremedarbeider») la seg oppå perioden, og på 320px havnet de utenfor viewporten
+   og ga vannrett scroll. */
+@media (max-width: 640px) {
+  .items {
+    padding-left: 22px;
   }
 
-  .titleCol {
-    flex: 1 1 auto;
+  .node {
+    left: -28px;
+  }
+
+  .item {
+    padding-bottom: 12px;
+  }
+
+  .card {
+    padding: 16px 16px 18px;
+    border-radius: 12px;
+  }
+
+  .cardHead {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo {
+    width: 40px;
+    height: 40px;
+    padding: 6px;
+    border-radius: 8px;
+  }
+
+  .logo img {
+    max-height: 28px;
+  }
+
+  /* Krymper med skjermen, så «Ferskvaremedarbeider» får plass på 320px uten å deles. */
+  .cardTitle {
+    font-size: min(16.5px, 4.9vw);
+  }
+
+  .cardOrg {
+    margin-top: 2px;
+    font-size: 13px;
   }
 
   .periodCol {
-    flex: 1 0 100%;
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
     text-align: left;
   }
 
-  /* Periode og type på samme linje, så oppstillingen koster én linje og ikke to. */
-  .period,
-  .type {
-    display: inline;
+  .period {
+    font-size: 12px;
   }
 
   .type {
-    margin-left: 10px;
+    margin-top: 0;
+    font-size: 10px;
+  }
+
+  .cardDesc {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  .tags {
+    gap: 5px;
+    margin-top: 12px;
+  }
+
+  .tag {
+    padding: 3px 8px;
+    font-size: 10.5px;
   }
 }

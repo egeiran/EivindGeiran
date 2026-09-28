@@ -15,8 +15,12 @@ npm run dev        # http://localhost:3000
 
 - `app/` — sider: `/` (hele siden), `/admin` (dataredigering), `/api/experiences`
 - `components/` — én komponent per seksjon (hero, marquee, nå, prosjekter, erfaring med
-  fire visninger, studiet, filmrull, kontakt)
+  fire visninger, filmrull, kontakt)
 - `lib/` — copy (NO/EN), datamodell-utledning, tidsverktøy (desimal-år), scramble-effekt
+- `lib/light/` — hero-lyset: WebGPU (vgpu) med radiance cascades. Shaderne er `.wgsl`-moduler
+  som løses opp av vgpu-loaderen i `next.config.ts`; valider dem med
+  `npx vgpu check lib/light/<fil>.wgsl --require-validation`. Uten WebGPU faller heroen
+  tilbake til CSS-spotlighten.
 - `data/experiences.json` — **all erfaringsdata**; driver tidslinje, aktivitetskart,
   liste og git blame fra én kilde
 

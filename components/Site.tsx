@@ -14,7 +14,6 @@ import Hero from "./Hero";
 import Marquee from "./Marquee";
 import Now from "./Now";
 import Projects from "./Projects";
-import Studies from "./Studies";
 
 export default function Site({ experiences, now }: { experiences: Experience[]; now: number }) {
   const [lang, setLang] = useState<Lang>("no");
@@ -60,7 +59,6 @@ export default function Site({ experiences, now }: { experiences: Experience[]; 
         <Now t={t} lang={lang} now={now} />
         <Projects t={t} />
         <ExperienceSection t={t} lang={lang} vms={vms} now={now} />
-        <Studies t={t} />
         <FilmRoll t={t} />
         <Contact t={t} />
       </main>

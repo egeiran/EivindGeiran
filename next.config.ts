@@ -8,6 +8,16 @@ const nextConfig: NextConfig = {
     // Rammene i filmrullen er 176–280 px brede; med DPR 3 holder det til 840.
     imageSizes: [176, 212, 224, 280, 424, 560, 672, 840],
   },
+  // Hero-lyset har shaderne sine i egne .wgsl-filer med import seg imellom;
+  // vgpu-loaderen løser opp importgrafen ved bygg og gir én ferdig shader.
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.wgsl$/,
+      loader: "@vgpu/wgsl/loader-webpack",
+      options: { minify: { whitespace: true } },
+    });
+    return config;
+  },
 };
 
 export default nextConfig;

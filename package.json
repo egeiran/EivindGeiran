@@ -11,12 +11,15 @@
   "dependencies": {
     "next": "^15.4.5",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "vgpu": "0.5.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
+    "@vgpu/wgsl": "0.5.0",
+    "@webgpu/types": "0.1.74",
     "typescript": "^5.7.0"
   }
 }

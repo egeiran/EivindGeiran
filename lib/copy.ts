@@ -1,4 +1,4 @@
-import type { Lang, Semester } from "./types";
+import type { Lang } from "./types";
 
 export const TYPE_COLOR = {
   Betalt: "#d9ff63",
@@ -32,7 +32,6 @@ export interface Copy {
   navNow: string;
   navWork: string;
   navExp: string;
-  navStudy: string;
   navLife: string;
   navContact: string;
   menuOpenLabel: string;
@@ -63,8 +62,6 @@ export interface Copy {
   ganttHint: string;
   rollMeta: string;
   framesWord: string;
-  studyTitle: string;
-  studyMeta: string;
   lifeTitle: string;
   lifeLede: string;
   cta: CtaCopy;
@@ -96,7 +93,6 @@ export const COPY: Record<Lang, Copy> = {
     navNow: "Nå",
     navWork: "Prosjekter",
     navExp: "Erfaring",
-    navStudy: "Studiet",
     navLife: "Bilder",
     navContact: "Ta kontakt",
     menuOpenLabel: "Åpne meny",
@@ -129,8 +125,6 @@ export const COPY: Record<Lang, Copy> = {
     ganttHint: "Rull for å spole gjennom årene",
     rollMeta: "Rull 01 · Trondheim · 2024–2026",
     framesWord: "bilder",
-    studyTitle: "Studiet.",
-    studyMeta: "16 emner · 120 studiepoeng · 4 semestre",
     lifeTitle: "Filmrull.",
     lifeLede: "Fadderuke, Venture Cup, turer — det som skjer utenfor forelesningssalen.",
     cta: {
@@ -222,7 +216,6 @@ export const COPY: Record<Lang, Copy> = {
     navNow: "Now",
     navWork: "Work",
     navExp: "Experience",
-    navStudy: "Studies",
     navLife: "Photos",
     navContact: "Get in touch",
     menuOpenLabel: "Open menu",
@@ -255,8 +248,6 @@ export const COPY: Record<Lang, Copy> = {
     ganttHint: "Scroll to sweep through the years",
     rollMeta: "Roll 01 · Trondheim · 2024–2026",
     framesWord: "frames",
-    studyTitle: "Studies.",
-    studyMeta: "16 courses · 120 ECTS · 4 semesters",
     lifeTitle: "Film roll.",
     lifeLede: "Orientation week, Venture Cup, trips — what happens outside the lecture hall.",
     cta: {
@@ -344,49 +335,6 @@ export const COPY: Record<Lang, Copy> = {
     nowWord: "Now",
   },
 };
-
-export const COURSES: Semester[] = [
-  {
-    term: "Vår",
-    year: 2026,
-    courses: [
-      { code: "TDT4140", title: "Programvareutvikling" },
-      { code: "TDT4145", title: "Datamodellering og databaser" },
-      { code: "TDT4186", title: "Operativsystemer" },
-      { code: "TTM4100", title: "Kommunikasjon" },
-    ],
-  },
-  {
-    term: "Høst",
-    year: 2025,
-    courses: [
-      { code: "IT1901", title: "Informatikk prosjektarbeid I" },
-      { code: "TDT4120", title: "Algoritmer og datastrukturer" },
-      { code: "TDT4160", title: "Datamaskiner" },
-      { code: "TMA4240", title: "Statistikk" },
-    ],
-  },
-  {
-    term: "Vår",
-    year: 2025,
-    courses: [
-      { code: "TDT4100", title: "Objektorientert programmering" },
-      { code: "TMA4115", title: "Matematikk 3" },
-      { code: "TTT4203", title: "Analog og digital elektronikk" },
-      { code: "TDT4180", title: "Menneske-maskin-interaksjon" },
-    ],
-  },
-  {
-    term: "Høst",
-    year: 2024,
-    courses: [
-      { code: "TDT4109", title: "Informasjonsteknologi, grunnkurs" },
-      { code: "TMA4100", title: "Matematikk 1" },
-      { code: "EXPH0300", title: "Exphil" },
-      { code: "TMA4140", title: "Diskret matematikk" },
-    ],
-  },
-];
 
 export interface GalleryItem {
   src: string;

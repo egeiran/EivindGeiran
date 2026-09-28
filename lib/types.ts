@@ -20,13 +20,3 @@ export interface Experience {
   tags: { no: string[]; en: string[] };
 }
 
-export interface Course {
-  code: string;
-  title: string;
-}
-
-export interface Semester {
-  term: string;
-  year: number;
-  courses: Course[];
-}
