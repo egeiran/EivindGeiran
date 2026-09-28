@@ -22,13 +22,6 @@
   letter-spacing: -0.045em;
 }
 
-.aside {
-  margin: 0;
-  max-width: 38ch;
-  font-size: 15px;
-  color: rgba(244, 241, 232, 0.55);
-}
-
 .asideMono {
   margin: 0;
   font-family: var(--font-mono), monospace;

@@ -276,7 +276,6 @@ export default function Projects({ t }: { t: Copy }) {
     <section id="prosjekter" className={styles.section}>
       <div className={headStyles.head}>
         <h2 className={headStyles.title}>{t.workTitle}</h2>
-        <p className={headStyles.aside}>{t.workLede}</p>
       </div>
 
       <article className={styles.featured}>

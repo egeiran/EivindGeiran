@@ -32,7 +32,6 @@ export default function FilmRoll({ t }: { t: Copy }) {
     >
       <div className={styles.head}>
         <h2 className={styles.title}>{t.lifeTitle}</h2>
-        <p className={styles.lede}>{t.lifeLede}</p>
       </div>
       <div className={styles.meta}>
         <span className={styles.metaRoll}>{t.rollMeta}</span>

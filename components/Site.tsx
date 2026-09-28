@@ -35,8 +35,6 @@ export default function Site({ experiences, now }: { experiences: Experience[]; 
     el.style.width = `${maxScroll > 0 ? Math.min(1, scrollY / maxScroll) * 100 : 0}%`;
   });
 
-  const ongoing = vms.filter((v) => v.live).length;
-
   return (
     <>
       <div
@@ -54,7 +52,7 @@ export default function Site({ experiences, now }: { experiences: Experience[]; 
       />
       <Header lang={lang} setLang={setLang} t={t} />
       <main id="top">
-        <Hero t={t} ongoingCount={ongoing} totalCount={vms.length} />
+        <Hero t={t} />
         <Marquee t={t} />
         <Now t={t} lang={lang} now={now} />
         <Projects t={t} />

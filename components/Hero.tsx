@@ -2,10 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { Copy } from "@/lib/copy";
-import { prefersReducedMotion, useInView, useScrollFrame } from "@/lib/fx";
+import { prefersReducedMotion, useScrollFrame } from "@/lib/fx";
 import type { GlyphRun } from "@/lib/light/mask";
 import type { HeroLight } from "@/lib/light/renderer";
-import { startScramble } from "@/lib/scramble";
 import styles from "./Hero.module.css";
 
 /** Så lenge uten pekerinput før lyset begynner å drive av seg selv. */
@@ -18,8 +17,6 @@ const INTRO_MS = 1500;
 const LIGHTS_ON_MS = 650;
 /** Så lenge introen venter på WebGPU før den tenner CSS-lyset i stedet. */
 const GPU_WAIT_MS = 1400;
-/** Tallene teller ikke før tallraden er animert inn (målt fra sidelasting). */
-const STATS_COUNT_AT_MS = 900;
 /**
  * Hvor mørkt glasset i bokstavene er: absorpsjon per em. En stamme er ~0.24 em bred, så 3.8
  * slipper ~40 % av lyset gjennom én stamme, og mindre gjennom tykke partier og overlapp.
@@ -40,58 +37,15 @@ function lightsOn(ms: number): number {
   return 0.18 + 0.82 * (1 - Math.pow(1 - k, 3));
 }
 
-interface Props {
-  t: Copy;
-  ongoingCount: number;
-  totalCount: number;
-}
-
-export default function Hero({ t, ongoingCount, totalCount }: Props) {
-  // Rollescramblen parkeres når heroen er scrollet forbi (useInView). Lys-loopen under har
-  // sin egen observer, fordi den må vite det synkront inne i rAF-en.
-  const [sectionRef, heroInView] = useInView<HTMLElement>("120px");
+export default function Hero({ t }: { t: Copy }) {
+  const sectionRef = useRef<HTMLElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const gridRef = useRef<HTMLDivElement | null>(null);
   const wordmarkRef = useRef<HTMLHeadingElement | null>(null);
   const maskRef = useRef<HTMLSpanElement | null>(null);
   const line1Refs = useRef<(HTMLSpanElement | null)[]>([]);
   const line2Refs = useRef<(HTMLSpanElement | null)[]>([]);
-  const roleRef = useRef<HTMLSpanElement | null>(null);
-  const statRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const rolesRef = useRef(t.roles);
   const [lit, setLit] = useState(false);
-
-  const facts = [
-    { value: ongoingCount, label: t.factRoles },
-    { value: totalCount, label: t.factTotal },
-    { value: 120, label: t.factCredits },
-    { value: 3, label: t.factLive },
-  ];
-
-  // Rollelinja: scramble-loopen leser alltid gjeldende språkliste via ref, og
-  // språkbytte tvinger en umiddelbar overgang så byttet leses som intendert.
-  const ctrlRef = useRef<ReturnType<typeof startScramble> | null>(null);
-  const firstLang = useRef(true);
-  useEffect(() => {
-    const el = roleRef.current;
-    if (!el || !heroInView) return;
-    ctrlRef.current = startScramble(el, () => rolesRef.current);
-    return () => {
-      ctrlRef.current?.stop();
-      ctrlRef.current = null;
-    };
-  }, [heroInView]);
-  useEffect(() => {
-    rolesRef.current = t.roles;
-    if (firstLang.current) {
-      firstLang.current = false;
-      return;
-    }
-    // Står loopen parkert utenfor viewporten, skrives den nye språkversjonen
-    // rett inn — da starter scramblen på riktig streng når man kommer tilbake.
-    if (ctrlRef.current) ctrlRef.current.bump();
-    else if (roleRef.current) roleRef.current.textContent = t.roles[0] ?? "";
-  }, [t.roles]);
 
   // Parallax på ordmerket og rutenettet. Kalles både fra scroll-handleren og fra lys-loopen
   // rett før den tegner, så bokstavmasken alltid tegnes med de transformene som faktisk vises.
@@ -368,36 +322,12 @@ export default function Hero({ t, ongoingCount, totalCount }: Props) {
       light?.dispose();
       light = null;
     };
-    // sectionRef er en stabil ref fra useInView; effekten skal bare kjøre ved mount.
+    // Effekten skal bare kjøre ved mount.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useScrollFrame(({ scrollY: y, vhLive: vh }) => {
-    const still = prefersReducedMotion();
-    if (!still) applyParallax(y);
-    for (const el of statRefs.current) {
-      if (!el || el.dataset.run) continue;
-      const target = parseFloat(el.dataset.count || "0");
-      if (still) {
-        el.dataset.run = "1";
-        el.textContent = String(target);
-        continue;
-      }
-      if (el.getBoundingClientRect().top < vh * 0.92) {
-        el.dataset.run = "1";
-        const dec = target % 1 !== 0;
-        el.textContent = "0";
-        // performance.now() teller fra sidelasting, som er når tallradens intro starter.
-        const t0 = Math.max(performance.now(), STATS_COUNT_AT_MS);
-        const tick = () => {
-          const k = Math.max(0, Math.min(1, (performance.now() - t0) / 1100));
-          const v = target * (1 - Math.pow(1 - k, 3));
-          el.textContent = dec ? v.toFixed(1) : String(Math.round(v));
-          if (k < 1) requestAnimationFrame(tick);
-        };
-        requestAnimationFrame(tick);
-      }
-    }
+  useScrollFrame(({ scrollY: y }) => {
+    if (!prefersReducedMotion()) applyParallax(y);
   });
 
   // Ordmerket rendres to ganger: en dempet kopi og en lime-kopi bak en radial maske som
@@ -438,34 +368,11 @@ export default function Hero({ t, ongoingCount, totalCount }: Props) {
             {stacked(1)}
           </span>
         </h1>
-        <div className={styles.below}>
-          <div className={styles.roleRow}>
-            <span className={styles.roleDot} />
-            <span ref={roleRef} className={styles.roleText}>
-              {t.roles[0]}
-            </span>
-          </div>
-          <a href="#prosjekter" className={styles.cta}>
-            {t.heroCta} <span className={styles.mono}>→</span>
-          </a>
-        </div>
       </div>
-      <div className={styles.stats}>
-        {facts.map((f, i) => (
-          <div key={f.label} className={styles.stat}>
-            <span
-              ref={(el) => {
-                statRefs.current[i] = el;
-              }}
-              data-count={f.value}
-              className={styles.statValue}
-            >
-              {f.value}
-            </span>
-            <span className={styles.statLabel}>{f.label}</span>
-          </div>
-        ))}
-      </div>
+      <a href="#prosjekter" className={styles.cue}>
+        {t.heroCta}
+        <span className={styles.cueTrack} aria-hidden="true" />
+      </a>
     </section>
   );
 }
