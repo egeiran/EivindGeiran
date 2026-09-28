@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { Copy } from "@/lib/copy";
-import { prefersReducedMotion, useScrollFrame } from "@/lib/fx";
+import { prefersReducedMotion, useInView, useScrollFrame } from "@/lib/fx";
 import type { GlyphRun } from "@/lib/light/mask";
 import type { HeroLight } from "@/lib/light/renderer";
 import { startScramble } from "@/lib/scramble";
@@ -47,7 +47,9 @@ interface Props {
 }
 
 export default function Hero({ t, ongoingCount, totalCount }: Props) {
-  const sectionRef = useRef<HTMLElement | null>(null);
+  // Rollescramblen parkeres når heroen er scrollet forbi (useInView). Lys-loopen under har
+  // sin egen observer, fordi den må vite det synkront inne i rAF-en.
+  const [sectionRef, heroInView] = useInView<HTMLElement>("120px");
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const gridRef = useRef<HTMLDivElement | null>(null);
   const wordmarkRef = useRef<HTMLHeadingElement | null>(null);
@@ -72,20 +74,23 @@ export default function Hero({ t, ongoingCount, totalCount }: Props) {
   const firstLang = useRef(true);
   useEffect(() => {
     const el = roleRef.current;
-    if (!el) return;
+    if (!el || !heroInView) return;
     ctrlRef.current = startScramble(el, () => rolesRef.current);
     return () => {
       ctrlRef.current?.stop();
       ctrlRef.current = null;
     };
-  }, []);
+  }, [heroInView]);
   useEffect(() => {
     rolesRef.current = t.roles;
     if (firstLang.current) {
       firstLang.current = false;
       return;
     }
-    ctrlRef.current?.bump();
+    // Står loopen parkert utenfor viewporten, skrives den nye språkversjonen
+    // rett inn — da starter scramblen på riktig streng når man kommer tilbake.
+    if (ctrlRef.current) ctrlRef.current.bump();
+    else if (roleRef.current) roleRef.current.textContent = t.roles[0] ?? "";
   }, [t.roles]);
 
   // Parallax på ordmerket og rutenettet. Kalles både fra scroll-handleren og fra lys-loopen
@@ -363,12 +368,13 @@ export default function Hero({ t, ongoingCount, totalCount }: Props) {
       light?.dispose();
       light = null;
     };
+    // sectionRef er en stabil ref fra useInView; effekten skal bare kjøre ved mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useScrollFrame(() => {
+  useScrollFrame(({ scrollY: y, vhLive: vh }) => {
     const still = prefersReducedMotion();
-    const vh = window.innerHeight;
-    if (!still) applyParallax(window.scrollY);
+    if (!still) applyParallax(y);
     for (const el of statRefs.current) {
       if (!el || el.dataset.run) continue;
       const target = parseFloat(el.dataset.count || "0");

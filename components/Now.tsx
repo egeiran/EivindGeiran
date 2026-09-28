@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import type { Copy } from "@/lib/copy";
-import { prefersReducedMotion, useScrollFrame } from "@/lib/fx";
+import { prefersReducedMotion, useInView, useScrollFrame } from "@/lib/fx";
 import { fmtMonthYearFull } from "@/lib/time";
 import type { Lang } from "@/lib/types";
 import styles from "./Now.module.css";
@@ -189,7 +189,9 @@ const CUBE_STATES: Cubie[][] = (() => {
 const SCENES = ["net", "corp", "cube"] as const;
 
 export default function Now({ t, lang, now }: { t: Copy; lang: Lang; now: number }) {
-  const sectionRef = useRef<HTMLElement | null>(null);
+  // Kuben spinner i sin egen rAF-loop; den skal ikke rulle videre når
+  // seksjonen er ute av bildet.
+  const [sectionRef, sectionInView] = useInView<HTMLElement>("200px");
   const chapRefs = useRef<(HTMLDivElement | null)[]>([]);
   const fillRefs = useRef<(HTMLDivElement | null)[]>([]);
   const tickRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -325,13 +327,12 @@ export default function Now({ t, lang, now }: { t: Copy; lang: Lang; now: number
     }
   };
 
-  useScrollFrame(() => {
+  useScrollFrame(({ vh, vw }) => {
     const sec = sectionRef.current;
     if (!sec) return;
-    const vh = window.innerHeight;
     const sh = stageRef.current ? stageRef.current.clientHeight : 0;
-    if (st.lastW !== window.innerWidth || st.lastSH !== sh) {
-      st.lastW = window.innerWidth;
+    if (st.lastW !== vw || st.lastSH !== sh) {
+      st.lastW = vw;
       st.lastSH = sh;
       fitStage();
     }
@@ -364,9 +365,16 @@ export default function Now({ t, lang, now }: { t: Copy; lang: Lang; now: number
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [t]);
 
+  // Førstegangsoppsett kjøres kun ved montering — ellers ville kuben blitt
+  // nullstilt hver gang seksjonen kom inn i viewporten igjen.
   useEffect(() => {
     fitStage();
     cubeFrame(0, prefersReducedMotion());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!sectionInView) return;
     const spinTick = () => {
       const el = cubeRef.current;
       if (!el || !CUBE_SPIN || st.chapIdx !== 2) return;
@@ -402,7 +410,7 @@ export default function Now({ t, lang, now }: { t: Copy; lang: Lang; now: number
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [sectionInView]);
 
   const onPointerMove = (e: React.PointerEvent) => {
     const stage = stageRef.current;

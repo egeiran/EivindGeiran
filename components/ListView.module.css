@@ -136,7 +136,11 @@
 
 .cardTitle {
   margin: 0;
-  font-size: 19px;
+  /* Lange stillingstitler («Ferskvaremedarbeider») er ett ord og kan ikke brytes
+     av seg selv. min() lar 19px gi etter under 360px, der ordet ellers ville
+     blitt delt midt inni; break-word er nettet under for enda lengre titler. */
+  overflow-wrap: break-word;
+  font-size: min(19px, 5.3vw);
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.15;
@@ -209,8 +213,9 @@
 }
 
 /* Mobil: tittelen får hele bredden ved siden av en mindre logo, og periode + type flyttes
-   til en egen linje under. I tre kolonner ble tittelkolonnen så smal at lange ord
-   («Innholdsansvarlig,») rant inn over datoen. */
+   til en egen linje under. I tre kolonner ble tittelkolonnen så smal at lange titler
+   («Ferskvaremedarbeider») la seg oppå perioden, og på 320px havnet de utenfor viewporten
+   og ga vannrett scroll. */
 @media (max-width: 640px) {
   .items {
     padding-left: 22px;
@@ -247,9 +252,9 @@
     max-height: 28px;
   }
 
+  /* Krymper med skjermen, så «Ferskvaremedarbeider» får plass på 320px uten å deles. */
   .cardTitle {
-    font-size: 16.5px;
-    overflow-wrap: anywhere;
+    font-size: min(16.5px, 4.9vw);
   }
 
   .cardOrg {

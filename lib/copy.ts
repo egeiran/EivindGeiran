@@ -15,6 +15,10 @@ export interface ProjectCopy {
   openLabel: string;
   description: string;
   stack: string[];
+  /** YouTube-ID. Er den satt, spilles filmen som stum forhåndsvisning i kortet. */
+  videoId?: string;
+  /** Ankertekst på lenken til filmen på YouTube. */
+  videoLabel?: string;
 }
 
 export interface CtaCopy {
@@ -76,6 +80,12 @@ export interface Copy {
   filters: Record<string, string>;
   nowWord: string;
 }
+
+/**
+ * Filmen om det nevrale nettet. Samme ID i begge språk, så kortet og lenken til
+ * YouTube aldri kan komme i utakt.
+ */
+const MNIST_VIDEO_ID = "3KQHb3Rx8PM";
 
 export const COPY: Record<Lang, Copy> = {
   no: {
@@ -184,14 +194,17 @@ export const COPY: Record<Lang, Copy> = {
         stack: ["Python", "Scraping", "Data"],
       },
       {
-        name: "TowerDefense",
-        tag: "SPILL",
-        url: "https://github.com/egeiran/TowerDefense",
-        webUrl: "https://towerdefense.eivindgeiran.no/",
+        name: "MNIST fra bunnen",
+        tag: "NEVRALT NETT",
+        url: "https://github.com/egeiran/mnist-neural-network",
+        webUrl: "https://mnist.eivindgeiran.no/",
         link: "GitHub",
-        openLabel: "Åpne prosjektet",
-        description: "Et spillprosjekt med fokus på logikk, struktur og tilstandshåndtering. Laget allerede på videregående!",
-        stack: ["Spill", "Logikk", "OOP"],
+        openLabel: "Åpne demoen",
+        videoId: MNIST_VIDEO_ID,
+        videoLabel: "Se filmen",
+        description:
+          "Et nevralt nett som kjenner igjen håndskrevne siffer, skrevet i ren NumPy uten ML-bibliotek — 97,47 % av testsettet riktig. Tegn et siffer på nettsiden, så kjører de trente vektene i nettleseren. Filmen over forklarer hvordan, animert i Manim.",
+        stack: ["Python", "NumPy", "Manim", "TypeScript"],
       },
     ],
     kfStack: ["Next.js", "React", "TypeScript", "Supabase", "OpenAI API", "Vercel"],
@@ -304,14 +317,17 @@ export const COPY: Record<Lang, Copy> = {
         stack: ["Python", "Scraping", "Data"],
       },
       {
-        name: "TowerDefense",
-        tag: "GAME",
-        url: "https://github.com/egeiran/TowerDefense",
-        webUrl: "https://towerdefense.eivindgeiran.no/",
+        name: "MNIST from scratch",
+        tag: "NEURAL NET",
+        url: "https://github.com/egeiran/mnist-neural-network",
+        webUrl: "https://mnist.eivindgeiran.no/",
         link: "GitHub",
-        openLabel: "Open project",
-        description: "A game project focused on logic, structure and state handling.",
-        stack: ["Game", "Logic", "OOP"],
+        openLabel: "Open the demo",
+        videoId: MNIST_VIDEO_ID,
+        videoLabel: "Watch the film",
+        description:
+          "A neural network that recognises handwritten digits, written in plain NumPy with no ML library — 97.47 % of the test set right. Draw a digit on the site and the trained weights run in your browser. The film above explains how, animated in Manim.",
+        stack: ["Python", "NumPy", "Manim", "TypeScript"],
       },
     ],
     kfStack: ["Next.js", "React", "TypeScript", "Supabase", "OpenAI API", "Vercel"],

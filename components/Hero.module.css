@@ -207,6 +207,8 @@
   font-size: clamp(44px, 5vw, 76px);
   line-height: 0.9;
   letter-spacing: -0.05em;
+  /* Tellerne animerer 0 → 120; uten fast sifferbredde flytter etiketten seg
+     for hvert steg. */
   font-variant-numeric: tabular-nums;
 }
 

@@ -13,7 +13,11 @@
   margin: 0;
   font-family: var(--font-display), sans-serif;
   font-weight: 800;
-  font-size: clamp(40px, 6vw, 76px);
+  /* Minimumsleddet er 40px, som er bredere enn en 320px-skjerm tåler for et
+     ord som «Prosjekter.» — der ble overskriften liggende utenfor viewporten og
+     dro fram vannrett scroll. min() lar minimumet gi etter først under ~380px;
+     over det er størrelsen nøyaktig som før. */
+  font-size: clamp(min(40px, 10.5vw), 6vw, 76px);
   line-height: 0.9;
   letter-spacing: -0.045em;
 }

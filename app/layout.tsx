@@ -3,15 +3,17 @@ import { JetBrains_Mono, Schibsted_Grotesk, Syne } from "next/font/google";
 import { PERSON, SAME_AS, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
+// Vektene her er de som faktisk rendres på siden — Syne 700 og Schibsted 500
+// ble lastet ned uten å bli brukt av en eneste regel.
 const syne = Syne({
   subsets: ["latin"],
-  weight: ["700", "800"],
+  weight: ["800"],
   variable: "--font-display",
 });
 
 const schibsted = Schibsted_Grotesk({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "600", "700", "800"],
   variable: "--font-body",
 });
 

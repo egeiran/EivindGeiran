@@ -18,42 +18,51 @@ export default function ListView({ t, vms }: Props) {
   const eraToRef = useRef<HTMLDivElement | null>(null);
   const itemRefs = useRef<(HTMLElement | null)[]>([]);
 
-  useScrollFrame(() => {
+  useScrollFrame(({ vhLive: vh, vw }) => {
     const items = itemRefs.current.filter(Boolean) as HTMLElement[];
     if (!items.length) return;
     const still = prefersReducedMotion();
-    const vh = window.innerHeight;
     const line = vh * 0.55;
     // Kortene under fokus glir inn fra høyre. På mobil er 110px en tredjedel av skjermen,
     // så der er glidet bare antydet.
-    const reach = window.innerWidth <= 640 ? 16 : 110;
+    const reach = vw <= 640 ? 16 : 110;
 
-    // Railen måles fra første til siste node-senter så fyllet lander eksakt.
-    const start = items[0].getBoundingClientRect().top + 33;
-    const end = items[items.length - 1].getBoundingClientRect().top + 33;
-    const span = end - start;
-    const p = span > 0 ? Math.max(0, Math.min(1, (line - start) / span)) : line > start ? 1 : 0;
-
+    // Lesefase: alle rects hentes før noe skrives, så ingen av skrivingene
+    // under tvinger fram en ny layout midt i løkka.
     const rail = railRef.current;
-    if (rail && span > 0 && rail.parentElement) {
-      const host = rail.parentElement.getBoundingClientRect();
-      rail.style.top = `${Math.round(start - host.top)}px`;
-      rail.style.height = `${Math.round(span)}px`;
-    }
-    if (fillRef.current) fillRef.current.style.height = `${p * 100}%`;
+    const host = rail && rail.parentElement ? rail.parentElement.getBoundingClientRect() : null;
+    const centers: number[] = [];
+    for (let i = 0; i < items.length; i++) centers.push(items[i].getBoundingClientRect().top + 33);
+
+    const startY = centers[0];
+    const end = centers[centers.length - 1];
+    // Er hele tidslinja utenfor bildet, er det ingenting å oppdatere.
+    if (end < -200 || startY > vh + 200) return;
+    const span = end - startY;
+    const p = span > 0 ? Math.max(0, Math.min(1, (line - startY) / span)) : line > startY ? 1 : 0;
 
     let best = -1;
     let bestD = Infinity;
-    const centers: number[] = [];
-    for (let i = 0; i < items.length; i++) {
-      const c = items[i].getBoundingClientRect().top + 33;
-      centers.push(c);
-      const dd = Math.abs(c - line);
+    for (let i = 0; i < centers.length; i++) {
+      const dd = Math.abs(centers[i] - line);
       if (dd < bestD) {
         bestD = dd;
         best = i;
       }
     }
+
+    // Skrivefase. Verdiene sammenlignes mot inline-stilen først: å lese
+    // el.style koster ingenting, mens en identisk tilordning ville trigget en
+    // ny style recalc for hvert kort, hver frame.
+    const set = (el: HTMLElement, prop: "background" | "borderColor" | "boxShadow" | "transform" | "opacity" | "top" | "height", v: string) => {
+      if (el.style[prop] !== v) el.style[prop] = v;
+    };
+
+    if (rail && host && span > 0) {
+      set(rail, "top", `${Math.round(startY - host.top)}px`);
+      set(rail, "height", `${Math.round(span)}px`);
+    }
+    if (fillRef.current) set(fillRef.current, "height", `${p * 100}%`);
 
     let eraFrom: string | null = null;
     let eraTo: string | null = null;
@@ -64,32 +73,40 @@ export default function ListView({ t, vms }: Props) {
       const focus = i === best;
       const node = el.firstElementChild as HTMLElement | null;
       if (node) {
-        node.style.background = on ? "#d9ff63" : "#0c0e11";
-        node.style.borderColor = on ? "#d9ff63" : "rgba(244,241,232,.28)";
-        node.style.boxShadow = focus
-          ? "0 0 0 7px rgba(217,255,99,.18)"
-          : on
-            ? "0 0 0 4px rgba(217,255,99,.1)"
-            : "none";
-        node.style.transform = focus ? "scale(1.35)" : "scale(1)";
+        set(node, "background", on ? "#d9ff63" : "#0c0e11");
+        set(node, "borderColor", on ? "#d9ff63" : "rgba(244,241,232,.28)");
+        set(
+          node,
+          "boxShadow",
+          focus
+            ? "0 0 0 7px rgba(217,255,99,.18)"
+            : on
+              ? "0 0 0 4px rgba(217,255,99,.1)"
+              : "none"
+        );
+        set(node, "transform", focus ? "scale(1.35)" : "scale(1)");
       }
       const card = el.lastElementChild as HTMLElement | null;
       if (card && still) {
-        card.style.opacity = "1";
-        card.style.transform = "none";
-        card.style.borderColor = focus ? "rgba(217,255,99,.42)" : "rgba(244,241,232,.12)";
+        set(card, "opacity", "1");
+        set(card, "transform", "none");
+        set(card, "borderColor", focus ? "rgba(217,255,99,.42)" : "rgba(244,241,232,.12)");
       } else if (card) {
         const dRel = (c - line) / vh;
         if (on) {
-          card.style.opacity = focus ? "1" : "0.8";
-          card.style.transform = "none";
+          set(card, "opacity", focus ? "1" : "0.8");
+          set(card, "transform", "none");
         } else {
-          card.style.opacity = String(Math.max(0.14, 1 - dRel * 1.9));
-          card.style.transform = `translate3d(${Math.min(dRel * reach * 0.82, reach)}px,0,0) scale(${
-            1 - Math.min(dRel * 0.07, 0.09)
-          })`;
+          set(card, "opacity", String(Math.max(0.14, 1 - dRel * 1.9)));
+          set(
+            card,
+            "transform",
+            `translate3d(${Math.min(dRel * reach * 0.82, reach)}px,0,0) scale(${
+              1 - Math.min(dRel * 0.07, 0.09)
+            })`
+          );
         }
-        card.style.borderColor = focus ? "rgba(217,255,99,.42)" : "rgba(244,241,232,.12)";
+        set(card, "borderColor", focus ? "rgba(217,255,99,.42)" : "rgba(244,241,232,.12)");
       }
       if (on) {
         eraFrom = el.dataset.eraFrom || null;
